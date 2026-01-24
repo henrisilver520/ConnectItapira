@@ -32,7 +32,6 @@ const ACTIVE_BTN_MAP = {
   chatPublicoSection: "openChatButton",
   bairrosSection: "conhecaOBairroButton",
 };
-
 const firebaseConfig = {
   apiKey: "AIzaSyA-7HOp-Ycvyf3b_03ev__8aJEwAbWSQZY",
   authDomain: "connectfamilia-312dc.firebaseapp.com",
@@ -414,7 +413,6 @@ function bindComercios() {
   document.getElementById("storeDashboardRefresh")?.addEventListener("click", loadStoreForDashboard);
   document.getElementById("storeDashboardOpenModal")?.addEventListener("click", openStoreModal);
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   bindNavbar();

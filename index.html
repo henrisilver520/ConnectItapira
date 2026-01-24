@@ -207,7 +207,7 @@
 
     <!-- SEÇÕES VAZIAS -->
     <section id="comerciosSection" class="section">
-      <div class="comercios">
+       <div class="comercios">
         <header class="comercios-hero">
           <div class="comercios-hero__content">
             <p class="comercios-kicker">Marketplace local</p>
@@ -217,9 +217,9 @@
               categorias e venderem com pedidos enviados direto para o WhatsApp do vendedor.
             </p>
             <div class="comercios-hero__actions">
-              <a class="btn btn-primary comercios-cta" href="login.html">
+              <button id="createStoreBtn" class="btn btn-primary comercios-cta" type="button">
                 Quero criar minha loja
-              </a>
+              </button>
               <button class="btn btn-outline-light comercios-secondary" type="button" data-scroll-target="#comerciosComoFunciona">
                 Como funciona
               </button>
@@ -395,6 +395,59 @@
             Começar agora
           </a>
         </section>
+
+        <div id="storeModal" class="store-modal" role="dialog" aria-modal="true" aria-labelledby="storeModalTitle" aria-hidden="true">
+          <div class="store-modal__backdrop" data-close-store-modal></div>
+          <div class="store-modal__panel">
+            <header class="store-modal__header">
+              <div>
+                <p class="store-modal__kicker">Cadastro da loja</p>
+                <h3 id="storeModalTitle">Quero criar minha loja</h3>
+                <p class="store-modal__lead">Essas informações serão salvas no seu documento em <strong>users/{uid}</strong> no Firestore.</p>
+              </div>
+              <button class="store-modal__close" type="button" aria-label="Fechar" data-close-store-modal>
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </header>
+
+            <form id="storeForm" class="store-form">
+              <div class="store-form__grid">
+                <label class="store-field">
+                  <span>Nome da loja</span>
+                  <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
+                </label>
+                <label class="store-field">
+                  <span>Categoria principal</span>
+                  <input type="text" name="storeCategory" placeholder="Ex: Alimentação" required />
+                </label>
+                <label class="store-field">
+                  <span>WhatsApp do vendedor</span>
+                  <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />
+                </label>
+                <label class="store-field">
+                  <span>Tipo de atendimento</span>
+                  <select name="storeFulfillment" required>
+                    <option value="">Selecione</option>
+                    <option value="Entrega">Entrega</option>
+                    <option value="Retirada">Retirada</option>
+                    <option value="Entrega e retirada">Entrega e retirada</option>
+                  </select>
+                </label>
+                <label class="store-field store-field--full">
+                  <span>Descrição curta</span>
+                  <textarea name="storeDescription" rows="3" placeholder="Conte em uma frase o que torna sua loja especial." required></textarea>
+                </label>
+              </div>
+
+              <div class="store-form__actions">
+                <p id="storeFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
+                <button id="storeFormSubmit" class="btn btn-primary comercios-cta" type="submit">
+                  Salvar loja no Firestore
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
 

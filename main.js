@@ -90,6 +90,60 @@ function bindTopbar() {
   });
 }
 
+
+function buildWhatsAppMessage({ store, product, price }) {
+  return [
+    `Olá, *${store}*!`,
+    "",
+    "Quero fazer um pedido:",
+    `• Produto: ${product}`,
+    `• Preço: R$ ${price}`,
+    "",
+    "Dados para finalizar:",
+    "• Entrega ou retirada:",
+    "• Forma de pagamento:",
+    "• Nome e telefone:",
+    "• Endereço (se entrega):",
+  ].join("\n");
+}
+
+function openWhatsAppOrder(button) {
+  const store = button.getAttribute("data-store");
+  const product = button.getAttribute("data-product");
+  const price = button.getAttribute("data-price");
+  const phone = button.getAttribute("data-whatsapp");
+
+  if (!store || !product || !price || !phone) return;
+
+  const message = buildWhatsAppMessage({ store, product, price });
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener");
+}
+
+function bindComercios() {
+  const comerciosSection = document.getElementById("comerciosSection");
+  if (!comerciosSection) return;
+
+  comerciosSection.addEventListener("click", (e) => {
+    const orderBtn = e.target.closest(".js-order-btn");
+    if (orderBtn) {
+      openWhatsAppOrder(orderBtn);
+      return;
+    }
+
+    const scrollBtn = e.target.closest("[data-scroll-target]");
+    if (!scrollBtn) return;
+
+    const targetSelector = scrollBtn.getAttribute("data-scroll-target");
+    if (!targetSelector) return;
+
+    const target = comerciosSection.querySelector(targetSelector);
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   bindNavbar();
   bindTopbar();

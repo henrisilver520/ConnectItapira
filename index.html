@@ -207,9 +207,195 @@
 
     <!-- SEÇÕES VAZIAS -->
     <section id="comerciosSection" class="section">
-      <h2>Comércios Locais</h2>
-      <p>Seção vazia (vamos criar este primeiro).</p>
-      <div class="placeholder">Conteúdo de comércios aqui.</div>
+      <div class="comercios">
+        <header class="comercios-hero">
+          <div class="comercios-hero__content">
+            <p class="comercios-kicker">Marketplace local</p>
+            <h2>Comércios Locais</h2>
+            <p class="comercios-lead">
+              Uma vitrine profissional para lojistas criarem sua loginha online, organizarem
+              categorias e venderem com pedidos enviados direto para o WhatsApp do vendedor.
+            </p>
+            <div class="comercios-hero__actions">
+              <a class="btn btn-primary comercios-cta" href="login.html">
+                Quero criar minha loja
+              </a>
+              <button class="btn btn-outline-light comercios-secondary" type="button" data-scroll-target="#comerciosComoFunciona">
+                Como funciona
+              </button>
+            </div>
+            <ul class="comercios-highlights">
+              <li><i class="fa-solid fa-store"></i> Vitrine por comércio</li>
+              <li><i class="fa-solid fa-tags"></i> Categorias e destaques</li>
+              <li><i class="fa-brands fa-whatsapp"></i> Pedido no WhatsApp</li>
+            </ul>
+          </div>
+          <aside class="comercios-hero__panel" aria-label="Resumo para lojistas">
+            <h3>Painel do lojista</h3>
+            <ul>
+              <li>Cadastre produtos com foto, descrição e preço.</li>
+              <li>Organize por categorias e destaque os mais vendidos.</li>
+              <li>Receba o pedido com dados de entrega, retirada e pagamento.</li>
+            </ul>
+            <div class="comercios-hero__tag">Estilo Anota Aí</div>
+          </aside>
+        </header>
+
+        <section class="comercios-toolbar" aria-label="Filtros de categorias">
+          <div class="comercios-toolbar__title">
+            <h3>Categorias em alta</h3>
+            <p>Explore por tipo de produto e encontre o que precisa rapidinho.</p>
+          </div>
+          <div class="comercios-chips">
+            <button class="chip is-active" type="button">Todos</button>
+            <button class="chip" type="button">Alimentação</button>
+            <button class="chip" type="button">Moda</button>
+            <button class="chip" type="button">Casa</button>
+            <button class="chip" type="button">Tecnologia</button>
+            <button class="chip" type="button">Serviços</button>
+          </div>
+        </section>
+
+        <section class="comercios-grid" aria-label="Lista de produtos">
+          <article class="commerce-card commerce-card--featured">
+            <div class="commerce-card__media">
+              <span class="commerce-card__badge">Mais pedido</span>
+              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1974&auto=format&fit=crop" alt="Pizza artesanal saindo do forno">
+            </div>
+            <div class="commerce-card__body">
+              <p class="commerce-card__store">Pizzaria do Centro</p>
+              <h4 class="commerce-card__title">Pizza artesanal grande</h4>
+              <p class="commerce-card__desc">Molho da casa, mussarela especial e borda recheada cremosa.</p>
+              <div class="commerce-card__meta">
+                <span class="commerce-card__price">R$ 69,90</span>
+                <span class="commerce-card__category">Alimentação</span>
+              </div>
+              <button
+                class="btn btn-success commerce-card__action js-order-btn"
+                type="button"
+                data-store="Pizzaria do Centro"
+                data-product="Pizza artesanal grande"
+                data-price="69,90"
+                data-whatsapp="5511999990001"
+              >
+                Pedir pelo WhatsApp
+              </button>
+            </div>
+          </article>
+
+          <article class="commerce-card">
+            <div class="commerce-card__media">
+              <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1974&auto=format&fit=crop" alt="Camisetas dobradas em uma mesa">
+            </div>
+            <div class="commerce-card__body">
+              <p class="commerce-card__store">Veste Bem Store</p>
+              <h4 class="commerce-card__title">Kit camisetas premium</h4>
+              <p class="commerce-card__desc">Algodão penteado, caimento perfeito e cores essenciais.</p>
+              <div class="commerce-card__meta">
+                <span class="commerce-card__price">R$ 129,90</span>
+                <span class="commerce-card__category">Moda</span>
+              </div>
+              <button
+                class="btn btn-success commerce-card__action js-order-btn"
+                type="button"
+                data-store="Veste Bem Store"
+                data-product="Kit camisetas premium"
+                data-price="129,90"
+                data-whatsapp="5511999990002"
+              >
+                Comprar agora
+              </button>
+            </div>
+          </article>
+
+          <article class="commerce-card">
+            <div class="commerce-card__media">
+              <img src="https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=1974&auto=format&fit=crop" alt="Mesa posta com itens de decoração">
+            </div>
+            <div class="commerce-card__body">
+              <p class="commerce-card__store">Casa Aurora</p>
+              <h4 class="commerce-card__title">Combo mesa posta</h4>
+              <p class="commerce-card__desc">Sousplats, guardanapos e detalhes que transformam a refeição.</p>
+              <div class="commerce-card__meta">
+                <span class="commerce-card__price">R$ 189,00</span>
+                <span class="commerce-card__category">Casa</span>
+              </div>
+              <button
+                class="btn btn-success commerce-card__action js-order-btn"
+                type="button"
+                data-store="Casa Aurora"
+                data-product="Combo mesa posta"
+                data-price="189,00"
+                data-whatsapp="5511999990003"
+              >
+                Quero este
+              </button>
+            </div>
+          </article>
+
+          <article class="commerce-card">
+            <div class="commerce-card__media">
+              <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1974&auto=format&fit=crop" alt="Pessoa segurando um smartphone">
+            </div>
+            <div class="commerce-card__body">
+              <p class="commerce-card__store">Tech Itapira</p>
+              <h4 class="commerce-card__title">Smartphone 256GB</h4>
+              <p class="commerce-card__desc">Performance rápida, câmera incrível e bateria para o dia todo.</p>
+              <div class="commerce-card__meta">
+                <span class="commerce-card__price">R$ 2.399,00</span>
+                <span class="commerce-card__category">Tecnologia</span>
+              </div>
+              <button
+                class="btn btn-success commerce-card__action js-order-btn"
+                type="button"
+                data-store="Tech Itapira"
+                data-product="Smartphone 256GB"
+                data-price="2399,00"
+                data-whatsapp="5511999990004"
+              >
+                Falar com vendedor
+              </button>
+            </div>
+          </article>
+        </section>
+
+        <section id="comerciosComoFunciona" class="comercios-flow" aria-label="Fluxo de compra">
+          <header class="comercios-flow__header">
+            <h3>Do clique ao pedido confirmado</h3>
+            <p>Um fluxo simples para o cliente e poderoso para o lojista.</p>
+          </header>
+          <div class="comercios-flow__steps">
+            <article class="flow-step">
+              <span class="flow-step__index">01</span>
+              <h4>Cliente escolhe o produto</h4>
+              <p>Navega por categorias, vê fotos reais e decide com segurança.</p>
+            </article>
+            <article class="flow-step">
+              <span class="flow-step__index">02</span>
+              <h4>Pedido vai para o WhatsApp</h4>
+              <p>A mensagem já chega com produto, loja e valor para agilizar o atendimento.</p>
+            </article>
+            <article class="flow-step">
+              <span class="flow-step__index">03</span>
+              <h4>Vendedor finaliza a venda</h4>
+              <p>Combina entrega, retirada, pagamento e conclui o pedido direto no chat.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="comercios-seller-cta" aria-label="Convite para lojistas">
+          <div>
+            <h3>Seu comércio com cara de app profissional</h3>
+            <p>
+              Monte sua vitrine, publique seus produtos e transforme visitas em pedidos.
+              Tudo com a simplicidade do WhatsApp e a organização de um catálogo moderno.
+            </p>
+          </div>
+          <a class="btn btn-primary comercios-cta comercios-cta--wide" href="login.html">
+            Começar agora
+          </a>
+        </section>
+      </div>
     </section>
 
     <section id="imoveisSection" class="section">

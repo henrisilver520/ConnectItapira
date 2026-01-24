@@ -82,237 +82,128 @@
   <main class="app">
     <!-- HOME -->
   <section id="homeSection" class="section is-visible">
-  <div id="TelaInicio" class="home-portal">
+  <div id="TelaInicio" class="tela-inicio">
+    <div class="ti-hero">
+      <div class="welcome-message">
 
-    <!-- HERO: ITAPIRA + TAGS -->
-    <section class="home-hero">
-      <div class="home-hero-top">
-        <div class="welcome-message">
-          <p class="ti-welcome">Seja bem-vindo a</p>
+       <p class="concept concept-three" aria-label="Itapira">
+  <span class="word">
+    <span class="hover"><span class="ti-letter">I</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">T</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">A</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">P</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">I</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">R</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">A</span><span class="ti-shade"></span></span>
+  </span>
+</p>
 
-          <p class="concept concept-three" aria-label="Itapira">
-            <span class="word">
-              <span class="hover"><span class="ti-letter">I</span><span class="ti-shade"></span></span>
-              <span class="hover"><span class="ti-letter">T</span><span class="ti-shade"></span></span>
-              <span class="hover"><span class="ti-letter">A</span><span class="ti-shade"></span></span>
-              <span class="hover"><span class="ti-letter">P</span><span class="ti-shade"></span></span>
-              <span class="hover"><span class="ti-letter">I</span><span class="ti-shade"></span></span>
-              <span class="hover"><span class="ti-letter">R</span><span class="ti-shade"></span></span>
-              <span class="hover"><span class="ti-letter">A</span><span class="ti-shade"></span></span>
-            </span>
-          </p>
-
-          <p class="home-subtitle">
-            Notícias, comércios, serviços e eventos da cidade em um só lugar.
-          </p>
-        </div>
-
-        <!-- BUSCA GLOBAL -->
-        <div class="home-search" role="search" aria-label="Busca">
-          <input id="homeSearchInput" type="search" placeholder="Buscar notícias, comércios, serviços..." />
-          <button id="homeSearchBtn" type="button">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
-
-        <!-- ATALHOS (scroll horizontal no mobile) -->
-        <div class="home-shortcuts" aria-label="Atalhos">
-          <button class="shortcut" type="button" data-open="noticiasSection">
-            <i class="fa-regular fa-newspaper"></i>
-            <span>Notícias</span>
-          </button>
-
-          <button class="shortcut" type="button" data-open="comerciosSection">
-            <i class="fa-solid fa-landmark"></i>
-            <span>Comércios</span>
-          </button>
-
-          <button class="shortcut" type="button" data-open="servicosSection">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-            <span>Serviços</span>
-          </button>
-
-          <button class="shortcut" type="button" data-open="eventosSection">
-            <i class="fa-regular fa-calendar-days"></i>
-            <span>Eventos</span>
-          </button>
-
-          <button class="shortcut" type="button" data-open="empregosSection">
-            <i class="fa-solid fa-briefcase"></i>
-            <span>Empregos</span>
-          </button>
-
-          <button class="shortcut" type="button" data-open="pontosInteresseSection">
-            <i class="fa-solid fa-location-dot"></i>
-            <span>Locais</span>
-          </button>
-
-          <button class="shortcut" type="button" data-open="redeSocialSection">
-            <i class="fa-solid fa-users"></i>
-            <span>Rede</span>
-          </button>
-        </div>
-
-        <!-- TAGS ANIMADAS -->
-        <div class="tag-list">
-          <div class="loop-slider" style="--duration:19260ms; --direction:reverse;">
-            <div class="inner">
-              <div class="tag"><span>#</span> Conexões</div>
-              <div class="tag"><span>#</span> Comércios</div>
-              <div class="tag"><span>#</span> Serviços</div>
-              <div class="tag"><span>#</span> Grupos</div>
-              <div class="tag"><span>#</span> Entretenimento</div>
-
-              <div class="tag"><span>#</span> Conexões</div>
-              <div class="tag"><span>#</span> Comércios</div>
-              <div class="tag"><span>#</span> Serviços</div>
-              <div class="tag"><span>#</span> Grupos</div>
-              <div class="tag"><span>#</span> Entretenimento</div>
-            </div>
-          </div>
-
-          <div class="loop-slider" style="--duration:10449ms; --direction:normal;">
-            <div class="inner">
-              <div class="tag"><span>#</span> Galeria</div>
-              <div class="tag"><span>#</span> Amizades</div>
-              <div class="tag"><span>#</span> Chat Público</div>
-              <div class="tag"><span>#</span> Notícias</div>
-              <div class="tag"><span>#</span> Suporte</div>
-
-              <div class="tag"><span>#</span> Galeria</div>
-              <div class="tag"><span>#</span> Amizades</div>
-              <div class="tag"><span>#</span> Chat Público</div>
-              <div class="tag"><span>#</span> Notícias</div>
-              <div class="tag"><span>#</span> Suporte</div>
-            </div>
-          </div>
-
-          <div class="fade"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- GRID PRINCIPAL DO PORTAL -->
-    <section class="home-grid">
-      <!-- COLUNA ESQUERDA: Destaques -->
-      <div class="home-col">
-
-        <!-- Card “Destaques da Cidade” -->
-        <article class="panel">
-          <header class="panel-header">
-            <h2>Destaques da Cidade</h2>
-            <button class="link-btn" type="button" data-open="noticiasSection">Ver tudo</button>
-          </header>
-
-          <div class="highlight-list">
-            <a class="highlight" href="javascript:void(0)">
-              <div class="highlight-badge">Agora</div>
-              <div class="highlight-body">
-                <strong>Boletim rápido</strong>
-                <p>Espaço para manchete principal (vamos integrar com Firestore).</p>
-              </div>
-              <i class="fa-solid fa-chevron-right"></i>
-            </a>
-
-            <a class="highlight" href="javascript:void(0)">
-              <div class="highlight-badge green">Comércio</div>
-              <div class="highlight-body">
-                <strong>Promoções locais</strong>
-                <p>Divulgue ofertas e novidades dos comércios.</p>
-              </div>
-              <i class="fa-solid fa-chevron-right"></i>
-            </a>
-
-            <a class="highlight" href="javascript:void(0)">
-              <div class="highlight-badge purple">Evento</div>
-              <div class="highlight-body">
-                <strong>Agenda da semana</strong>
-                <p>Eventos, shows e encontros na cidade.</p>
-              </div>
-              <i class="fa-solid fa-chevron-right"></i>
-            </a>
-          </div>
-        </article>
-
-        <!-- Card “Categorias Rápidas” -->
-        <article class="panel">
-          <header class="panel-header">
-            <h2>Explore por categoria</h2>
-            <button class="link-btn" type="button" data-open="comerciosSection">Abrir comércios</button>
-          </header>
-
-          <div class="category-grid">
-            <button class="cat-card" type="button" data-open="comerciosSection">
-              <i class="fa-solid fa-shop"></i>
-              <span>Comércios</span>
-              <small>Produtos e lojas</small>
-            </button>
-
-            <button class="cat-card" type="button" data-open="servicosSection">
-              <i class="fa-solid fa-hammer"></i>
-              <span>Serviços</span>
-              <small>Profissionais</small>
-            </button>
-
-            <button class="cat-card" type="button" data-open="eventosSection">
-              <i class="fa-solid fa-ticket"></i>
-              <span>Eventos</span>
-              <small>Agenda</small>
-            </button>
-
-            <button class="cat-card" type="button" data-open="empregosSection">
-              <i class="fa-solid fa-briefcase"></i>
-              <span>Empregos</span>
-              <small>Vagas</small>
-            </button>
-
-            <button class="cat-card" type="button" data-open="pontosInteresseSection">
-              <i class="fa-solid fa-map-location-dot"></i>
-              <span>Locais</span>
-              <small>Turismo & lazer</small>
-            </button>
-
-            <button class="cat-card" type="button" data-open="redeSocialSection">
-              <i class="fa-solid fa-user-group"></i>
-              <span>Rede Social</span>
-              <small>Conecte-se</small>
-            </button>
-          </div>
-        </article>
       </div>
 
-      <!-- COLUNA DIREITA: Cards rápidos -->
-      <aside class="home-side">
-        <article class="panel">
-          <header class="panel-header">
-            <h2>Clima</h2>
-            <button class="link-btn" type="button">Atualizar</button>
-          </header>
-          <div id="weather-info" class="weather-grid"></div>
-          <div class="panel-footnote">Dados do clima aqui (seu widget atual).</div>
-        </article>
+      <div class="tag-list">
+        <div class="loop-slider" style="--duration:19260ms; --direction:reverse;">
+          <div class="inner">
+            <div class="tag"><span>#</span> Conexões</div>
+            <div class="tag"><span>#</span> Comércios</div>
+            <div class="tag"><span>#</span> Serviços</div>
+            <div class="tag"><span>#</span> Grupos</div>
+            <div class="tag"><span>#</span> Redes Sociais</div>
 
-        <article class="panel">
-          <header class="panel-header">
-            <h2>Imagem da cidade</h2>
-            <button class="link-btn" type="button">Trocar</button>
-          </header>
-          <img id="imagem-cidade" src="" alt="Imagem Representativa da Cidade" class="ti-city-img">
-          <div class="panel-footnote">Banner da cidade (pode vir do Firestore).</div>
-        </article>
+            <!-- duplicado -->
+            <div class="tag"><span>#</span> Conexões</div>
+            <div class="tag"><span>#</span> Comércios</div>
+            <div class="tag"><span>#</span> Serviços</div>
+            <div class="tag"><span>#</span> Grupos</div>
+            <div class="tag"><span>#</span> Redes Sociais</div>
+          </div>
+        </div>
 
-        <article class="panel panel-soft">
-          <h2 class="panel-title">Missão</h2>
-          <p class="panel-text">
-            Conectar Itapira em um só lugar: notícias, comércio, serviços, entretenimento e comunidade.
-          </p>
-        </article>
-      </aside>
-    </section>
+        <div class="loop-slider" style="--duration:10449ms; --direction:normal;">
+          <div class="inner">
+            <div class="tag"><span>#</span> Galeria</div>
+            <div class="tag"><span>#</span> Amizades</div>
+            <div class="tag"><span>#</span> Chat Público</div>
+            <div class="tag"><span>#</span> Notícias</div>
+            <div class="tag"><span>#</span> Suporte</div>
 
+            <!-- duplicado -->
+            <div class="tag"><span>#</span> Galeria</div>
+            <div class="tag"><span>#</span> Amizades</div>
+            <div class="tag"><span>#</span> Chat Público</div>
+            <div class="tag"><span>#</span> Notícias</div>
+            <div class="tag"><span>#</span> Suporte</div>
+          </div>
+        </div>
+
+        <div class="loop-slider" style="--duration:16638ms; --direction:reverse;">
+          <div class="inner">
+            <div class="tag"><span>#</span> Envolvimento</div>
+            <div class="tag"><span>#</span> Encontro</div>
+            <div class="tag"><span>#</span> Eventos</div>
+            <div class="tag"><span>#</span> Diversão</div>
+            <div class="tag"><span>#</span> Aprendizado</div>
+
+            <!-- duplicado -->
+            <div class="tag"><span>#</span> Envolvimento</div>
+            <div class="tag"><span>#</span> Encontro</div>
+            <div class="tag"><span>#</span> Eventos</div>
+            <div class="tag"><span>#</span> Diversão</div>
+            <div class="tag"><span>#</span> Aprendizado</div>
+          </div>
+        </div>
+
+        <div class="fade"></div>
+      </div>
+    </div>
+
+    <div id="descricao-cidade" class="ti-body">
+      <img id="imagem-cidade" src="" alt="Imagem Representativa da Cidade" class="ti-city-img">
+
+      <h3 class="ti-intro">
+        Bem-vindo à nossa plataforma dedicada a conectar a cidade e seus habitantes! Aqui, reunimos tudo o que você precisa
+        para explorar, se envolver e se conectar com a sua comunidade de maneira fácil e conveniente.
+      </h3>
+
+      <div id="weather-info" class="weather-grid"></div>
+
+      <div class="funcionalidades">
+        <div class="funcionalidade">
+          <h3>Comércios e Serviços</h3>
+          <p>Descubra os melhores comércios locais e os serviços oferecidos em sua cidade.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Grupos da Cidade</h3>
+          <p>Junte-se a grupos de interesse local e encontre pessoas que compartilham seus interesses.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Rede Social</h3>
+          <p>Compartilhe experiências, notícias e momentos especiais com seus amigos e vizinhos.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Amizades</h3>
+          <p>Faça novos amigos e amplie sua rede de contatos com pessoas da mesma cidade.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Galeria</h3>
+          <p>Explore fotos compartilhadas por moradores capturando a essência da comunidade.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Chat Público</h3>
+          <p>Converse com outros habitantes da cidade em um chat público.</p>
+        </div>
+      </div>
+
+      <p class="missao">
+        Nossa missão é criar um espaço onde a cidade e seus habitantes estejam conectados como nunca antes.
+      </p>
+    </div>
   </div>
 </section>
-
 
     <!-- SEÇÕES VAZIAS -->
     <section id="comerciosSection" class="section">

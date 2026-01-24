@@ -1,0 +1,735 @@
+:root{
+  --bg:#0b1220;
+  --panel:#0f172a;
+  --card:#111c33;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:rgba(255,255,255,.10);
+  --brand:#2563eb;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#060a14 0%, #0b1220 60%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ===== Topbar ===== */
+.app-topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(15,23,42,.9);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.app-topbar-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  letter-spacing:-0.02em;
+  margin:0;
+  font-size:1.05rem;
+  white-space:nowrap;
+}
+
+.brand-badge{
+  width:34px;height:34px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:rgba(37,99,235,.18);
+  border:1px solid rgba(37,99,235,.35);
+  color:#93c5fd;
+  font-weight:900;
+}
+
+.topbar-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.topbar-actions button{
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  padding:8px 10px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.topbar-actions button:hover{ filter:brightness(1.1); }
+
+
+.glow-on-hover{
+  border-radius:14px !important;
+  border:1px solid var(--border) !important;
+  background:rgba(17,24,39,.35) !important;
+  color:var(--text) !important;
+  font-weight:800 !important;
+  padding:10px 12px !important;
+  display:flex !important;
+  gap:8px;
+  align-items:center;
+  transition:transform .12s ease, filter .12s ease, background .12s ease;
+}
+
+.glow-on-hover:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.08);
+  background:rgba(37,99,235,.18) !important;
+  border-color:rgba(37,99,235,.35) !important;
+}
+
+.glow-on-hover.is-active{
+  background:rgba(37,99,235,.22) !important;
+  border-color:rgba(37,99,235,.45) !important;
+}
+
+#notificationButton{
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(17,24,39,.35);
+  color:var(--text);
+  font-weight:800;
+  padding:10px 12px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  cursor:pointer;
+}
+
+#notificationButton:hover{
+  filter:brightness(1.08);
+  background:rgba(37,99,235,.18);
+  border-color:rgba(37,99,235,.35);
+}
+
+/* ===== Main ===== */
+.app{
+  max-width:1200px;
+  margin:0 auto;
+  padding:14px;
+}
+
+.section{
+  display:none;
+  background:rgba(15,23,42,.55);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 30px rgba(0,0,0,.25);
+}
+
+.section.is-visible{ display:block; }
+
+.section h2{
+  margin:0 0 6px 0;
+  font-size:1.2rem;
+  font-weight:900;
+  letter-spacing:-0.02em;
+}
+
+.section p{
+  margin:0;
+  color:var(--muted);
+}
+
+.placeholder{
+  margin-top:14px;
+  padding:14px;
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,.18);
+  color:var(--muted);
+  background:rgba(17,24,39,.25);
+}
+
+
+/* ===== Tela Inicial (efeito ITAPIRA + tags) ===== */
+.tela-inicio{
+  position: relative;
+  overflow: hidden;
+}
+
+.ti-hero{
+  position: relative;
+  padding: 26px 16px 10px;
+  border-radius: 18px;
+  background:
+    radial-gradient(900px 300px at 50% 0%, rgba(37,99,235,.30), transparent 55%),
+    radial-gradient(700px 250px at 20% 10%, rgba(0,231,210,.18), transparent 60%),
+    rgba(15,23,42,.35);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+
+.welcome-message p {
+  font-size: 28px;
+  font-weight: bold;
+  padding-bottom:20px;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  
+    position: absolute;
+  top: -10;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1; /* Colocado em cima das tags */
+  text-align: center;
+  width: 100%;
+  /* Adicionando sombra e brilho */
+  text-shadow: 0 0 20px rgb(0 7 241), 0 0 40px rgb(0 231 210), 0 0 60px rgb(0 84 237);
+  filter: brightness(150%);
+}
+
+.concept {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.word {
+  display: flex;
+  align-items: center;
+}
+
+.hover {
+  display: inline-block;
+  position: relative;
+}
+
+.hover div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(rgba(0, 0, 0, 0.3), transparent);
+  opacity: 0;
+  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.hover:hover div {
+  opacity: 0.5;
+}
+
+.hover h1 {
+  position: relative;
+  color: #fff;
+  font-size: 60px;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1;
+  transition: transform 0.5s ease;
+}
+
+.hover:hover h1 {
+  transform: translateY(-50px);
+}
+
+@media (min-width: 768px) {
+  .welcome-message p {
+    font-size: 36px;
+  }
+
+  .hover h1 {
+    font-size: 80px;
+  }
+}
+
+/* ===== Tags animadas ===== */
+.tag-list{
+  position: relative;
+  margin-top: 18px;
+  padding: 10px 0 4px;
+  overflow: hidden;
+}
+
+.loop-slider{
+  --duration: 14000ms;
+  --direction: normal;
+  overflow: hidden;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.loop-slider .inner{
+  display: inline-flex;
+  gap: 10px;
+  white-space: nowrap;
+  animation: loop var(--duration) linear infinite;
+  animation-direction: var(--direction);
+  will-change: transform;
+}
+
+.tag{
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(17,24,39,.35);
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+}
+
+.tag span{
+  color: #93c5fd;
+}
+
+.fade{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(15,23,42,1) 0%, rgba(15,23,42,0) 15%, rgba(15,23,42,0) 85%, rgba(15,23,42,1) 100%);
+}
+
+/* animação do carrossel */
+@keyframes loop{
+  0%{ transform: translateX(0); }
+  100%{ transform: translateX(-50%); }
+}
+/* ===== Corpo / descrição (CLARO) ===== */
+.ti-body{
+  margin-top: 16px;
+  color: var(--text);
+}
+
+.ti-city-img{
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: #e5e7eb;
+}
+
+/* texto de introdução */
+.ti-intro{
+  margin: 14px 0 12px;
+  font-size: 18px;
+  line-height: 1.45;
+  color: #757f8f;
+}
+
+/* cards de funcionalidades */
+.funcionalidades{
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.funcionalidade{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+
+  box-shadow: 
+    0 8px 20px rgba(0,0,0,.06),
+    0 2px 6px rgba(0,0,0,.04);
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.funcionalidade:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 30px rgba(37,99,235,.12),
+    0 4px 10px rgba(0,0,0,.08);
+}
+
+.funcionalidade h3{
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--brand);
+}
+
+.funcionalidade p{
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+/* missão */
+.missao{
+  margin-top: 14px;
+  color: #c2cddf;
+  font-size: 0.95rem;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--brand-soft);
+  border: 1px solid rgba(37,99,235,.25);
+}
+
+/* responsivo */
+@media (min-width: 768px){
+  .ti-welcome{ font-size: 36px; }
+  .hover h1{ font-size: 80px; transform: translateY(44px); }
+  .funcionalidades{ grid-template-columns: 1fr 1fr; }
+}
+
+/* FIX DEFINITIVO: ITAPIRA alinhado (não use h1 por letra) */
+.word{
+  display: inline-flex;
+  align-items: flex-end;     /* alinha pela base */
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+.hover{
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;     /* alinha pela base */
+  justify-content: center;
+  padding: 0 8px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* a letra real */
+.ti-letter{
+  display: inline-block;
+  font-weight: 900;
+  line-height: 1;            /* controla baseline */
+  letter-spacing: 0;
+  color: #fff;
+
+  /* tamanho e altura controlados */
+  font-size: 80px;
+
+  /* animação: começa “embaixo” */
+  transform: translateY(44px);
+  transition: transform 520ms ease;
+}
+
+/* hover no conjunto: sobe tudo igual */
+.concept:hover .ti-letter{
+  transform: translateY(0);
+}
+
+/* hover na letra: sobe um pouco mais */
+.hover:hover .ti-letter{
+  transform: translateY(-18px);
+}
+
+/* camada de brilho/sombra */
+.ti-shade{
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(rgba(0,0,0,0.30), transparent);
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.hover:hover .ti-shade{
+  opacity: 0.55;
+}
+
+/* mobile */
+@media (max-width: 767px){
+  .ti-letter{
+    font-size: 60px;
+    transform: translateY(34px);
+  }
+}
+
+
+/* =========================
+   MOBILE FIRST (FULL)
+   cole no final do CSS
+========================= */
+
+/* iOS/Android: evita zoom ao focar inputs (quando tiver) */
+input, select, textarea, button { font-size: 16px; }
+
+/* --- Topbar mais compacta no mobile --- */
+@media (max-width: 767px){
+  .app-topbar-inner{
+    padding: 10px 10px;
+    gap: 10px;
+  }
+
+  .brand{
+    font-size: 0.98rem;
+    gap: 8px;
+    white-space: normal; /* permite quebrar se precisar */
+  }
+
+  .brand-badge{
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+  }
+
+  .topbar-actions{
+    gap: 8px;
+  }
+
+  .topbar-actions button{
+    padding: 7px 9px;
+    border-radius: 10px;
+    font-weight: 800;
+  }
+}
+
+/* --- NAVBAR: vira “barra rolável” horizontal no mobile --- */
+@media (max-width: 767px){
+  
+  /* botões menores e consistentes */
+  .glow-on-hover,
+  #notificationButton{
+    flex: 0 0 auto;             /* não encolhe demais */
+    padding: 9px 10px !important;
+    border-radius: 14px !important;
+    font-size: 0.92rem;
+    line-height: 1;
+    white-space: nowrap;        /* não quebra texto */
+  }
+
+  /* ícones um pouco menores */
+  .glow-on-hover i,
+  #notificationButton i{
+    font-size: 0.95rem;
+  }
+}
+
+/* --- Área principal com padding menor --- */
+@media (max-width: 767px){
+  .app{
+    padding: 10px;
+  }
+
+  .section{
+    padding: 12px;
+    border-radius: 16px;
+  }
+}
+
+/* --- HOME: hero mais compacto, tipografia responsiva --- */
+@media (max-width: 767px){
+  .ti-hero{
+    padding: 30px 0px 0px;
+    border-radius: 16px;
+  }
+
+  .ti-welcome{
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  /* ITAPIRA: reduz tamanho e espaçamento */
+  .word{
+    gap: 6px;
+    padding: 4px 6px;
+  }
+
+  .hover{
+    padding: 27PX 6px;
+    border-radius: 12px;
+  }
+
+  .ti-letter{
+    font-size: 52px;            /* principal ajuste */
+    transform: translateY(26px);
+  }
+
+  .concept:hover .ti-letter{
+    transform: translateY(0);
+  }
+
+  .hover:hover .ti-letter{
+    transform: translateY(-12px);
+  }
+
+  /* tags: menores e com menos padding */
+  .tag-list{
+    margin-top: 12px;
+    padding: 8px 0 2px;
+  }
+
+  .tag{
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .fade{
+    background:
+      linear-gradient(90deg, rgba(15,23,42,1) 0%, rgba(15,23,42,0) 10%, rgba(15,23,42,0) 90%, rgba(15,23,42,1) 100%);
+  }
+
+  /* imagem da cidade */
+  .ti-city-img{
+    height: 180px;
+    border-radius: 14px;
+  }
+
+  .ti-intro{
+    font-size: 15.5px;
+    line-height: 1.35;
+  }
+
+  .funcionalidades{
+    gap: 10px;
+  }
+
+  .funcionalidade{
+    border-radius: 14px;
+    padding: 10px;
+  }
+
+  .funcionalidade h3{
+    font-size: 0.98rem;
+  }
+}
+
+/* --- TABLET: melhora grid e tamanhos --- */
+@media (min-width: 768px) and (max-width: 1023px){
+  
+  .glow-on-hover{
+    font-size: 0.95rem;
+  }
+  .ti-city-img{
+    height: 200px;
+  }
+}
+
+/* --- Desktop: limites de largura confortáveis --- */
+@media (min-width: 1024px){
+  .ti-hero{
+    padding: 28px 18px 12px;
+  }
+}
+
+
+
+/* ===============================
+   NAV HEADER – SCROLL HORIZONTAL
+   mantém o estilo azul original
+================================ */
+
+/* Container dos botões */
+#nav-header-buttons{
+  display: flex;
+  flex-wrap: nowrap;              /* NÃO quebra linha */
+  gap: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;               /* scroll horizontal */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+
+  /* evita corte visual */
+  align-items: center;
+}
+
+/* barra de rolagem discreta */
+#nav-header-buttons::-webkit-scrollbar{
+  height: 6px;
+}
+#nav-header-buttons::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.25);
+  border-radius: 999px;
+}
+
+/* ===============================
+   BOTÕES (SEU ESTILO ORIGINAL)
+================================ */
+#nav-header-buttons button{
+  flex: 0 0 auto;                 /* impede encolher */
+  background-color: #0084ff;
+  color: white;
+  border: none;
+  height: 70px;
+  min-width: 150px;               /* garante leitura no mobile */
+  padding: 0 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;            /* não quebra texto */
+
+  margin: 0;                      /* margin quebra scroll */
+  cursor: pointer;
+  border-radius: 20px;
+
+  transition: 
+    background-color .3s ease,
+    transform .15s ease,
+    box-shadow .15s ease;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+
+/* hover */
+#nav-header-buttons button:hover{
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.25);
+}
+
+/* botão ativo (opcional) */
+#nav-header-buttons button.is-active{
+  background-color: #003f88;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.25) inset;
+}
+
+/* ===============================
+   AJUSTES MOBILE
+================================ */
+@media (max-width: 767px){
+  #nav-header-buttons{
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  #nav-header-buttons button{
+    height: 60px;
+    min-width: 135px;
+    font-size: 14px;
+    border-radius: 18px;
+  }
+
+  #nav-header-buttons button i{
+    font-size: 14px;
+  }
+}
+
+/* ===============================
+   DESKTOP (mantém elegante)
+================================ */
+@media (min-width: 1024px){
+  #nav-header-buttons{
+    justify-content: center; /* centraliza no desktop */
+    overflow-x: visible;     /* sem scroll no desktop */
+  }
+}

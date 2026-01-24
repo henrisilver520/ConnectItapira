@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConnectItapira</title>
+
+  <!-- Bootstrap (opcional, só para classes btn / layout) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Seu CSS -->
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <!-- TOPBAR + NAV -->
+  <header class="app-topbar">
+    <div class="app-topbar-inner">
+      <h1 class="brand">
+        <span class="brand-badge">CI</span>
+        ConnectItapira
+      </h1>
+
+      <div class="topbar-actions">
+        <button id="btnHome" type="button">Início</button>
+        <button id="btnLogout" type="button">Sair</button>
+      </div>
+    </div>
+
+    <!-- NAVBAR (seu bloco) -->
+    <div id="nav-header-buttons">
+      <button id="CidadeSectionButton" class="btn btn-primary glow-on-hover" type="button" data-target="comerciosSection">
+        <i class="fa-solid fa-landmark"></i> Comércios Locais
+      </button>
+
+      <button id="anunciarImoveisButton" class="btn btn-primary glow-on-hover" type="button" data-target="imoveisSection">
+        <i class="fas fa-home"></i> Anunciar Imóveis
+      </button>
+
+      <button id="eventosCity" class="btn btn-primary glow-on-hover" type="button" data-target="eventosSection">
+        <i class="fa-solid fa-calendar-days"></i> Eventos
+      </button>
+
+      <button id="servicosButton" class="btn btn-primary glow-on-hover" type="button" data-target="servicosSection">
+        <i class="fas fa-tools"></i> Prestadores de Serviços
+      </button>
+
+      <button id="notificationButton" type="button" data-target="redeSocialSection">
+        <i class="fas fa-network-wired"></i> Rede Social
+      </button>
+
+      <button id="locais" class="btn btn-primary glow-on-hover" type="button" data-target="pontosInteresseSection">
+        <i class="fas fa-map-marker-alt"></i> Pontos de Interesse
+      </button>
+
+      <button id="grupos" class="btn btn-primary glow-on-hover" type="button" data-target="gruposSection">
+        <i class="fa-solid fa-people-group"></i> Grupos da Cidade
+      </button>
+
+      <button id="noticiasLocaisButton" class="btn btn-primary glow-on-hover" type="button" data-target="noticiasSection">
+        <i class="fas fa-newspaper"></i> Notícias Locais
+      </button>
+
+      <button id="empregosLocaisButton" class="btn btn-primary glow-on-hover" type="button" data-target="empregosSection">
+        <i class="fas fa-briefcase"></i> Empregos Locais
+      </button>
+
+      <button id="openChatButton" class="btn btn-primary glow-on-hover" type="button" data-target="chatPublicoSection">
+        <i class="fas fa-comment-dots"></i> Chat Público
+      </button>
+
+      <button id="conhecaOBairroButton" class="btn btn-primary glow-on-hover" type="button" data-target="bairrosSection">
+        <i class="fa-solid fa-house"></i> Conheça os Bairro
+      </button>
+    </div>
+  </header>
+
+  <!-- APP -->
+  <main class="app">
+    <!-- HOME -->
+  <section id="homeSection" class="section is-visible">
+  <div id="TelaInicio" class="tela-inicio">
+    <div class="ti-hero">
+      <div class="welcome-message">
+
+       <p class="concept concept-three" aria-label="Itapira">
+  <span class="word">
+    <span class="hover"><span class="ti-letter">I</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">T</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">A</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">P</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">I</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">R</span><span class="ti-shade"></span></span>
+    <span class="hover"><span class="ti-letter">A</span><span class="ti-shade"></span></span>
+  </span>
+</p>
+
+      </div>
+
+      <div class="tag-list">
+        <div class="loop-slider" style="--duration:19260ms; --direction:reverse;">
+          <div class="inner">
+            <div class="tag"><span>#</span> Conexões</div>
+            <div class="tag"><span>#</span> Comércios</div>
+            <div class="tag"><span>#</span> Serviços</div>
+            <div class="tag"><span>#</span> Grupos</div>
+            <div class="tag"><span>#</span> Redes Sociais</div>
+
+            <!-- duplicado -->
+            <div class="tag"><span>#</span> Conexões</div>
+            <div class="tag"><span>#</span> Comércios</div>
+            <div class="tag"><span>#</span> Serviços</div>
+            <div class="tag"><span>#</span> Grupos</div>
+            <div class="tag"><span>#</span> Redes Sociais</div>
+          </div>
+        </div>
+
+        <div class="loop-slider" style="--duration:10449ms; --direction:normal;">
+          <div class="inner">
+            <div class="tag"><span>#</span> Galeria</div>
+            <div class="tag"><span>#</span> Amizades</div>
+            <div class="tag"><span>#</span> Chat Público</div>
+            <div class="tag"><span>#</span> Notícias</div>
+            <div class="tag"><span>#</span> Suporte</div>
+
+            <!-- duplicado -->
+            <div class="tag"><span>#</span> Galeria</div>
+            <div class="tag"><span>#</span> Amizades</div>
+            <div class="tag"><span>#</span> Chat Público</div>
+            <div class="tag"><span>#</span> Notícias</div>
+            <div class="tag"><span>#</span> Suporte</div>
+          </div>
+        </div>
+
+        <div class="loop-slider" style="--duration:16638ms; --direction:reverse;">
+          <div class="inner">
+            <div class="tag"><span>#</span> Envolvimento</div>
+            <div class="tag"><span>#</span> Encontro</div>
+            <div class="tag"><span>#</span> Eventos</div>
+            <div class="tag"><span>#</span> Diversão</div>
+            <div class="tag"><span>#</span> Aprendizado</div>
+
+            <!-- duplicado -->
+            <div class="tag"><span>#</span> Envolvimento</div>
+            <div class="tag"><span>#</span> Encontro</div>
+            <div class="tag"><span>#</span> Eventos</div>
+            <div class="tag"><span>#</span> Diversão</div>
+            <div class="tag"><span>#</span> Aprendizado</div>
+          </div>
+        </div>
+
+        <div class="fade"></div>
+      </div>
+    </div>
+
+    <div id="descricao-cidade" class="ti-body">
+      <img id="imagem-cidade" src="" alt="Imagem Representativa da Cidade" class="ti-city-img">
+
+      <h3 class="ti-intro">
+        Bem-vindo à nossa plataforma dedicada a conectar a cidade e seus habitantes! Aqui, reunimos tudo o que você precisa
+        para explorar, se envolver e se conectar com a sua comunidade de maneira fácil e conveniente.
+      </h3>
+
+      <div id="weather-info" class="weather-grid"></div>
+
+      <div class="funcionalidades">
+        <div class="funcionalidade">
+          <h3>Comércios e Serviços</h3>
+          <p>Descubra os melhores comércios locais e os serviços oferecidos em sua cidade.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Grupos da Cidade</h3>
+          <p>Junte-se a grupos de interesse local e encontre pessoas que compartilham seus interesses.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Rede Social</h3>
+          <p>Compartilhe experiências, notícias e momentos especiais com seus amigos e vizinhos.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Amizades</h3>
+          <p>Faça novos amigos e amplie sua rede de contatos com pessoas da mesma cidade.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Galeria</h3>
+          <p>Explore fotos compartilhadas por moradores capturando a essência da comunidade.</p>
+        </div>
+
+        <div class="funcionalidade">
+          <h3>Chat Público</h3>
+          <p>Converse com outros habitantes da cidade em um chat público.</p>
+        </div>
+      </div>
+
+      <p class="missao">
+        Nossa missão é criar um espaço onde a cidade e seus habitantes estejam conectados como nunca antes.
+      </p>
+    </div>
+  </div>
+</section>
+
+    <!-- SEÇÕES VAZIAS -->
+    <section id="comerciosSection" class="section">
+      <h2>Comércios Locais</h2>
+      <p>Seção vazia (vamos criar este primeiro).</p>
+      <div class="placeholder">Conteúdo de comércios aqui.</div>
+    </section>
+
+    <section id="imoveisSection" class="section">
+      <h2>Anunciar Imóveis</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Conteúdo de imóveis aqui.</div>
+    </section>
+
+    <section id="eventosSection" class="section">
+      <h2>Eventos</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Conteúdo de eventos aqui.</div>
+    </section>
+
+    <section id="servicosSection" class="section">
+      <h2>Prestadores de Serviços</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Conteúdo de serviços aqui.</div>
+    </section>
+
+    <section id="redeSocialSection" class="section">
+      <h2>Rede Social</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Timeline, posts, perfis, etc.</div>
+    </section>
+
+    <section id="pontosInteresseSection" class="section">
+      <h2>Pontos de Interesse</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Mapa e locais aqui.</div>
+    </section>
+
+    <section id="gruposSection" class="section">
+      <h2>Grupos da Cidade</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Grupos aqui.</div>
+    </section>
+
+    <section id="noticiasSection" class="section">
+      <h2>Notícias Locais</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Notícias aqui.</div>
+    </section>
+
+    <section id="empregosSection" class="section">
+      <h2>Empregos Locais</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Vagas aqui.</div>
+    </section>
+
+    <section id="chatPublicoSection" class="section">
+      <h2>Chat Público</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Chat público aqui.</div>
+    </section>
+
+    <section id="bairrosSection" class="section">
+      <h2>Conheça os Bairros</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Bairros aqui.</div>
+    </section>
+  </main>
+
+  <!-- JS do projeto -->
+  <script src="./main.js"></script>
+
+  <!-- Bootstrap JS (opcional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

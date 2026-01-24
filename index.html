@@ -253,13 +253,21 @@
             <p>Explore por tipo de produto e encontre o que precisa rapidinho.</p>
           </div>
           <div class="comercios-chips">
-            <button class="chip is-active" type="button">Todos</button>
-            <button class="chip" type="button">Alimentação</button>
-            <button class="chip" type="button">Moda</button>
-            <button class="chip" type="button">Casa</button>
-            <button class="chip" type="button">Tecnologia</button>
-            <button class="chip" type="button">Serviços</button>
+            <button class="chip is-active" type="button" data-category="todos">Todos</button>
+            <button class="chip" type="button" data-category="alimentação">Alimentação</button>
+            <button class="chip" type="button" data-category="moda">Moda</button>
+            <button class="chip" type="button" data-category="casa">Casa</button>
+            <button class="chip" type="button" data-category="tecnologia">Tecnologia</button>
+            <button class="chip" type="button" data-category="serviços">Serviços</button>
           </div>
+        </section>
+
+        <section class="stores-section" aria-label="Lojas disponíveis">
+          <header class="stores-section__header">
+            <h3>Lojas disponíveis</h3>
+            <p id="storesCount" class="stores-section__count">Carregando lojas...</p>
+          </header>
+          <div id="storesGrid" class="stores-grid"></div>
         </section>
 
         <section class="comercios-grid" aria-label="Lista de produtos">

@@ -32,6 +32,7 @@ const ACTIVE_BTN_MAP = {
   chatPublicoSection: "openChatButton",
   bairrosSection: "conhecaOBairroButton",
 };
+
 const firebaseConfig = {
   apiKey: "AIzaSyA-7HOp-Ycvyf3b_03ev__8aJEwAbWSQZY",
   authDomain: "connectfamilia-312dc.firebaseapp.com",
@@ -45,6 +46,8 @@ const firebaseConfig = {
 let auth = null;
 let db = null;
 let currentUser = null;
+let storesCache = [];
+let activeStoreCategory = "todos";
 
 function initFirebase() {
   if (!window.firebase) return;
@@ -96,6 +99,125 @@ function toggleDashboardVisibility(shouldShow) {
   const dashboard = document.getElementById("storeDashboard");
   if (!dashboard) return;
   dashboard.classList.toggle("is-hidden", !shouldShow);
+}
+
+function normalizeCategory(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+function renderStoresEmpty(message) {
+  const grid = document.getElementById("storesGrid");
+  const count = document.getElementById("storesCount");
+  if (count) count.textContent = message;
+  if (!grid) return;
+  grid.innerHTML = `<div class="store-card__empty">${message}</div>`;
+}
+
+function buildStoreCard(store) {
+  const category = store.category || "Sem categoria";
+  const description = store.description || "Loja sem descrição cadastrada.";
+  const fulfillment = store.fulfillment || "Atendimento a combinar";
+  const whatsapp = store.whatsapp || "";
+  const phoneDigits = whatsapp.replace(/\D/g, "");
+  const whatsappUrl = phoneDigits
+    ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(`Olá, ${store.name}! Vim pelos Comércios Locais.`)}`
+    : "";
+
+  return `
+    <article class="store-card">
+      <span class="store-card__category">${category}</span>
+      <h4 class="store-card__name">${store.name || "Loja sem nome"}</h4>
+      <p class="store-card__desc">${description}</p>
+      <div class="store-card__meta">
+        <span><i class="fa-solid fa-truck-fast"></i> ${fulfillment}</span>
+        ${phoneDigits ? `<span><i class="fa-brands fa-whatsapp"></i> ${phoneDigits}</span>` : ""}
+      </div>
+      <div class="store-card__actions">
+        ${
+          whatsappUrl
+            ? `<a class="btn btn-success" href="${whatsappUrl}" target="_blank" rel="noopener">
+                 <i class="fa-brands fa-whatsapp"></i> Conversar
+               </a>`
+            : `<span class="muted">WhatsApp não informado</span>`
+        }
+        <a class="btn btn-outline-light comercios-secondary" href="PainelLojista.html">
+          Ver vitrine
+        </a>
+      </div>
+    </article>
+  `;
+}
+
+function renderStoresList(stores) {
+  const grid = document.getElementById("storesGrid");
+  const count = document.getElementById("storesCount");
+  if (!grid || !count) return;
+
+  if (!stores.length) {
+    const label =
+      activeStoreCategory === "todos"
+        ? "Nenhuma loja disponível ainda."
+        : "Nenhuma loja encontrada nesta categoria.";
+    renderStoresEmpty(label);
+    return;
+  }
+
+  count.textContent =
+    activeStoreCategory === "todos"
+      ? `${stores.length} loja(s) disponível(is)`
+      : `${stores.length} loja(s) em ${activeStoreCategory}`;
+
+  grid.innerHTML = stores.map(buildStoreCard).join("");
+}
+
+function filterStoresByCategory(categoryKey) {
+  activeStoreCategory = categoryKey || "todos";
+  if (!storesCache.length) {
+    renderStoresEmpty("Nenhuma loja disponível ainda.");
+    return;
+  }
+
+  if (activeStoreCategory === "todos") {
+    renderStoresList(storesCache);
+    return;
+  }
+
+  const filtered = storesCache.filter(
+    (store) => normalizeCategory(store.category) === activeStoreCategory
+  );
+  renderStoresList(filtered);
+}
+
+function setActiveChip(targetChip) {
+  const chips = document.querySelectorAll(".comercios-chips .chip");
+  chips.forEach((chip) => chip.classList.remove("is-active"));
+  targetChip?.classList.add("is-active");
+}
+
+async function loadStoresFromFirestore() {
+  if (!db) return;
+  renderStoresEmpty("Carregando lojas...");
+
+  try {
+    const snap = await db.collection("users").get();
+    storesCache = snap.docs
+      .map((doc) => ({ uid: doc.id, ...doc.data()?.store }))
+      .filter((store) => store && store.name);
+
+    if (!storesCache.length) {
+      renderStoresEmpty("Nenhuma loja disponível ainda.");
+      return;
+    }
+
+    filterStoresByCategory(activeStoreCategory);
+  } catch (err) {
+    console.error("Erro ao carregar lojas:", err);
+    renderStoresEmpty("Não foi possível carregar as lojas agora.");
+  }
 }
 
 async function loadStoreForDashboard() {
@@ -189,7 +311,6 @@ function bindTopbar() {
     alert("Logout: vamos conectar com Firebase depois.");
   });
 }
-
 function buildWhatsAppMessage({ store, product, price }) {
   return [
     `Olá, *${store}*!`,
@@ -389,6 +510,16 @@ function bindComercios() {
     target?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
+  const chipsContainer = comerciosSection.querySelector(".comercios-chips");
+  chipsContainer?.addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip[data-category]");
+    if (!chip) return;
+    const categoryKey = chip.getAttribute("data-category");
+    if (!categoryKey) return;
+    setActiveChip(chip);
+    filterStoresByCategory(categoryKey);
+  });
+
   const openModalBtn = document.getElementById("createStoreBtn");
   openModalBtn?.addEventListener("click", openStoreModal);
 
@@ -413,13 +544,16 @@ function bindComercios() {
   document.getElementById("storeDashboardRefresh")?.addEventListener("click", loadStoreForDashboard);
   document.getElementById("storeDashboardOpenModal")?.addEventListener("click", openStoreModal);
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   bindNavbar();
   bindTopbar();
   bindComercios();
+  loadStoresFromFirestore();
   auth?.onAuthStateChanged(() => {
     loadStoreForDashboard();
+    loadStoresFromFirestore();
   });
   openHome();
 });

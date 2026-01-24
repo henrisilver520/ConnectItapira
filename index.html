@@ -534,10 +534,10 @@
               saúde, educação, transporte, utilidades e muito mais — tudo organizado por categoria.
             </p>
             <div class="servicos-hero__actions">
-              <a class="btn btn-primary comercios-cta" href="PainelLojista.html">
+              <button id="announceServiceBtn" class="btn btn-primary comercios-cta" type="button">
                 Quero anunciar meus serviços
-              </a>
-              <button class="btn btn-outline-light comercios-secondary" type="button" data-scroll-target="#servicosCategorias">
+              </button>
+              <button id="verCategoriasServicosBtn" class="btn btn-outline-light comercios-secondary" type="button">
                 Ver categorias
               </button>
             </div>
@@ -673,6 +673,65 @@
             </ul>
           </article>
         </section>
+
+        <div id="servicosModal" class="servicos-modal" role="dialog" aria-modal="true" aria-labelledby="servicosModalTitle" aria-hidden="true">
+          <div class="servicos-modal__backdrop" data-close-servicos-modal></div>
+          <div class="servicos-modal__panel">
+            <header class="servicos-modal__header">
+              <div>
+                <p class="servicos-modal__kicker">Anunciar serviços</p>
+                <h3 id="servicosModalTitle">Quero anunciar meus serviços</h3>
+                <p class="servicos-modal__lead">
+                  Escolha uma categoria essencial e descreva seu serviço. Vamos salvar em
+                  <strong>users/{uid}.servicesProfile</strong>.
+                </p>
+              </div>
+              <button class="servicos-modal__close" type="button" aria-label="Fechar" data-close-servicos-modal>
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </header>
+
+            <form id="servicosForm" class="servicos-form">
+              <div class="servicos-form__grid">
+                <label class="store-field">
+                  <span>Título do serviço</span>
+                  <input type="text" name="serviceTitle" placeholder="Ex: Eletricista residencial 24h" required />
+                </label>
+                <label class="store-field">
+                  <span>Categoria</span>
+                  <select name="serviceCategory" required>
+                    <option value="">Selecione uma categoria</option>
+                    <option value="Reparos & Manutenção">Reparos & Manutenção</option>
+                    <option value="Saúde & Bem-estar">Saúde & Bem-estar</option>
+                    <option value="Educação & Aulas">Educação & Aulas</option>
+                    <option value="Transporte & Fretes">Transporte & Fretes</option>
+                    <option value="Utilidades Essenciais">Utilidades Essenciais</option>
+                    <option value="Jurídico & Contábil">Jurídico & Contábil</option>
+                  </select>
+                </label>
+                <label class="store-field">
+                  <span>WhatsApp</span>
+                  <input type="tel" name="serviceWhatsApp" placeholder="5511999990000" required />
+                </label>
+                <label class="store-field">
+                  <span>Área de atendimento</span>
+                  <input type="text" name="serviceArea" placeholder="Ex: Centro, Prados, Santa Fé" required />
+                </label>
+                <label class="store-field store-field--full">
+                  <span>Descrição do serviço</span>
+                  <textarea name="serviceDescription" rows="3" placeholder="Explique o que você faz, diferenciais e prazos médios." required></textarea>
+                </label>
+              </div>
+
+              <div class="store-form__actions">
+                <p id="servicosFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
+                <button id="servicosFormSubmit" class="btn btn-primary comercios-cta" type="submit">
+                  Salvar serviço
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
 

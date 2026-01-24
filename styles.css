@@ -736,6 +736,7 @@ input, select, textarea, button { font-size: 16px; }
   }
 }
 
+
 /* ===== Comércios Locais ===== */
 .comercios{
   display:flex;
@@ -1669,6 +1670,92 @@ body.modal-open{
   font-weight:700;
 }
 
+.servicos-modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  z-index:1250;
+}
+
+.servicos-modal.is-open{
+  display:flex;
+}
+
+.servicos-modal__backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(15,23,42,.74);
+  backdrop-filter:blur(6px);
+}
+
+.servicos-modal__panel{
+  position:relative;
+  width:min(820px,100%);
+  max-height:min(88vh,920px);
+  overflow:auto;
+  border-radius:22px;
+  border:1px solid rgba(148,163,184,.2);
+  background:rgba(15,23,42,.97);
+  box-shadow:0 32px 64px rgba(15,23,42,.62);
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.servicos-modal__header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+
+.servicos-modal__kicker{
+  margin:0 0 6px 0;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:#7dd3fc;
+}
+
+.servicos-modal__lead{
+  margin:6px 0 0 0;
+  color:#cbd5e1;
+}
+
+.servicos-modal__close{
+  border:1px solid rgba(148,163,184,.35);
+  background:rgba(15,23,42,.7);
+  color:#e5e7eb;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-size:1.1rem;
+}
+
+.servicos-modal__close:hover{
+  border-color:#38bdf8;
+  color:#bae6fd;
+}
+
+.servicos-form{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.servicos-form__grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
 @media (max-width:1200px){
   .comercios-grid{
     grid-template-columns:repeat(3,minmax(0,1fr));
@@ -1718,6 +1805,10 @@ body.modal-open{
     grid-template-columns:1fr;
   }
 
+  .servicos-form__grid{
+    grid-template-columns:1fr;
+  }
+
   .commerce-card--featured{
     grid-column:span 2;
   }
@@ -1740,11 +1831,16 @@ body.modal-open{
   .stores-section,
   .servicos-hero,
   .servicos-categorias,
-  .servicos-bloco{
+  .servicos-bloco,
+  .servicos-modal__panel{
     padding:18px;
   }
 
   .store-modal{
+    padding:16px;
+  }
+
+  .servicos-modal{
     padding:16px;
   }
 

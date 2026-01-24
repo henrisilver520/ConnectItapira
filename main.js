@@ -311,7 +311,6 @@ function bindTopbar() {
     alert("Logout: vamos conectar com Firebase depois.");
   });
 }
-
 function buildWhatsAppMessage({ store, product, price }) {
   return [
     `Olá, *${store}*!`,
@@ -357,6 +356,22 @@ function setStoreFormLoading(isLoading) {
   submitBtn.textContent = isLoading ? "Salvando..." : "Salvar loja no Firestore";
 }
 
+function setServicosFormMessage(text, type = "info") {
+  const messageEl = document.getElementById("servicosFormMessage");
+  if (!messageEl) return;
+  messageEl.textContent = text || "";
+  messageEl.classList.remove("is-error", "is-success");
+  if (type === "error") messageEl.classList.add("is-error");
+  if (type === "success") messageEl.classList.add("is-success");
+}
+
+function setServicosFormLoading(isLoading) {
+  const submitBtn = document.getElementById("servicosFormSubmit");
+  if (!submitBtn) return;
+  submitBtn.disabled = isLoading;
+  submitBtn.textContent = isLoading ? "Salvando..." : "Salvar serviço";
+}
+
 function openStoreModal() {
   const modal = document.getElementById("storeModal");
   if (!modal) return;
@@ -367,6 +382,22 @@ function openStoreModal() {
 
 function closeStoreModal() {
   const modal = document.getElementById("storeModal");
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
+
+function openServicosModal() {
+  const modal = document.getElementById("servicosModal");
+  if (!modal) return;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeServicosModal() {
+  const modal = document.getElementById("servicosModal");
   if (!modal) return;
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
@@ -484,6 +515,74 @@ async function saveDashboardStore(form) {
   }
 }
 
+function getServicosPayload(form) {
+  const data = new FormData(form);
+  return {
+    title: String(data.get("serviceTitle") || "").trim(),
+    category: String(data.get("serviceCategory") || "").trim(),
+    whatsapp: String(data.get("serviceWhatsApp") || "").replace(/\D/g, ""),
+    area: String(data.get("serviceArea") || "").trim(),
+    description: String(data.get("serviceDescription") || "").trim(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+}
+
+function validateServicosPayload(payload) {
+  if (!payload.title || !payload.category || !payload.whatsapp || !payload.area || !payload.description) {
+    return "Preencha todos os campos do serviço.";
+  }
+  if (payload.whatsapp.length < 12) {
+    return "Informe o WhatsApp com DDI e DDD. Ex: 5511999990000.";
+  }
+  return "";
+}
+
+async function saveServicosProfile(form) {
+  if (!auth || !db) {
+    setServicosFormMessage("Firebase não foi carregado corretamente.", "error");
+    return;
+  }
+  const user = auth.currentUser;
+  if (!user) {
+    setServicosFormMessage("Você precisa estar logado para anunciar seus serviços.", "error");
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1200);
+    return;
+  }
+
+  const payload = getServicosPayload(form);
+  const validationError = validateServicosPayload(payload);
+  if (validationError) {
+    setServicosFormMessage(validationError, "error");
+    return;
+  }
+
+  setServicosFormLoading(true);
+  setServicosFormMessage("Salvando seu anúncio de serviços...");
+
+  try {
+    await db.collection("users").doc(user.uid).set(
+      {
+        uid: user.uid,
+        servicesProfile: {
+          ...payload,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        },
+      },
+      { merge: true }
+    );
+    setServicosFormMessage("Serviço salvo com sucesso. Em breve você poderá aparecer nas categorias.", "success");
+    form.reset();
+    setTimeout(closeServicosModal, 900);
+  } catch (err) {
+    console.error("Erro ao salvar serviços:", err);
+    setServicosFormMessage("Não foi possível salvar agora. Tente novamente.", "error");
+  } finally {
+    setServicosFormLoading(false);
+  }
+}
+
 function bindComercios() {
   const comerciosSection = document.getElementById("comerciosSection");
   if (!comerciosSection) return;
@@ -546,11 +645,37 @@ function bindComercios() {
   document.getElementById("storeDashboardOpenModal")?.addEventListener("click", openStoreModal);
 }
 
+function bindServicos() {
+  const servicosSection = document.getElementById("servicosSection");
+  if (!servicosSection) return;
+
+  const announceBtn = document.getElementById("announceServiceBtn");
+  announceBtn?.addEventListener("click", openServicosModal);
+
+  const verCategoriasBtn = document.getElementById("verCategoriasServicosBtn");
+  verCategoriasBtn?.addEventListener("click", () => {
+    window.location.href = "servicos.html";
+  });
+
+  const modal = document.getElementById("servicosModal");
+  modal?.addEventListener("click", (e) => {
+    const closeBtn = e.target.closest("[data-close-servicos-modal]");
+    if (closeBtn) closeServicosModal();
+  });
+
+  const form = document.getElementById("servicosForm");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveServicosProfile(form);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   bindNavbar();
   bindTopbar();
   bindComercios();
+  bindServicos();
   loadStoresFromFirestore();
   auth?.onAuthStateChanged(() => {
     loadStoreForDashboard();
@@ -558,7 +683,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   openHome();
 });
-
 
 // Se você ainda tiver código antigo chamando toggleSection("..."),
 // esta função mantém compatibilidade:

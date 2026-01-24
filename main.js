@@ -101,3 +101,15 @@ document.addEventListener("DOMContentLoaded", () => {
 function toggleSection(sectionId) {
   openSection(sectionId);
 }
+
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-open]");
+  if (!btn) return;
+  const sectionId = btn.getAttribute("data-open");
+  if (!sectionId) return;
+
+  // compatível com seu sistema atual
+  if (typeof openSection === "function") openSection(sectionId);
+  else if (typeof toggleSection === "function") toggleSection(sectionId);
+});

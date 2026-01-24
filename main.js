@@ -288,7 +288,6 @@ function bindComercios() {
 }
 
 
-
 function buildWhatsAppMessage({ store, product, price }) {
   return [
     `Olá, *${store}*!`,
@@ -318,6 +317,109 @@ function openWhatsAppOrder(button) {
   window.open(url, "_blank", "noopener");
 }
 
+function setStoreFormMessage(text, type = "info") {
+  const messageEl = document.getElementById("storeFormMessage");
+  if (!messageEl) return;
+  messageEl.textContent = text || "";
+  messageEl.classList.remove("is-error", "is-success");
+  if (type === "error") messageEl.classList.add("is-error");
+  if (type === "success") messageEl.classList.add("is-success");
+}
+
+function setStoreFormLoading(isLoading) {
+  const submitBtn = document.getElementById("storeFormSubmit");
+  if (!submitBtn) return;
+  submitBtn.disabled = isLoading;
+  submitBtn.textContent = isLoading ? "Salvando..." : "Salvar loja no Firestore";
+}
+
+function openStoreModal() {
+  const modal = document.getElementById("storeModal");
+  if (!modal) return;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeStoreModal() {
+  const modal = document.getElementById("storeModal");
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
+
+function getStorePayload(form) {
+  const data = new FormData(form);
+  return {
+    name: String(data.get("storeName") || "").trim(),
+    category: String(data.get("storeCategory") || "").trim(),
+    whatsapp: String(data.get("storeWhatsApp") || "").replace(/\D/g, ""),
+    fulfillment: String(data.get("storeFulfillment") || "").trim(),
+    description: String(data.get("storeDescription") || "").trim(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+}
+
+function validateStorePayload(payload) {
+  if (!payload.name || !payload.category || !payload.whatsapp || !payload.fulfillment || !payload.description) {
+    return "Preencha todos os campos da loja.";
+  }
+  if (payload.whatsapp.length < 12) {
+    return "Informe o WhatsApp com DDI e DDD. Ex: 5511999990000.";
+  }
+  return "";
+}
+
+async function saveStoreToFirestore(form) {
+  if (!auth || !db) {
+    setStoreFormMessage("Firebase não foi carregado corretamente.", "error");
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    setStoreFormMessage("Você precisa estar logado para criar sua loja.", "error");
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1200);
+    return;
+  }
+
+  const payload = getStorePayload(form);
+  const validationError = validateStorePayload(payload);
+  if (validationError) {
+    setStoreFormMessage(validationError, "error");
+    return;
+  }
+
+  setStoreFormLoading(true);
+  setStoreFormMessage("Salvando os dados da sua loja...");
+
+  try {
+    const userRef = db.collection("users").doc(user.uid);
+    await userRef.set(
+      {
+        uid: user.uid,
+        store: {
+          ...payload,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        },
+      },
+      { merge: true }
+    );
+
+    setStoreFormMessage("Loja salva com sucesso no documento users/{uid}.", "success");
+    form.reset();
+    setTimeout(closeStoreModal, 900);
+  } catch (err) {
+    console.error("Erro ao salvar loja:", err);
+    setStoreFormMessage("Não foi possível salvar sua loja. Tente novamente.", "error");
+  } finally {
+    setStoreFormLoading(false);
+  }
+}
+
 function bindComercios() {
   const comerciosSection = document.getElementById("comerciosSection");
   if (!comerciosSection) return;
@@ -326,6 +428,12 @@ function bindComercios() {
     const orderBtn = e.target.closest(".js-order-btn");
     if (orderBtn) {
       openWhatsAppOrder(orderBtn);
+      return;
+    }
+
+    const createStoreBtn = e.target.closest("#createStoreBtn");
+    if (createStoreBtn) {
+      openStoreModal();
       return;
     }
 
@@ -338,13 +446,28 @@ function bindComercios() {
     const target = comerciosSection.querySelector(targetSelector);
     target?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
+
+  const openModalBtn = document.getElementById("createStoreBtn");
+  openModalBtn?.addEventListener("click", openStoreModal);
+
+  const modal = document.getElementById("storeModal");
+  modal?.addEventListener("click", (e) => {
+    const closeBtn = e.target.closest("[data-close-store-modal]");
+    if (closeBtn) closeStoreModal();
+  });
+
+  const storeForm = document.getElementById("storeForm");
+  storeForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveStoreToFirestore(storeForm);
+  });
 }
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
+  initFirebase();
   bindNavbar();
   bindTopbar();
+  bindComercios();
   openHome();
 });
 

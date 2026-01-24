@@ -32,6 +32,8 @@ const ACTIVE_BTN_MAP = {
   chatPublicoSection: "openChatButton",
   bairrosSection: "conhecaOBairroButton",
 };
+
+
 const firebaseConfig = {
   apiKey: "AIzaSyA-7HOp-Ycvyf3b_03ev__8aJEwAbWSQZY",
   authDomain: "connectfamilia-312dc.firebaseapp.com",

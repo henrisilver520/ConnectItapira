@@ -35,9 +35,10 @@
       <button id="CidadeSectionButton" class="btn btn-primary glow-on-hover" type="button" data-target="comerciosSection">
         <i class="fa-solid fa-landmark"></i> Comércios Locais
       </button>
-      <a id="minhaLojaButton" class="btn btn-primary glow-on-hover" href="PainelLojista.html">
-        <i class="fa-solid fa-store"></i> Minha Loja
-      </a>
+      
+       <button id="servicosButton" class="btn btn-primary glow-on-hover" type="button" data-target="servicosSection">
+        <i class="fas fa-tools"></i> Prestadores de Serviços
+      </button>
 
       <button id="anunciarImoveisButton" class="btn btn-primary glow-on-hover" type="button" data-target="imoveisSection">
         <i class="fas fa-home"></i> Anunciar Imóveis
@@ -47,9 +48,7 @@
         <i class="fa-solid fa-calendar-days"></i> Eventos
       </button>
 
-      <button id="servicosButton" class="btn btn-primary glow-on-hover" type="button" data-target="servicosSection">
-        <i class="fas fa-tools"></i> Prestadores de Serviços
-      </button>
+     
 
       <button id="notificationButton" type="button" data-target="redeSocialSection">
         <i class="fas fa-network-wired"></i> Rede Social
@@ -525,9 +524,156 @@
     </section>
 
     <section id="servicosSection" class="section">
-      <h2>Prestadores de Serviços</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Conteúdo de serviços aqui.</div>
+      <div class="servicos">
+        <header class="servicos-hero">
+          <div>
+            <p class="servicos-hero__kicker">Serviços essenciais</p>
+            <h2>Prestadores de Serviços</h2>
+            <p class="servicos-hero__lead">
+              Encontre profissionais e empresas que mantêm Itapira funcionando: manutenção,
+              saúde, educação, transporte, utilidades e muito mais — tudo organizado por categoria.
+            </p>
+            <div class="servicos-hero__actions">
+              <a class="btn btn-primary comercios-cta" href="PainelLojista.html">
+                Quero anunciar meus serviços
+              </a>
+              <button class="btn btn-outline-light comercios-secondary" type="button" data-scroll-target="#servicosCategorias">
+                Ver categorias
+              </button>
+            </div>
+          </div>
+          <aside class="servicos-hero__panel" aria-label="Benefícios para a população">
+            <h3>O que você encontra aqui</h3>
+            <ul>
+              <li>Profissionais autônomos e empresas locais.</li>
+              <li>Serviços essenciais usados no dia a dia.</li>
+              <li>Contato rápido para orçamento e agendamento.</li>
+            </ul>
+            <div class="servicos-hero__tag">Foco em Itapira</div>
+          </aside>
+        </header>
+
+        <section id="servicosCategorias" class="servicos-categorias" aria-label="Categorias de serviços">
+          <header class="servicos-categorias__header">
+            <h3>Categorias mais procuradas</h3>
+            <p>Serviços essenciais e utilidades públicas/privadas para facilitar a vida da população.</p>
+          </header>
+
+          <div class="servicos-grid">
+            <article class="servico-card servico-card--featured">
+              <div class="servico-card__icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+              <div class="servico-card__body">
+                <h4>Reparos & Manutenção</h4>
+                <p>Eletricistas, encanadores, pedreiros, pintores, ar-condicionado e manutenção residencial.</p>
+                <ul class="servico-card__tags">
+                  <li>Urgências</li>
+                  <li>Residencial</li>
+                  <li>Comercial</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="servico-card">
+              <div class="servico-card__icon"><i class="fa-solid fa-briefcase-medical"></i></div>
+              <div class="servico-card__body">
+                <h4>Saúde & Bem-estar</h4>
+                <p>Clínicas, dentistas, psicólogos, fisioterapia, estética, academias e cuidados pessoais.</p>
+                <ul class="servico-card__tags">
+                  <li>Clínicas</li>
+                  <li>Estética</li>
+                  <li>Saúde</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="servico-card">
+              <div class="servico-card__icon"><i class="fa-solid fa-graduation-cap"></i></div>
+              <div class="servico-card__body">
+                <h4>Educação & Aulas</h4>
+                <p>Reforço escolar, idiomas, música, informática, cursos técnicos e capacitação profissional.</p>
+                <ul class="servico-card__tags">
+                  <li>Idiomas</li>
+                  <li>Reforço</li>
+                  <li>Cursos</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="servico-card">
+              <div class="servico-card__icon"><i class="fa-solid fa-truck"></i></div>
+              <div class="servico-card__body">
+                <h4>Transporte & Fretes</h4>
+                <p>Mototáxi, fretes, mudanças, transporte executivo, entregas e apoio logístico local.</p>
+                <ul class="servico-card__tags">
+                  <li>Fretes</li>
+                  <li>Entregas</li>
+                  <li>Mobilidade</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="servico-card">
+              <div class="servico-card__icon"><i class="fa-solid fa-bolt"></i></div>
+              <div class="servico-card__body">
+                <h4>Utilidades Essenciais</h4>
+                <p>Serviços ligados ao cotidiano: água, energia, internet, gás, limpeza e suporte técnico.</p>
+                <ul class="servico-card__tags">
+                  <li>Internet</li>
+                  <li>Limpeza</li>
+                  <li>Suporte</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="servico-card">
+              <div class="servico-card__icon"><i class="fa-solid fa-scale-balanced"></i></div>
+              <div class="servico-card__body">
+                <h4>Jurídico & Contábil</h4>
+                <p>Advogados, contadores, MEI, consultoria fiscal, regularização e apoio para negócios locais.</p>
+                <ul class="servico-card__tags">
+                  <li>MEI</li>
+                  <li>Fiscal</li>
+                  <li>Consultoria</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="servicos-destaques" aria-label="Destaques por perfil">
+          <article class="servicos-bloco">
+            <header>
+              <p class="servicos-bloco__kicker">Autônomos</p>
+              <h3>Profissionais independentes</h3>
+            </header>
+            <p>
+              Divulgue seus serviços, receba pedidos e orçamentos e seja encontrado por quem realmente
+              precisa do seu trabalho em Itapira.
+            </p>
+            <ul>
+              <li>Maior visibilidade local.</li>
+              <li>Contato rápido por WhatsApp.</li>
+              <li>Organização por categoria.</li>
+            </ul>
+          </article>
+
+          <article class="servicos-bloco">
+            <header>
+              <p class="servicos-bloco__kicker">Empresas</p>
+              <h3>Serviços especializados</h3>
+            </header>
+            <p>
+              Mostre autoridade, portfólio e diferenciais. Ideal para clínicas, oficinas, assistência técnica,
+              escritórios e prestadores com equipe.
+            </p>
+            <ul>
+              <li>Posicionamento profissional.</li>
+              <li>Mais confiança para o cliente.</li>
+              <li>Base pronta para escalar.</li>
+            </ul>
+          </article>
+        </section>
+      </div>
     </section>
 
     <section id="redeSocialSection" class="section">

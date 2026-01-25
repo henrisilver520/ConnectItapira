@@ -737,6 +737,7 @@ input, select, textarea, button { font-size: 16px; }
 }
 
 
+
 /* ===== Comércios Locais ===== */
 .comercios{
   display:flex;
@@ -1754,6 +1755,11 @@ body.modal-open{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:12px;
+}
+
+.store-field__hint{
+  color:var(--muted);
+  font-weight:700;
 }
 
 @media (max-width:1200px){

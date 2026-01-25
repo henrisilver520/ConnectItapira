@@ -33,7 +33,6 @@ const ACTIVE_BTN_MAP = {
   bairrosSection: "conhecaOBairroButton",
 };
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyA-7HOp-Ycvyf3b_03ev__8aJEwAbWSQZY",
   authDomain: "connectfamilia-312dc.firebaseapp.com",
@@ -253,6 +252,8 @@ async function loadStoreForDashboard() {
     setDashboardState("Não foi possível carregar os dados da loja agora.", "warning");
   }
 }
+
+
 function hideAllSections() {
   SECTION_IDS.forEach((id) => {
     const el = document.getElementById(id);
@@ -311,6 +312,7 @@ function bindTopbar() {
     alert("Logout: vamos conectar com Firebase depois.");
   });
 }
+
 function buildWhatsAppMessage({ store, product, price }) {
   return [
     `Olá, *${store}*!`,
@@ -558,15 +560,31 @@ async function saveServicosProfile(form) {
     return;
   }
 
+  const imageInput = form.querySelector('input[name="serviceImage"]');
+  const file = imageInput?.files?.[0];
+  if (!file) {
+    setServicosFormMessage("Envie uma foto do serviço realizado para continuar.", "error");
+    return;
+  }
+
   setServicosFormLoading(true);
-  setServicosFormMessage("Salvando seu anúncio de serviços...");
+  setServicosFormMessage("Processando imagem e salvando seu anúncio...");
 
   try {
+    const imageData = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(reader.error || new Error("Falha ao ler imagem."));
+      reader.readAsDataURL(file);
+    });
+
     await db.collection("users").doc(user.uid).set(
       {
         uid: user.uid,
         servicesProfile: {
           ...payload,
+          imageData,
+          imageName: file.name || "",
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         },
       },
@@ -669,6 +687,7 @@ function bindServicos() {
     saveServicosProfile(form);
   });
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();

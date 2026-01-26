@@ -113,9 +113,7 @@ function buildServiceCard(service) {
 
   return `
     <article class="service-card">
-      <div class="service-card__media">
-        <img src="${serviceImage}" alt="Foto do serviço ${service.title}">
-      </div>
+      
       <div class="service-card__header">
         <span class="service-card__category">${service.category}</span>
         ${service.priceFrom ? `<span class="service-card__category">A partir de ${moneyMask(service.priceFrom)}</span>` : ""}
@@ -123,6 +121,9 @@ function buildServiceCard(service) {
       <div class="service-card__title-row">
         <img class="service-card__avatar" src="${avatarUrl}" alt="Foto de perfil de ${service.title}">
         <h3 class="service-card__title">${service.title}</h3>
+      </div>
+      <div class="service-card__media">
+        <img src="${serviceImage}" alt="Foto do serviço ${service.title}">
       </div>
       <p class="service-card__desc">${service.description || "Sem descrição informada."}</p>
       <div class="service-card__meta">

@@ -701,8 +701,6 @@ function bindServicos() {
   });
 }
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   bindNavbar();

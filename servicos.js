@@ -278,9 +278,6 @@ function bindEvents() {
   document.getElementById("servicosAnunciarTop")?.addEventListener("click", () => {
     window.location.href = "index.html";
   });
-  document.getElementById("servicosAnunciarHero")?.addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

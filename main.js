@@ -798,6 +798,13 @@ document.addEventListener("DOMContentLoaded", () => {
   bindComercios();
   bindServicos();
   loadStoresFromFirestore();
+
+bindImoveis();
+bindImovelDetailsModal();
+bindImovelAnuncioModal();
+loadPropertiesFromFirestore();
+
+
   auth?.onAuthStateChanged(() => {
     loadStoreForDashboard();
     loadStoresFromFirestore();
@@ -926,4 +933,590 @@ async function guardSingleService() {
     return false;
   }
   return true;
+}
+
+
+// imoveis
+
+let propertiesCache = [];
+let activePropertyPurpose = "venda";
+let selectedProperty = null;
+
+// galeria
+let galleryIndex = 0;
+let galleryPhotos = [];
+
+const IMOVEL_FREE_LIMIT = 1;
+const ADMIN_UPSELL_MESSAGE_IMOVEIS =
+  "Você já possui 1 anúncio grátis. Para liberar mais anúncios, entre em contato com o ADM.";
+
+function formatBRL(value) {
+  const n = Number(value || 0);
+  if (!n) return "Sob consulta";
+  return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function onlyDigits(v) {
+  return String(v || "").replace(/\D/g, "");
+}
+
+function openModalById(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeModalById(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
+
+function buildMapUrl(p) {
+  // pode usar endereço completo (interno), mas o público vê parcial
+  const street = p.addressStreet || "";
+  const number = p.addressNumber || "";
+  const neighborhood = p.addressNeighborhood || "";
+  const city = p.addressCity || "Itapira";
+  const state = p.addressState || "SP";
+  const query = `${street} ${number}, ${neighborhood}, ${city} - ${state}`.trim();
+  const q = encodeURIComponent(query || `${neighborhood}, ${city} - ${state}`);
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
+function buildPublicAddress(p) {
+  // parcial por privacidade: rua + bairro + cidade/UF (sem número)
+  const street = p.addressStreet ? String(p.addressStreet).trim() : "";
+  const neighborhood = p.addressNeighborhood ? String(p.addressNeighborhood).trim() : "";
+  const city = p.addressCity ? String(p.addressCity).trim() : "Itapira";
+  const state = p.addressState ? String(p.addressState).trim() : "SP";
+
+  const a = [];
+  if (street) a.push(street);
+  if (neighborhood) a.push(neighborhood);
+  a.push(`${city} - ${state}`);
+  return a.join(" · ");
+}
+
+async function loadPropertiesFromFirestore() {
+  if (!db) return;
+
+  const grid = document.getElementById("imoveisGrid");
+  const count = document.getElementById("imoveisCount");
+  if (count) count.textContent = "Carregando imóveis...";
+  if (grid) grid.innerHTML = `<div class="imoveis-empty">Carregando imóveis...</div>`;
+
+  try {
+    const snap = await db
+      .collectionGroup("imoveis")
+      .where("isActive", "==", true)
+      .get();
+
+    propertiesCache = snap.docs.map((d) => ({ id: d.id, ...(d.data() || {}) }));
+    filterPropertiesByPurpose(activePropertyPurpose);
+  } catch (err) {
+    console.error("Erro ao carregar imóveis:", err);
+    if (count) count.textContent = "Não foi possível carregar os imóveis agora.";
+    if (grid) grid.innerHTML = `<div class="imoveis-empty">Não foi possível carregar os imóveis agora.</div>`;
+  }
+}
+
+function buildPropertyCard(p) {
+  const purposeLabel = (p.purpose || "venda") === "aluguel" ? "Aluguel" : "Venda";
+  const type = p.type || "Imóvel";
+  const title = p.title || `${type} em ${p.addressNeighborhood || "Itapira"}`;
+  const price = formatBRL(p.price);
+  const neighborhood = p.addressNeighborhood || "Bairro não informado";
+  const city = p.addressCity || "Itapira";
+
+  const beds = Number(p.bedrooms || 0);
+  const baths = Number(p.bathrooms || 0);
+  const garage = Number(p.parking || 0);
+  const area = Number(p.areaM2 || 0) ? `${Number(p.areaM2)} m²` : "Área n/d";
+
+  // primeira foto (se houver)
+  const cover = (p.photos && p.photos[0]) ? p.photos[0] : "";
+
+  return `
+    <article class="imovel-card" data-imovel-id="${p.id}">
+      <div class="imovel-cover" style="${cover ? `background-image:url('${cover}');background-size:cover;background-position:center;` : ""}">
+        <div class="imovel-badges">
+          <span class="imovel-badge is-purpose">${purposeLabel}</span>
+          <span class="imovel-badge">${type}</span>
+        </div>
+      </div>
+
+      <div class="imovel-body">
+        <p class="imovel-price">${price}</p>
+        <h4 class="imovel-title">${title}</h4>
+        <p class="imovel-loc"><i class="fas fa-map-marker-alt"></i> ${neighborhood} · ${city}</p>
+
+        <div class="imovel-features">
+          <span><i class="fas fa-ruler-combined"></i> ${area}</span>
+          <span><i class="fas fa-bed"></i> ${beds || "—"} dorm</span>
+          <span><i class="fas fa-bath"></i> ${baths || "—"} banh</span>
+          <span><i class="fas fa-car"></i> ${garage || "—"} vaga</span>
+        </div>
+      </div>
+
+      <div class="imovel-actions">
+        <button class="btn btn-outline-light js-imovel-details" type="button">
+          Ver detalhes
+        </button>
+        <button class="btn btn-success js-imovel-whats" type="button"
+          data-phone="${onlyDigits(p.whatsapp)}"
+          data-title="${encodeURIComponent(title)}">
+          WhatsApp
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function renderProperties(list) {
+  const grid = document.getElementById("imoveisGrid");
+  const count = document.getElementById("imoveisCount");
+  if (!grid || !count) return;
+
+  if (!list.length) {
+    count.textContent =
+      activePropertyPurpose === "aluguel"
+        ? "Nenhum imóvel para aluguel disponível agora."
+        : "Nenhum imóvel à venda disponível agora.";
+    grid.innerHTML = `<div class="imoveis-empty">${count.textContent}</div>`;
+    return;
+  }
+
+  count.textContent =
+    activePropertyPurpose === "aluguel"
+      ? `${list.length} imóvel(is) para aluguel`
+      : `${list.length} imóvel(is) à venda`;
+
+  grid.innerHTML = list.map(buildPropertyCard).join("");
+}
+
+function filterPropertiesByPurpose(purpose) {
+  activePropertyPurpose = purpose || "venda";
+  const filtered = propertiesCache.filter((p) => (p.purpose || "venda") === activePropertyPurpose);
+  renderProperties(filtered);
+}
+
+function setGallery(index) {
+  if (!galleryPhotos.length) return;
+  galleryIndex = Math.max(0, Math.min(index, galleryPhotos.length - 1));
+
+  const main = document.getElementById("imovelGalleryMain");
+  const thumbs = document.querySelectorAll(".imovel-gallery__thumb");
+  if (main) main.src = galleryPhotos[galleryIndex];
+
+  thumbs.forEach((t, i) => t.classList.toggle("is-active", i === galleryIndex));
+}
+
+function renderGallery(photos) {
+  galleryPhotos = Array.isArray(photos) ? photos.filter(Boolean) : [];
+  galleryIndex = 0;
+
+  const main = document.getElementById("imovelGalleryMain");
+  const thumbsWrap = document.getElementById("imovelGalleryThumbs");
+
+  if (!main || !thumbsWrap) return;
+
+  if (!galleryPhotos.length) {
+    main.src = "";
+    main.style.background = "rgba(2,6,23,.25)";
+    thumbsWrap.innerHTML = "";
+    return;
+  }
+
+  main.src = galleryPhotos[0];
+  thumbsWrap.innerHTML = galleryPhotos
+    .map(
+      (src, i) =>
+        `<img class="imovel-gallery__thumb ${i === 0 ? "is-active" : ""}" src="${src}" alt="Foto ${i + 1}" data-idx="${i}">`
+    )
+    .join("");
+
+  thumbsWrap.onclick = (e) => {
+    const img = e.target.closest(".imovel-gallery__thumb[data-idx]");
+    if (!img) return;
+    setGallery(Number(img.getAttribute("data-idx")));
+  };
+}
+
+function openImovelDetails(p) {
+  selectedProperty = p || null;
+  if (!selectedProperty) return;
+
+  const title = selectedProperty.title || "Detalhes do imóvel";
+  const purposeLabel = (selectedProperty.purpose || "venda") === "aluguel" ? "Aluguel" : "Venda";
+  const type = selectedProperty.type || "Imóvel";
+  const neighborhood = selectedProperty.addressNeighborhood || "";
+  const city = selectedProperty.addressCity || "Itapira";
+
+  document.getElementById("imovelDetailsTitle").textContent = title;
+  document.getElementById("imovelDetailsSub").textContent = `${type} · ${neighborhood} · ${city}`;
+
+  document.getElementById("imovelDetailsPrice").textContent = formatBRL(selectedProperty.price);
+
+  // badges
+  const badges = document.getElementById("imovelDetailsBadges");
+  badges.innerHTML = `
+    <span class="imovel-details__badge">${purposeLabel}</span>
+    <span class="imovel-details__badge">${type}</span>
+    ${Number(selectedProperty.areaM2 || 0) ? `<span class="imovel-details__badge">${selectedProperty.areaM2} m²</span>` : ""}
+  `;
+
+  // features
+  const f = document.getElementById("imovelDetailsFeatures");
+  const beds = Number(selectedProperty.bedrooms || 0);
+  const baths = Number(selectedProperty.bathrooms || 0);
+  const park = Number(selectedProperty.parking || 0);
+
+  f.innerHTML = `
+    <span><i class="fas fa-bed"></i> ${beds || "—"} dorm</span>
+    <span><i class="fas fa-bath"></i> ${baths || "—"} banh</span>
+    <span><i class="fas fa-car"></i> ${park || "—"} vaga</span>
+    <span><i class="fas fa-map-marker-alt"></i> ${selectedProperty.addressNeighborhood || "Local n/d"}</span>
+  `;
+
+  // descrição
+  document.getElementById("imovelDetailsDesc").textContent =
+    selectedProperty.description || "Sem descrição.";
+
+  // custos
+  document.getElementById("imovelDetailsCondo").textContent =
+    selectedProperty.condominiumFee ? formatBRL(selectedProperty.condominiumFee) : "—";
+  document.getElementById("imovelDetailsIPTU").textContent =
+    selectedProperty.iptuYear ? formatBRL(selectedProperty.iptuYear) : "—";
+
+  // endereço parcial
+  document.getElementById("imovelDetailsAddress").textContent = buildPublicAddress(selectedProperty);
+
+  // links
+  const mapLink = document.getElementById("imovelDetailsMap");
+  mapLink.href = buildMapUrl(selectedProperty);
+
+  const phone = onlyDigits(selectedProperty.whatsapp);
+  const whatsLink = document.getElementById("imovelDetailsWhats");
+  if (phone && phone.length >= 12) {
+    const msg = `Olá! Vi o imóvel "${title}" no ConnectIta. Pode me passar mais informações?`;
+    whatsLink.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    whatsLink.classList.remove("is-disabled");
+  } else {
+    whatsLink.href = "#";
+  }
+
+  // meta
+  const meta = document.getElementById("imovelDetailsMeta");
+  meta.textContent = selectedProperty.createdAt?.toDate
+    ? `Publicado em ${selectedProperty.createdAt.toDate().toLocaleDateString("pt-BR")}`
+    : "";
+
+  // galeria
+  renderGallery(selectedProperty.photos || []);
+
+  openModalById("imovelDetailsModal");
+}
+
+
+function bindImovelDetailsModal() {
+  const modal = document.getElementById("imovelDetailsModal");
+  if (!modal) return;
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-imovel-details]")) {
+      closeModalById("imovelDetailsModal");
+    }
+  });
+
+  document.getElementById("imovelGalleryPrev")?.addEventListener("click", () => {
+    if (!galleryPhotos.length) return;
+    setGallery(galleryIndex - 1);
+  });
+
+  document.getElementById("imovelGalleryNext")?.addEventListener("click", () => {
+    if (!galleryPhotos.length) return;
+    setGallery(galleryIndex + 1);
+  });
+}
+
+
+function setImovelFormMessage(text, type = "info") {
+  const el = document.getElementById("imovelFormMessage");
+  if (!el) return;
+  el.textContent = text || "";
+  el.classList.remove("is-error", "is-success");
+  if (type === "error") el.classList.add("is-error");
+  if (type === "success") el.classList.add("is-success");
+}
+
+function setImovelFormLoading(isLoading) {
+  const btn = document.getElementById("imovelFormSubmit");
+  if (!btn) return;
+  btn.disabled = isLoading;
+  btn.textContent = isLoading ? "Publicando..." : "Publicar anúncio";
+}
+
+async function canUserCreateImovel() {
+  if (!auth || !db) throw new Error("Firebase não carregado.");
+  const user = auth.currentUser;
+  if (!user) throw new Error("Você precisa estar logado para anunciar.");
+
+  const snap = await db.collection("users").doc(user.uid).collection("imoveis").get();
+  // limite 1 grátis
+  return snap.size < IMOVEL_FREE_LIMIT;
+}
+
+async function readPhotosAsBase64(files, maxPhotos = 6) {
+  const arr = Array.from(files || []).slice(0, maxPhotos);
+  if (!arr.length) return [];
+
+  const results = [];
+  for (const f of arr) {
+    if (!f.type.startsWith("image/")) throw new Error("Envie apenas imagens nas fotos.");
+    if (f.size > 1024 * 1024) throw new Error("Cada foto deve ter no máximo 1MB.");
+
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("Falha ao ler uma das fotos."));
+      reader.readAsDataURL(f);
+    });
+
+    if (!dataUrl.startsWith("data:image/")) throw new Error("Foto inválida.");
+    results.push(dataUrl);
+  }
+
+  return results;
+}
+
+function previewImovelPhotos(base64List) {
+  const wrap = document.getElementById("imovelPhotosPreview");
+  if (!wrap) return;
+  wrap.innerHTML = (base64List || []).map((src) => `<img src="${src}" alt="Prévia">`).join("");
+}
+
+function getImovelPayload(form, photosBase64) {
+  const data = new FormData(form);
+
+  const purpose = String(data.get("purpose") || "").trim();
+  const type = String(data.get("type") || "").trim();
+  const title = String(data.get("title") || "").trim();
+  const description = String(data.get("description") || "").trim();
+
+  const price = Number(data.get("price") || 0);
+  const condominiumFee = Number(data.get("condominiumFee") || 0);
+  const iptuYear = Number(data.get("iptuYear") || 0);
+
+  const areaM2 = Number(data.get("areaM2") || 0);
+  const bedrooms = Number(data.get("bedrooms") || 0);
+  const bathrooms = Number(data.get("bathrooms") || 0);
+  const parking = Number(data.get("parking") || 0);
+
+  const whatsapp = onlyDigits(data.get("whatsapp"));
+
+  const addressStreet = String(data.get("addressStreet") || "").trim();
+  const addressNumber = String(data.get("addressNumber") || "").trim();
+  const addressNeighborhood = String(data.get("addressNeighborhood") || "").trim();
+  const addressCity = String(data.get("addressCity") || "Itapira").trim();
+  const addressState = String(data.get("addressState") || "SP").trim();
+  const addressCep = String(data.get("addressCep") || "").trim();
+  const addressComplement = String(data.get("addressComplement") || "").trim();
+
+  return {
+    isActive: true,
+    purpose,
+    type,
+    title,
+    description,
+
+    price,
+    condominiumFee: condominiumFee || null,
+    iptuYear: iptuYear || null,
+
+    areaM2,
+    bedrooms,
+    bathrooms,
+    parking,
+
+    whatsapp,
+
+    addressStreet,
+    addressNumber, // não exibido publicamente
+    addressNeighborhood,
+    addressCity,
+    addressState,
+    addressCep: addressCep || null,
+    addressComplement: addressComplement || null,
+
+    photos: photosBase64 || [],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+}
+
+function validateImovelPayload(p) {
+  if (!p.purpose || !p.type || !p.title || !p.description) return "Preencha finalidade, tipo, título e descrição.";
+  if (!p.price || p.price <= 0) return "Informe um preço válido.";
+  if (!p.areaM2 || p.areaM2 <= 0) return "Informe uma área válida (m²).";
+  if (p.bedrooms < 0 || p.bathrooms < 0 || p.parking < 0) return "Quartos/banheiros/vagas inválidos.";
+  if (!p.whatsapp || p.whatsapp.length < 12) return "Informe WhatsApp com DDI e DDD. Ex: 5511999990000.";
+  if (!p.addressStreet || !p.addressNeighborhood || !p.addressCity || !p.addressState)
+    return "Preencha rua, bairro, cidade e estado.";
+  if (!Array.isArray(p.photos) || p.photos.length < 1) return "Envie pelo menos 1 foto do imóvel.";
+  return "";
+}
+
+async function saveImovel(form) {
+  if (!auth || !db) {
+    setImovelFormMessage("Firebase não foi carregado corretamente.", "error");
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    setImovelFormMessage("Você precisa estar logado para anunciar.", "error");
+    return;
+  }
+
+  // Limite 1 anúncio grátis
+  let allowed = false;
+  try {
+    allowed = await canUserCreateImovel();
+  } catch (err) {
+    setImovelFormMessage(err?.message || "Não foi possível validar sua conta agora.", "error");
+    return;
+  }
+
+  if (!allowed) {
+    setImovelFormMessage(ADMIN_UPSELL_MESSAGE_IMOVEIS, "error");
+    return;
+  }
+
+  setImovelFormLoading(true);
+  setImovelFormMessage("Processando fotos e publicando anúncio...");
+
+  try {
+    const files = form.querySelector("#imovelPhotos")?.files;
+    const photosBase64 = await readPhotosAsBase64(files, 6);
+    previewImovelPhotos(photosBase64);
+
+    const payload = getImovelPayload(form, photosBase64);
+    const err = validateImovelPayload(payload);
+    if (err) {
+      setImovelFormMessage(err, "error");
+      setImovelFormLoading(false);
+      return;
+    }
+
+    const ref = db.collection("users").doc(user.uid).collection("imoveis").doc();
+    await ref.set({
+      ...payload,
+      ownerUid: user.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+
+    setImovelFormMessage("Anúncio publicado com sucesso!", "success");
+    form.reset();
+    previewImovelPhotos([]);
+    setTimeout(() => closeModalById("imovelAnuncioModal"), 900);
+
+    // recarrega a lista
+    loadPropertiesFromFirestore();
+  } catch (err) {
+    console.error("Erro ao salvar imóvel:", err);
+    setImovelFormMessage(err?.message || "Não foi possível publicar agora. Tente novamente.", "error");
+  } finally {
+    setImovelFormLoading(false);
+  }
+}
+
+
+function bindImovelAnuncioModal() {
+  const modal = document.getElementById("imovelAnuncioModal");
+  if (!modal) return;
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-imovel-anuncio]")) {
+      closeModalById("imovelAnuncioModal");
+    }
+  });
+
+  const form = document.getElementById("imovelForm");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveImovel(form);
+  });
+
+  document.getElementById("imovelPhotos")?.addEventListener("change", async (e) => {
+    try {
+      const files = e.target.files;
+      const photosBase64 = await readPhotosAsBase64(files, 6);
+      previewImovelPhotos(photosBase64);
+      setImovelFormMessage(`${photosBase64.length} foto(s) selecionada(s).`);
+    } catch (err) {
+      previewImovelPhotos([]);
+      setImovelFormMessage(err?.message || "Falha ao processar fotos.", "error");
+      e.target.value = "";
+    }
+  });
+}
+
+
+function bindImoveis() {
+  const section = document.getElementById("imoveisSection");
+  if (!section) return;
+
+  section.addEventListener("click", (e) => {
+    const tab = e.target.closest(".imoveis-tab[data-purpose]");
+    if (tab) {
+      document.querySelectorAll(".imoveis-tab").forEach((b) => b.classList.remove("is-active"));
+      tab.classList.add("is-active");
+      filterPropertiesByPurpose(tab.getAttribute("data-purpose"));
+      return;
+    }
+
+    const detailsBtn = e.target.closest(".js-imovel-details");
+    if (detailsBtn) {
+      const card = detailsBtn.closest(".imovel-card");
+      const id = card?.getAttribute("data-imovel-id");
+      const prop = propertiesCache.find((p) => p.id === id);
+      if (prop) openImovelDetails(prop);
+      return;
+    }
+
+    const whatsBtn = e.target.closest(".js-imovel-whats");
+    if (whatsBtn) {
+      const phone = whatsBtn.getAttribute("data-phone") || "";
+      const title = decodeURIComponent(whatsBtn.getAttribute("data-title") || "");
+      if (!phone || phone.length < 12) {
+        alert("WhatsApp do anunciante não informado.");
+        return;
+      }
+      const msg = `Olá! Vi o imóvel "${title}" no ConnectIta. Pode me passar mais informações?`;
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+      return;
+    }
+  });
+
+  document.getElementById("anunciarImovelBtn")?.addEventListener("click", async () => {
+    if (!auth?.currentUser) {
+      alert("Você precisa estar logado para anunciar.");
+      return;
+    }
+    // checa limite antes de abrir
+    try {
+      const ok = await canUserCreateImovel();
+      if (!ok) {
+        alert(ADMIN_UPSELL_MESSAGE_IMOVEIS);
+        return;
+      }
+      openModalById("imovelAnuncioModal");
+    } catch (err) {
+      alert(err?.message || "Não foi possível validar sua conta agora.");
+    }
+  });
 }

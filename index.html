@@ -41,7 +41,7 @@
       </button>
 
       <button id="anunciarImoveisButton" class="btn btn-primary glow-on-hover" type="button" data-target="imoveisSection">
-        <i class="fas fa-home"></i> Anunciar Imóveis
+        <i class="fas fa-home"></i> Imoveis Disponiveis
       </button>
 
       <button id="eventosCity" class="btn btn-primary glow-on-hover" type="button" data-target="eventosSection">
@@ -254,6 +254,10 @@
           </header>
           <div id="storesGrid" class="stores-grid"></div>
         </section>
+
+        <div class="section-note">
+        AVISO! A plataforma nao se responsabiliza por Serviços mal prestado e nao tem vinculo com nenhum usuario cadastrado no sistema!
+      </div>
 
         <section class="comercios-grid" aria-label="Lista de produtos">
           <article class="commerce-card commerce-card--featured">
@@ -525,11 +529,43 @@
       </div>
     </section>
 
-    <section id="imoveisSection" class="section">
-      <h2>Anunciar Imóveis</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Conteúdo de imóveis aqui.</div>
-    </section>
+    <section id="imoveisSection" class="section imoveis-section">
+  <div class="imoveis-shell">
+
+    <header class="imoveis-header">
+      <div class="imoveis-title">
+        <h2>Imóveis</h2>
+        <p class="imoveis-subtitle">Encontre imóveis disponíveis para compra ou aluguel em Itapira.</p>
+      </div>
+
+      <div class="imoveis-cta">
+        <button id="anunciarImovelBtn" class="btn btn-primary glow-on-hover" type="button">
+          <i class="fas fa-bullhorn"></i> Anunciar imóvel
+        </button>
+      </div>
+    </header>
+
+    <div class="imoveis-tabs" role="tablist" aria-label="Tipo de anúncio">
+      <button class="imoveis-tab is-active" type="button" data-purpose="venda" role="tab" aria-selected="true">
+        <i class="fas fa-tag"></i> À venda
+      </button>
+      <button class="imoveis-tab" type="button" data-purpose="aluguel" role="tab" aria-selected="false">
+        <i class="fas fa-key"></i> Aluguel
+      </button>
+
+      <div class="imoveis-count" id="imoveisCount">Carregando imóveis...</div>
+    </div>
+
+    <div class="imoveis-grid" id="imoveisGrid">
+      <!-- Cards renderizados via JS -->
+    </div>
+
+  </div>
+
+
+  
+</section>
+
 
     <section id="eventosSection" class="section">
       <h2>Eventos</h2>
@@ -708,8 +744,212 @@
       <p>Seção vazia.</p>
       <div class="placeholder">Bairros aqui.</div>
     </section>
+
+
+    <div id="imovelDetailsModal" class="ti-modal" aria-hidden="true">
+  <div class="ti-modal__backdrop" data-close-imovel-details></div>
+
+  <div class="ti-modal__panel ti-modal__panel--wide" role="dialog" aria-modal="true" aria-label="Detalhes do imóvel">
+    <header class="ti-modal__header">
+      <div>
+        <p class="ti-modal__kicker">Detalhes do imóvel</p>
+        <h3 id="imovelDetailsTitle" class="ti-modal__title">Carregando...</h3>
+        <p id="imovelDetailsSub" class="ti-modal__lead"></p>
+      </div>
+      <button class="ti-modal__close" type="button" aria-label="Fechar" data-close-imovel-details>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <div class="ti-modal__body">
+      <!-- Galeria -->
+      <div class="imovel-gallery">
+        <button class="imovel-gallery__nav" type="button" id="imovelGalleryPrev" aria-label="Foto anterior">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <img id="imovelGalleryMain" class="imovel-gallery__main" alt="Foto do imóvel" />
+
+        <button class="imovel-gallery__nav" type="button" id="imovelGalleryNext" aria-label="Próxima foto">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <div id="imovelGalleryThumbs" class="imovel-gallery__thumbs"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="imovel-details">
+        <div class="imovel-details__top">
+          <div>
+            <p id="imovelDetailsPrice" class="imovel-details__price"></p>
+            <div id="imovelDetailsBadges" class="imovel-details__badges"></div>
+          </div>
+
+          <div class="imovel-details__cta">
+            <a id="imovelDetailsMap" class="btn btn-outline-light" href="#" target="_blank" rel="noopener">
+              <i class="fa-solid fa-map-location-dot"></i> Ver no mapa
+            </a>
+            <a id="imovelDetailsWhats" class="btn btn-success" href="#" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div id="imovelDetailsFeatures" class="imovel-details__features"></div>
+
+        <div class="imovel-details__grid">
+          <div class="imovel-details__box">
+            <h4>Descrição</h4>
+            <p id="imovelDetailsDesc" class="imovel-details__text"></p>
+          </div>
+
+          <div class="imovel-details__box">
+            <h4>Custos</h4>
+            <ul class="imovel-details__list">
+              <li><strong>Condomínio:</strong> <span id="imovelDetailsCondo">—</span></li>
+              <li><strong>IPTU (ano):</strong> <span id="imovelDetailsIPTU">—</span></li>
+            </ul>
+
+            <h4 style="margin-top:12px;">Localização (parcial)</h4>
+            <p id="imovelDetailsAddress" class="imovel-details__text"></p>
+            <p class="imovel-details__hint">* Endereço parcial por privacidade do anunciante.</p>
+          </div>
+        </div>
+
+        <p id="imovelDetailsMeta" class="imovel-details__meta"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="imovelAnuncioModal" class="ti-modal" aria-hidden="true">
+  <div class="ti-modal__backdrop" data-close-imovel-anuncio></div>
+
+  <div class="ti-modal__panel ti-modal__panel--wide" role="dialog" aria-modal="true" aria-label="Anunciar imóvel">
+    <header class="ti-modal__header">
+      <div>
+        <p class="ti-modal__kicker">Anúncio de imóvel</p>
+        <h3 class="ti-modal__title">Anunciar para venda ou aluguel</h3>
+        <p class="ti-modal__lead">Você pode cadastrar <strong>1 anúncio grátis</strong>. Para liberar mais, fale com o ADM.</p>
+      </div>
+      <button class="ti-modal__close" type="button" aria-label="Fechar" data-close-imovel-anuncio>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <form id="imovelForm" class="imovel-form">
+      <div class="imovel-form__grid">
+
+        <label class="store-field">
+          <span>Finalidade</span>
+          <select name="purpose" required>
+            <option value="">Selecione</option>
+            <option value="venda">Venda</option>
+            <option value="aluguel">Aluguel</option>
+          </select>
+        </label>
+
+        <label class="store-field">
+          <span>Tipo</span>
+          <select name="type" required>
+            <option value="">Selecione</option>
+            <option>Casa</option>
+            <option>Apartamento</option>
+            <option>Terreno</option>
+            <option>Sobrado</option>
+            <option>Chácara/Sítio</option>
+            <option>Comercial</option>
+            <option>Kitnet</option>
+            <option>Outro</option>
+          </select>
+        </label>
+
+        <label class="store-field store-field--full">
+          <span>Título do anúncio</span>
+          <input name="title" type="text" placeholder="Ex: Casa térrea com quintal" required />
+        </label>
+
+        <label class="store-field store-field--full">
+          <span>Descrição completa</span>
+          <textarea name="description" rows="4" placeholder="Detalhe pontos fortes, acabamento, localização (sem nº), etc." required></textarea>
+        </label>
+
+        <label class="store-field">
+          <span>Preço (R$)</span>
+          <input name="price" type="number" min="0" step="1" placeholder="Ex: 350000" required />
+        </label>
+
+        <label class="store-field">
+          <span>Condomínio (R$) (opcional)</span>
+          <input name="condominiumFee" type="number" min="0" step="1" placeholder="Ex: 450" />
+        </label>
+
+        <label class="store-field">
+          <span>IPTU anual (R$) (opcional)</span>
+          <input name="iptuYear" type="number" min="0" step="1" placeholder="Ex: 1200" />
+        </label>
+
+        <label class="store-field">
+          <span>Área (m²)</span>
+          <input name="areaM2" type="number" min="0" step="1" placeholder="Ex: 120" required />
+        </label>
+
+        <label class="store-field">
+          <span>Dormitórios</span>
+          <input name="bedrooms" type="number" min="0" step="1" placeholder="Ex: 3" required />
+        </label>
+
+        <label class="store-field">
+          <span>Banheiros</span>
+          <input name="bathrooms" type="number" min="0" step="1" placeholder="Ex: 2" required />
+        </label>
+
+        <label class="store-field">
+          <span>Vagas</span>
+          <input name="parking" type="number" min="0" step="1" placeholder="Ex: 2" required />
+        </label>
+
+        <label class="store-field">
+          <span>WhatsApp (DDI+DDD)</span>
+          <input name="whatsapp" type="tel" placeholder="5511999990000" required />
+        </label>
+
+        <div class="store-field store-field--full">
+          <span><strong>Endereço (parcial)</strong> — não exibiremos o número publicamente</span>
+          <div class="imovel-form__addr">
+            <input name="addressStreet" type="text" placeholder="Rua/Avenida (sem nº no público)" required />
+            <input name="addressNumber" type="text" placeholder="Número (não público)" />
+            <input name="addressNeighborhood" type="text" placeholder="Bairro" required />
+            <input name="addressCity" type="text" value="Itapira" required />
+            <input name="addressState" type="text" value="SP" required />
+            <input name="addressCep" type="text" placeholder="CEP (opcional)" />
+            <input name="addressComplement" type="text" placeholder="Complemento (opcional)" />
+          </div>
+          <small class="muted">O mapa pode usar o endereço completo, mas o público verá apenas rua/bairro/cidade.</small>
+        </div>
+
+        <div class="store-field store-field--full">
+          <span>Fotos do imóvel (até 6 · máx. 1MB cada)</span>
+          <input id="imovelPhotos" name="photos" type="file" accept="image/*" multiple required />
+          <div id="imovelPhotosPreview" class="imovel-photos-preview"></div>
+        </div>
+      </div>
+
+      <div class="store-form__actions">
+        <p id="imovelFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
+        <button id="imovelFormSubmit" class="btn btn-primary glow-on-hover" type="submit">
+          Publicar anúncio
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
   </main>
 
+
+  
 
     <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>

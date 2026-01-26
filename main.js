@@ -452,17 +452,6 @@ function closeServicosModal() {
   document.body.classList.remove("modal-open");
 }
 
-function getStorePayload(form) {
-  const data = new FormData(form);
-  return {
-    name: String(data.get("storeName") || "").trim(),
-    category: String(data.get("storeCategory") || "").trim(),
-    whatsapp: String(data.get("storeWhatsApp") || "").replace(/\D/g, ""),
-    fulfillment: String(data.get("storeFulfillment") || "").trim(),
-    description: String(data.get("storeDescription") || "").trim(),
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-  };
-}
 
 function validateStorePayload(payload) {
   if (!payload.name || !payload.category || !payload.whatsapp || !payload.fulfillment || !payload.description) {
@@ -485,6 +474,19 @@ async function saveStoreToFirestore(form) {
     setTimeout(() => (window.location.href = "login.html"), 1200);
     return;
   }
+
+  // trava criação de 2ª loja
+try {
+  const profile = await getUserProfileDoc();
+  if (hasStore(profile)) {
+    setStoreFormMessage(ADMIN_UPSELL_MESSAGE, "error");
+    return;
+  }
+} catch (err) {
+  setStoreFormMessage(err?.message || "Não foi possível validar sua conta agora.", "error");
+  return;
+}
+
 
   let payload;
   try {
@@ -602,6 +604,17 @@ async function saveServicosProfile(form) {
     }, 1200);
     return;
   }
+// trava criação de 2º serviço
+try {
+  const profile = await getUserProfileDoc();
+  if (hasService(profile)) {
+    setServicosFormMessage(ADMIN_UPSELL_MESSAGE, "error");
+    return;
+  }
+} catch (err) {
+  setServicosFormMessage(err?.message || "Não foi possível validar sua conta agora.", "error");
+  return;
+}
 
   const payload = getServicosPayload(form);
   const validationError = validateServicosPayload(payload);
@@ -674,10 +687,18 @@ function bindComercios() {
     }
 
     const createStoreBtn = e.target.closest("#createStoreBtn");
-    if (createStoreBtn) {
-      openStoreModal();
-      return;
+   if (createStoreBtn) {
+  (async () => {
+    try {
+      const ok = await guardSingleStore();
+      if (ok) openStoreModal();
+    } catch (err) {
+      alert(err?.message || "Não foi possível validar sua conta agora.");
     }
+  })();
+  return;
+}
+
 
     const scrollBtn = e.target.closest("[data-scroll-target]");
     if (!scrollBtn) return;
@@ -700,7 +721,14 @@ function bindComercios() {
   });
 
   const openModalBtn = document.getElementById("createStoreBtn");
-  openModalBtn?.addEventListener("click", openStoreModal);
+openModalBtn?.addEventListener("click", async () => {
+  try {
+    const ok = await guardSingleStore();
+    if (ok) openStoreModal();
+  } catch (err) {
+    alert(err?.message || "Não foi possível validar sua conta agora.");
+  }
+});
 
   const modal = document.getElementById("storeModal");
   modal?.addEventListener("click", (e) => {
@@ -721,7 +749,14 @@ function bindComercios() {
   });
 
   document.getElementById("storeDashboardRefresh")?.addEventListener("click", loadStoreForDashboard);
-  document.getElementById("storeDashboardOpenModal")?.addEventListener("click", openStoreModal);
+document.getElementById("storeDashboardOpenModal")?.addEventListener("click", async () => {
+  try {
+    const ok = await guardSingleStore();
+    if (ok) openStoreModal();
+  } catch (err) {
+    alert(err?.message || "Não foi possível validar sua conta agora.");
+  }
+});
 }
 
 function bindServicos() {
@@ -729,7 +764,14 @@ function bindServicos() {
   if (!servicosSection) return;
 
   const announceBtn = document.getElementById("announceServiceBtn");
-  announceBtn?.addEventListener("click", openServicosModal);
+announceBtn?.addEventListener("click", async () => {
+  try {
+    const ok = await guardSingleService();
+    if (ok) openServicosModal();
+  } catch (err) {
+    alert(err?.message || "Não foi possível validar sua conta agora.");
+  }
+});
 
   const verCategoriasBtn = document.getElementById("verCategoriasServicosBtn");
   verCategoriasBtn?.addEventListener("click", () => {
@@ -844,4 +886,44 @@ function fillStoreCategories() {
     opt.textContent = cat;
     select.appendChild(opt);
   });
+}
+
+
+const ADMIN_UPSELL_MESSAGE =
+  "Você já possui um cadastro ativo. Para liberar 2ª loja/2º serviço, entre em contato com o ADM.";
+
+async function getUserProfileDoc() {
+  if (!auth || !db) throw new Error("Firebase não carregado.");
+  const user = auth.currentUser;
+  if (!user) throw new Error("Usuário não logado.");
+  const snap = await db.collection("users").doc(user.uid).get();
+  return snap.exists ? (snap.data() || {}) : {};
+}
+
+function hasStore(profile) {
+  const s = profile?.store;
+  return !!(s && s.name); // considera loja existente se tiver nome
+}
+
+function hasService(profile) {
+  const sp = profile?.servicesProfile;
+  return !!(sp && sp.title); // considera serviço existente se tiver título
+}
+
+async function guardSingleStore() {
+  const profile = await getUserProfileDoc();
+  if (hasStore(profile)) {
+    alert(ADMIN_UPSELL_MESSAGE);
+    return false;
+  }
+  return true;
+}
+
+async function guardSingleService() {
+  const profile = await getUserProfileDoc();
+  if (hasService(profile)) {
+    alert(ADMIN_UPSELL_MESSAGE);
+    return false;
+  }
+  return true;
 }

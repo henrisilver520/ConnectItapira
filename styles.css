@@ -1181,8 +1181,8 @@ input, select, textarea, button { font-size: 16px; }
 
 /* Logo container (quadrado, consistente) */
 .store-card__logo-wrap{
-  width:54px;
-  height:54px;
+  width:150px;
+  height:150px;
   border-radius:14px;
   border:1px solid rgba(148,163,184,.20);
   background:rgba(2,6,23,.35);
@@ -1195,8 +1195,8 @@ input, select, textarea, button { font-size: 16px; }
 
 @media (max-width: 640px){
   .store-card__logo-wrap{
-    width:48px;
-    height:48px;
+    width:150px;
+    height:150px;
     border-radius:12px;
   }
 }

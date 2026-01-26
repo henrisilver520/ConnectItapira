@@ -477,9 +477,12 @@
                   <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
                 </label>
                 <label class="store-field">
-                  <span>Categoria principal</span>
-                  <input type="text" name="storeCategory" placeholder="Ex: Alimentação" required />
-                </label>
+  <span>Categoria principal</span>
+  <select name="storeCategory" id="storeCategory" required>
+    <option value="">Selecione uma categoria</option>
+  </select>
+</label>
+
                 <label class="store-field">
                   <span>WhatsApp do vendedor</span>
                   <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />

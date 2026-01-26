@@ -464,7 +464,6 @@ function validateStorePayload(payload) {
   }
   return "";
 }
-
 async function saveStoreToFirestore(form) {
   if (!auth || !db) {
     setStoreFormMessage("Firebase não foi carregado corretamente.", "error");
@@ -474,13 +473,18 @@ async function saveStoreToFirestore(form) {
   const user = auth.currentUser;
   if (!user) {
     setStoreFormMessage("Você precisa estar logado para criar sua loja.", "error");
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
+    setTimeout(() => (window.location.href = "login.html"), 1200);
     return;
   }
 
-  const payload = getStorePayload(form);
+  let payload;
+  try {
+    payload = await getStorePayload(form); // <-- AQUI
+  } catch (err) {
+    setStoreFormMessage(err?.message || "Falha ao processar logo.", "error");
+    return;
+  }
+
   const validationError = validateStorePayload(payload);
   if (validationError) {
     setStoreFormMessage(validationError, "error");
@@ -735,22 +739,21 @@ function bindServicos() {
     saveServicosProfile(form);
   });
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
+  fillStoreCategories(); // <-- AQUI
   bindNavbar();
   bindTopbar();
   bindComercios();
   bindServicos();
   loadStoresFromFirestore();
-  fillStoreCategories()
-
   auth?.onAuthStateChanged(() => {
     loadStoreForDashboard();
     loadStoresFromFirestore();
   });
   openHome();
 });
+
 
 // Se você ainda tiver código antigo chamando toggleSection("..."),
 // esta função mantém compatibilidade:
@@ -818,4 +821,18 @@ function fillStoreCategories() {
     option.textContent = cat
     select.appendChild(option)
   })
+}
+
+
+function fillStoreCategories() {
+  const select = document.querySelector('select[name="storeCategory"]');
+  if (!select) return;
+
+  select.innerHTML = `<option value="">Selecione uma categoria</option>`;
+  STORE_CATEGORIES.forEach((cat) => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
 }

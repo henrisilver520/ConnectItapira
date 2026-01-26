@@ -305,6 +305,21 @@ a{color:inherit;}
   transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
+.service-card__media{
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(14,165,233,.18);
+  background:var(--surface-soft);
+  aspect-ratio:16/9;
+}
+
+.service-card__media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
 .service-card:hover{
   transform:translateY(-4px);
   border-color:rgba(14,165,233,.4);
@@ -333,6 +348,21 @@ a{color:inherit;}
   font-size:1.08rem;
   font-weight:900;
   letter-spacing:-.01em;
+}
+
+.service-card__title-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.service-card__avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:2px solid rgba(14,165,233,.3);
+  object-fit:cover;
+  background:var(--surface-soft);
 }
 
 .service-card__desc{

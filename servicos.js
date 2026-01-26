@@ -104,14 +104,26 @@ function renderEmpty(message) {
 function buildServiceCard(service) {
   const whatsappLink = buildWhatsAppLink(service);
   const areaLabel = service.area ? `Área: ${service.area}` : "Área não informada";
+  const avatarUrl =
+    service.profilePhotoURL ||
+    "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=300&auto=format&fit=crop";
+  const serviceImage =
+    service.imageData ||
+    "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop";
 
   return `
     <article class="service-card">
+      <div class="service-card__media">
+        <img src="${serviceImage}" alt="Foto do serviço ${service.title}">
+      </div>
       <div class="service-card__header">
         <span class="service-card__category">${service.category}</span>
         ${service.priceFrom ? `<span class="service-card__category">A partir de ${moneyMask(service.priceFrom)}</span>` : ""}
       </div>
-      <h3 class="service-card__title">${service.title}</h3>
+      <div class="service-card__title-row">
+        <img class="service-card__avatar" src="${avatarUrl}" alt="Foto de perfil de ${service.title}">
+        <h3 class="service-card__title">${service.title}</h3>
+      </div>
       <p class="service-card__desc">${service.description || "Sem descrição informada."}</p>
       <div class="service-card__meta">
         <span><i class="fa-solid fa-location-dot"></i> ${areaLabel}</span>
@@ -224,6 +236,7 @@ async function loadServices() {
         if (!profile?.title || !profile?.category) return null;
         return {
           uid: doc.id,
+          profilePhotoURL: doc.data()?.profilePhotoURL || "",
           ...profile,
           updatedLabel: formatRelativeDate(profile.updatedAt),
         };

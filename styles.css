@@ -1117,60 +1117,111 @@ input, select, textarea, button { font-size: 16px; }
 .comercios-cta--wide{
   padding:13px 22px;
 }
-
-.stores-section{
-  border:1px solid rgba(148,163,184,.16);
-  border-radius:22px;
-  padding:20px;
-  background:rgba(15,23,42,.66);
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
-.stores-section__header{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:8px 12px;
-}
-
-.stores-section__header h3{
-  margin:0;
-  font-size:1.1rem;
-  font-weight:900;
-}
-
-.stores-section__count{
-  margin:0;
-  color:var(--muted);
-  font-weight:700;
-}
-
+/* ===== GRID RESPONSIVO ===== */
 .stores-grid{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(3, minmax(0, 1fr));
   gap:12px;
 }
 
+@media (max-width: 980px){
+  .stores-grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px){
+  .stores-section{
+    padding:14px;
+    border-radius:18px;
+  }
+
+  .stores-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+}
+
+/* ===== STORE CARD ===== */
 .store-card{
   border:1px solid rgba(148,163,184,.18);
   border-radius:18px;
-  padding:14px;
   background:rgba(15,23,42,.78);
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:10px;
+  padding:14px;
   box-shadow:0 16px 28px rgba(15,23,42,.35);
   transition:transform .2s ease, border-color .2s ease;
+  overflow:hidden;
 }
 
-.store-card:hover{
-  transform:translateY(-3px);
-  border-color:rgba(56,189,248,.55);
+@media (max-width: 640px){
+  .store-card{
+    padding:12px;
+    border-radius:16px;
+    gap:8px;
+  }
 }
 
+/* ===== HEADER COM LOGO ===== */
+.store-card__top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.store-card__head{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+
+/* Logo container (quadrado, consistente) */
+.store-card__logo-wrap{
+  width:54px;
+  height:54px;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,.20);
+  background:rgba(2,6,23,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  overflow:hidden;
+}
+
+@media (max-width: 640px){
+  .store-card__logo-wrap{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+  }
+}
+
+/* Imagem do logo */
+.store-card__logo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* Placeholder se não tiver logo */
+.store-card__logo.placeholder{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.78rem;
+  font-weight:900;
+  color:rgba(226,232,240,.75);
+}
+
+/* Categoria menor no mobile */
 .store-card__category{
   align-self:flex-start;
   padding:6px 10px;
@@ -1180,37 +1231,86 @@ input, select, textarea, button { font-size: 16px; }
   background:rgba(14,165,233,.14);
   font-weight:800;
   font-size:.78rem;
+  white-space:nowrap;
 }
 
+@media (max-width: 640px){
+  .store-card__category{
+    font-size:.74rem;
+    padding:5px 9px;
+  }
+}
+
+/* Nome sem estourar */
 .store-card__name{
   margin:0;
   font-size:1.05rem;
   font-weight:900;
   letter-spacing:-.01em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
+@media (max-width: 640px){
+  .store-card__name{
+    font-size:1rem;
+  }
+}
+
+/* Descrição mais contida e legível */
 .store-card__desc{
   margin:0;
   color:#e5e7eb;
-  min-height:44px;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  min-height:auto;
 }
 
+@media (max-width: 640px){
+  .store-card__desc{
+    -webkit-line-clamp:2;
+  }
+}
+
+/* Meta “quebra” bem */
 .store-card__meta{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
+  gap:8px 10px;
   color:#cbd5e1;
   font-weight:700;
   font-size:.92rem;
 }
 
+/* Ações: no mobile vira 2 colunas (sem ficar gigante) */
 .store-card__actions{
   margin-top:auto;
-  display:flex;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:8px;
 }
 
+@media (min-width: 641px){
+  .store-card__actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+}
+
+.store-card__actions .btn,
+.store-card__actions a.btn{
+  width:100%;
+  justify-content:center;
+  text-align:center;
+  white-space:nowrap;
+}
+
+/* Estado vazio mantém padrão */
 .store-card__empty{
   border:1px dashed rgba(148,163,184,.32);
   border-radius:16px;
@@ -1219,6 +1319,7 @@ input, select, textarea, button { font-size: 16px; }
   font-weight:700;
   background:rgba(15,23,42,.55);
 }
+
 
 .store-dashboard{
   border:1px solid rgba(148,163,184,.16);

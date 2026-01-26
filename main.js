@@ -163,8 +163,17 @@ function buildStoreCard(store) {
   return `
     <article class="store-card">
       <span class="store-card__category">${category}</span>
-      <h4 class="store-card__name">${store.name || "Loja sem nome"}</h4>
-      ${logoHtml}
+    <div class="store-card__top">
+  <div class="store-card__logo-wrap">
+    ${logoHtml}
+  </div>
+
+  <div class="store-card__head">
+    <span class="store-card__category">${category}</span>
+    <h4 class="store-card__name">${store.name || "Loja sem nome"}</h4>
+  </div>
+</div>
+
 
       <p class="store-card__desc">${description}</p>
       <div class="store-card__meta">

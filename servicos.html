@@ -93,6 +93,33 @@
     </main>
   </div>
 
+  <div id="trabalhoModal" class="trabalho-modal" role="dialog" aria-modal="true" aria-labelledby="trabalhoModalTitle" aria-hidden="true">
+    <div class="trabalho-modal__backdrop" data-close-trabalho-modal></div>
+    <div class="trabalho-modal__panel">
+      <header class="trabalho-modal__header">
+        <div>
+          <p class="trabalho-modal__kicker">Trabalho realizado</p>
+          <h3 id="trabalhoModalTitle">Portfólio</h3>
+        </div>
+        <button class="trabalho-modal__close" type="button" aria-label="Fechar" data-close-trabalho-modal>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+      <div class="trabalho-modal__content">
+        <div class="trabalho-modal__media">
+          <img id="trabalhoModalImage" alt="Foto do serviço realizado" />
+        </div>
+        <div class="trabalho-modal__body">
+          <p id="trabalhoModalCategory" class="trabalho-modal__category"></p>
+          <h4 id="trabalhoModalServiceTitle" class="trabalho-modal__title"></h4>
+          <p id="trabalhoModalDescription" class="trabalho-modal__desc"></p>
+          <div id="trabalhoModalMeta" class="trabalho-modal__meta"></div>
+          <div id="trabalhoModalActions" class="trabalho-modal__actions"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>

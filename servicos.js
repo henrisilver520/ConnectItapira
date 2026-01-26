@@ -31,6 +31,13 @@ const servicosSearch = document.getElementById("servicosSearch");
 const servicosClear = document.getElementById("servicosClear");
 const resultsCount = document.getElementById("resultsCount");
 const resultsBadge = document.getElementById("resultsBadge");
+const trabalhoModal = document.getElementById("trabalhoModal");
+const trabalhoModalImage = document.getElementById("trabalhoModalImage");
+const trabalhoModalCategory = document.getElementById("trabalhoModalCategory");
+const trabalhoModalServiceTitle = document.getElementById("trabalhoModalServiceTitle");
+const trabalhoModalDescription = document.getElementById("trabalhoModalDescription");
+const trabalhoModalMeta = document.getElementById("trabalhoModalMeta");
+const trabalhoModalActions = document.getElementById("trabalhoModalActions");
 
 let servicesCache = [];
 let activeCategory = "Todos";
@@ -119,6 +126,10 @@ function buildServiceCard(service) {
                </a>`
             : `<span class="muted">WhatsApp não informado</span>`
         }
+        <button class="btn btn-ghost" type="button" data-action="ver-trabalhos" data-uid="${service.uid}">
+          <i class="fa-regular fa-image"></i>
+          Ver trabalhos
+        </button>
         <a class="btn btn-ghost" href="index.html#servicosSection">
           <i class="fa-solid fa-arrow-left"></i>
           Voltar
@@ -126,6 +137,43 @@ function buildServiceCard(service) {
       </div>
     </article>
   `;
+}
+
+function openTrabalhoModal(service) {
+  if (!trabalhoModal || !service) return;
+  const fallbackImage = "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1974&auto=format&fit=crop";
+  if (trabalhoModalImage) {
+    trabalhoModalImage.src = service.imageData || fallbackImage;
+  }
+  if (trabalhoModalCategory) trabalhoModalCategory.textContent = service.category || "Serviço";
+  if (trabalhoModalServiceTitle) trabalhoModalServiceTitle.textContent = service.title || "Serviço";
+  if (trabalhoModalDescription) trabalhoModalDescription.textContent = service.description || "";
+  if (trabalhoModalMeta) {
+    trabalhoModalMeta.innerHTML = `
+      <span><i class="fa-solid fa-location-dot"></i> ${service.area || "Área não informada"}</span>
+      ${service.updatedLabel ? `<span><i class="fa-regular fa-clock"></i> Atualizado ${service.updatedLabel}</span>` : ""}
+    `;
+  }
+  const whatsappLink = buildWhatsAppLink(service);
+  if (trabalhoModalActions) {
+    trabalhoModalActions.innerHTML = whatsappLink
+      ? `<a class="btn btn-success" href="${whatsappLink}" target="_blank" rel="noopener">
+           <i class="fa-brands fa-whatsapp"></i>
+           Pedir orçamento
+         </a>`
+      : `<span class="muted">WhatsApp não informado</span>`;
+  }
+
+  trabalhoModal.classList.add("is-open");
+  trabalhoModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeTrabalhoModal() {
+  if (!trabalhoModal) return;
+  trabalhoModal.classList.remove("is-open");
+  trabalhoModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
 }
 
 function matchesFilters(service) {
@@ -212,6 +260,21 @@ function bindEvents() {
     renderServices();
   });
 
+  servicosGrid?.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action='ver-trabalhos']");
+    if (!btn) return;
+    const uid = btn.getAttribute("data-uid");
+    if (!uid) return;
+    const service = servicesCache.find((s) => s.uid === uid);
+    if (!service) return;
+    openTrabalhoModal(service);
+  });
+
+  trabalhoModal?.addEventListener("click", (e) => {
+    const closeBtn = e.target.closest("[data-close-trabalho-modal]");
+    if (closeBtn) closeTrabalhoModal();
+  });
+
   document.getElementById("servicosAnunciarTop")?.addEventListener("click", () => {
     window.location.href = "index.html";
   });
@@ -227,4 +290,3 @@ document.addEventListener("DOMContentLoaded", () => {
     loadServices();
   });
 });
-

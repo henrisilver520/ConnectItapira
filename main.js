@@ -17,6 +17,33 @@ const SECTION_IDS = [
 ];
 
 
+const STORE_CATEGORIES = [
+  "Alimentação & Bebidas",
+  "Restaurantes",
+  "Lanchonetes",
+  "Padarias & Confeitarias",
+  "Mercados & Mercearias",
+  "Farmácias & Drogarias",
+  "Saúde & Bem-estar",
+  "Beleza & Estética",
+  "Moda & Acessórios",
+  "Joias & Relógios",
+  "Calçados",
+  "Eletrônicos & Informática",
+  "Assistência Técnica",
+  "Construção & Materiais",
+  "Móveis & Decoração",
+  "Pet Shop & Veterinária",
+  "Veículos & Autopeças",
+  "Oficinas Mecânicas",
+  "Serviços Profissionais",
+  "Educação & Cursos",
+  "Esportes & Lazer",
+  "Presentes & Utilidades",
+  "Hotéis & Pousadas",
+  "Imobiliárias",
+  "Outros"
+]
 
 // Mapa sectionId -> botãoId (para marcar ativo)
 const ACTIVE_BTN_MAP = {
@@ -123,6 +150,12 @@ function buildStoreCard(store) {
   const fulfillment = store.fulfillment || "Atendimento a combinar";
   const whatsapp = store.whatsapp || "";
   const phoneDigits = whatsapp.replace(/\D/g, "");
+
+  const logoHtml = store.logo
+  ? `<img src="${store.logo}" class="store-card__logo" alt="Logo ${store.name}">`
+  : `<div class="store-card__logo placeholder">Logo</div>`
+
+
   const whatsappUrl = phoneDigits
     ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(`Olá, ${store.name}! Vim pelos Comércios Locais.`)}`
     : "";
@@ -131,6 +164,8 @@ function buildStoreCard(store) {
     <article class="store-card">
       <span class="store-card__category">${category}</span>
       <h4 class="store-card__name">${store.name || "Loja sem nome"}</h4>
+      ${logoHtml}
+
       <p class="store-card__desc">${description}</p>
       <div class="store-card__meta">
         <span><i class="fa-solid fa-truck-fast"></i> ${fulfillment}</span>
@@ -708,6 +743,8 @@ document.addEventListener("DOMContentLoaded", () => {
   bindComercios();
   bindServicos();
   loadStoresFromFirestore();
+  fillStoreCategories()
+
   auth?.onAuthStateChanged(() => {
     loadStoreForDashboard();
     loadStoresFromFirestore();
@@ -732,3 +769,53 @@ document.addEventListener("click", (e) => {
   if (typeof openSection === "function") openSection(sectionId);
   else if (typeof toggleSection === "function") toggleSection(sectionId);
 });
+
+
+
+async function getStorePayload(form) {
+  const data = new FormData(form)
+
+  let logoData = ""
+  const logoFile = form.querySelector('input[name="storeLogo"]')?.files?.[0]
+
+  if (logoFile) {
+    logoData = await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = reject
+      reader.readAsDataURL(logoFile)
+    })
+
+    if (!logoData.startsWith("data:image/")) {
+      throw new Error("Logo inválido")
+    }
+    if (logoData.length > 900000) {
+      throw new Error("Logo muito grande (máx. 1MB)")
+    }
+  }
+
+  return {
+    name: String(data.get("storeName") || "").trim(),
+    category: String(data.get("storeCategory") || "").trim(),
+    whatsapp: String(data.get("storeWhatsApp") || "").replace(/\D/g, ""),
+    fulfillment: String(data.get("storeFulfillment") || "").trim(),
+    description: String(data.get("storeDescription") || "").trim(),
+    logo: logoData || null,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }
+}
+
+
+function fillStoreCategories() {
+  const select = document.querySelector('select[name="storeCategory"]')
+  if (!select) return
+
+  select.innerHTML = `<option value="">Selecione uma categoria</option>`
+
+  STORE_CATEGORIES.forEach(cat => {
+    const option = document.createElement("option")
+    option.value = cat
+    option.textContent = cat
+    select.appendChild(option)
+  })
+}

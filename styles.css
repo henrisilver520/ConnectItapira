@@ -1247,10 +1247,14 @@ input, select, textarea, button { font-size: 16px; }
   font-size:1.05rem;
   font-weight:900;
   letter-spacing:-.01em;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+
+  /* CORREÇÃO */
+  white-space:normal;
+  overflow:visible;
+  word-break:break-word;
+  line-height:1.25;
 }
+
 
 @media (max-width: 640px){
   .store-card__name{

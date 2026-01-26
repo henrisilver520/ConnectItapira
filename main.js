@@ -313,6 +313,8 @@ function bindTopbar() {
   });
 }
 
+
+
 function buildWhatsAppMessage({ store, product, price }) {
   return [
     `Olá, *${store}*!`,
@@ -577,13 +579,24 @@ async function saveServicosProfile(form) {
       reader.onerror = () => reject(reader.error || new Error("Falha ao ler imagem."));
       reader.readAsDataURL(file);
     });
+    const normalizedImageData = String(imageData || "");
+    if (!normalizedImageData.startsWith("data:image/")) {
+      setServicosFormMessage("Arquivo inválido. Envie uma imagem válida.", "error");
+      setServicosFormLoading(false);
+      return;
+    }
+    if (normalizedImageData.length > 900000) {
+      setServicosFormMessage("Imagem muito grande. Envie uma foto com até 1MB.", "error");
+      setServicosFormLoading(false);
+      return;
+    }
 
     await db.collection("users").doc(user.uid).set(
       {
         uid: user.uid,
         servicesProfile: {
           ...payload,
-          imageData,
+          imageData: normalizedImageData,
           imageName: file.name || "",
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         },
@@ -687,6 +700,7 @@ function bindServicos() {
     saveServicosProfile(form);
   });
 }
+
 
 
 document.addEventListener("DOMContentLoaded", () => {

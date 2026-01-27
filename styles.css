@@ -2191,59 +2191,38 @@ body.modal-open{
   background:rgba(15,23,42,.55);
 }
 
-/* === FIX: modal não cortar em cima/baixo e permitir rolagem === */
+
+/* ===== Modal base (reaproveitável) ===== */
 .ti-modal{
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-
-  /* o modal vira a área rolável */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-
-  /* garante espaço para respirar no topo/baixo */
-  padding: 16px 0;
+  position:fixed;
+  inset:0;
+  display:none;
+  z-index:9999;
 }
+
+.ti-modal.is-open{ display:block; }
 
 .ti-modal__backdrop{
-  position: fixed; /* fica fixo mesmo com scroll do modal */
-  inset: 0;
+  position:absolute;
+  inset:0;
+  background:rgba(2,6,23,.70);
+  backdrop-filter: blur(6px);
 }
 
-/* O painel não pode "estourar" a tela */
-.ti-modal__panel,
+.ti-modal__panel{
+  position:relative;
+  width:min(720px, calc(100% - 22px));
+  margin: 18px auto;
+  border:1px solid rgba(148,163,184,.18);
+  border-radius:20px;
+  background:rgba(15,23,42,.92);
+  box-shadow: 0 24px 60px rgba(2,6,23,.55);
+  overflow:hidden;
+}
+
 .ti-modal__panel--wide{
-  position: relative;
-  margin: 0 auto;              /* centraliza horizontal */
-  max-height: calc(100vh - 32px); /* respeita padding do modal */
-  overflow: hidden;            /* evita vazar bordas */
-  display: flex;
-  flex-direction: column;      /* header + body */
+  width:min(980px, calc(100% - 22px));
 }
-
-/* Body rola por dentro quando for grande */
-.ti-modal__body{
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  max-height: calc(100vh - 160px); 
-}
-
-/* Mobile: mais confortável e sem cortar topo */
-@media (max-width: 640px){
-  .ti-modal{
-    padding: 10px 0;
-  }
-
-  .ti-modal__panel,
-  .ti-modal__panel--wide{
-    max-height: calc(100vh - 20px);
-  }
-
-  .ti-modal__body{
-    max-height: calc(100vh - 150px);
-  }
-}
-
 
 .ti-modal__header{
   display:flex;

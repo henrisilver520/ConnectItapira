@@ -564,188 +564,7 @@
 
 
   
-</section>
-
-
-    <section id="eventosSection" class="section">
-      <h2>Eventos</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Conteúdo de eventos aqui.</div>
-    </section>
-
-    <section id="servicosSection" class="section">
-      <div class="servicos">
-        <header class="servicos-hero">
-          <div>
-            <p class="servicos-hero__kicker">Serviços essenciais</p>
-            <h2>Prestadores de Serviços</h2>
-            
-            
-          </div>
-          <aside class="servicos-hero__panel" aria-label="Benefícios para a população">
-            <h3>O que você encontra aqui</h3>
-            <ul>
-              <li>Profissionais autônomos e empresas locais.</li>
-              <li>Serviços essenciais usados no dia a dia.</li>
-              <li>Contato rápido para orçamento e agendamento.</li>
-            </ul>
-            <div class="servicos-hero__tag">Foco em Itapira</div>
-          </aside>
-          <div class="servicos-hero__actions">
-              <button id="announceServiceBtn" class="btn btn-primary comercios-cta" type="button">
-                Quero anunciar meus serviços
-              </button>
-              <button id="verCategoriasServicosBtn" class="btn btn-outline-light comercios-secondary" type="button">
-                Ver Serviços disponiveis
-              </button>
-            </div>
-        </header>
-
-        
-
-        <section class="servicos-destaques" aria-label="Destaques por perfil">
-          <article class="servicos-bloco">
-            <header>
-              <p class="servicos-bloco__kicker">Autônomos</p>
-              <h3>Profissionais independentes</h3>
-            </header>
-            <p>
-              Divulgue seus serviços, receba pedidos e orçamentos e seja encontrado por quem realmente
-              precisa do seu trabalho em Itapira.
-            </p>
-            <ul>
-              <li>Maior visibilidade local.</li>
-              <li>Contato rápido por WhatsApp.</li>
-              <li>Organização por categoria.</li>
-            </ul>
-          </article>
-
-          <article class="servicos-bloco">
-            <header>
-              <p class="servicos-bloco__kicker">Empresas</p>
-              <h3>Serviços especializados</h3>
-            </header>
-            <p>
-              Mostre autoridade, portfólio e diferenciais. Ideal para clínicas, oficinas, assistência técnica,
-              escritórios e prestadores com equipe.
-            </p>
-            <ul>
-              <li>Posicionamento profissional.</li>
-              <li>Mais confiança para o cliente.</li>
-              <li>Base pronta para escalar.</li>
-            </ul>
-          </article>
-        </section>
-
-        <div id="servicosModal" class="servicos-modal" role="dialog" aria-modal="true" aria-labelledby="servicosModalTitle" aria-hidden="true">
-          <div class="servicos-modal__backdrop" data-close-servicos-modal></div>
-          <div class="servicos-modal__panel">
-            <header class="servicos-modal__header">
-              <div>
-                <p class="servicos-modal__kicker">Anunciar serviços</p>
-                <h3 id="servicosModalTitle">Quero anunciar meus serviços</h3>
-                <p class="servicos-modal__lead">
-                  Escolha uma categoria essencial e descreva seu serviço. Vamos salvar em
-                  <strong>users/{uid}.servicesProfile</strong>.
-                </p>
-              </div>
-              <button class="servicos-modal__close" type="button" aria-label="Fechar" data-close-servicos-modal>
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </header>
-
-            <form id="servicosForm" class="servicos-form">
-              <div class="servicos-form__grid">
-                <label class="store-field">
-                  <span>Título do serviço</span>
-                  <input type="text" name="serviceTitle" placeholder="Ex: Eletricista residencial 24h" required />
-                </label>
-                <label class="store-field">
-                  <span>Categoria</span>
-                  <select name="serviceCategory" required>
-                    <option value="">Selecione uma categoria</option>
-                    <option value="Reparos & Manutenção">Reparos & Manutenção</option>
-                    <option value="Saúde & Bem-estar">Saúde & Bem-estar</option>
-                    <option value="Educação & Aulas">Educação & Aulas</option>
-                    <option value="Transporte & Fretes">Transporte & Fretes</option>
-                    <option value="Utilidades Essenciais">Utilidades Essenciais</option>
-                    <option value="Jurídico & Contábil">Jurídico & Contábil</option>
-                  </select>
-                </label>
-                <label class="store-field">
-                  <span>WhatsApp</span>
-                  <input type="tel" name="serviceWhatsApp" placeholder="5511999990000" required />
-                </label>
-                <label class="store-field">
-                  <span>Área de atendimento</span>
-                  <input type="text" name="serviceArea" placeholder="Ex: Centro, Prados, Santa Fé" required />
-                </label>
-                <label class="store-field store-field--full">
-                  <span>Descrição do serviço</span>
-                  <textarea name="serviceDescription" rows="3" placeholder="Explique o que você faz, diferenciais e prazos médios." required></textarea>
-                </label>
-                <label class="store-field store-field--full">
-                  <span>Foto do serviço realizado</span>
-                  <input id="serviceImageInput" type="file" name="serviceImage" accept="image/*" required />
-                  <small class="store-field__hint">Obrigatório (até 1MB): ajuda a identificar melhor o serviço e gera mais confiança.</small>
-                </label>
-              </div>
-
-              <div class="store-form__actions">
-                <p id="servicosFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
-                <button id="servicosFormSubmit" class="btn btn-primary comercios-cta" type="submit">
-                  Salvar serviço
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="redeSocialSection" class="section">
-      <h2>Rede Social</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Timeline, posts, perfis, etc.</div>
-    </section>
-
-    <section id="pontosInteresseSection" class="section">
-      <h2>Pontos de Interesse</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Mapa e locais aqui.</div>
-    </section>
-
-    <section id="gruposSection" class="section">
-      <h2>Grupos da Cidade</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Grupos aqui.</div>
-    </section>
-
-    <section id="noticiasSection" class="section">
-      <h2>Notícias Locais</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Notícias aqui.</div>
-    </section>
-
-    <section id="empregosSection" class="section">
-      <h2>Empregos Locais</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Vagas aqui.</div>
-    </section>
-
-    <section id="chatPublicoSection" class="section">
-      <h2>Chat Público</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Chat público aqui.</div>
-    </section>
-
-    <section id="bairrosSection" class="section">
-      <h2>Conheça os Bairros</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Bairros aqui.</div>
-    </section>
-
-
+  
     <div id="imovelDetailsModal" class="ti-modal" aria-hidden="true">
   <div class="ti-modal__backdrop" data-close-imovel-details></div>
 
@@ -945,6 +764,188 @@
     </form>
   </div>
 </div>
+
+</section>
+
+
+    <section id="eventosSection" class="section">
+      <h2>Eventos</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Conteúdo de eventos aqui.</div>
+    </section>
+
+    <section id="servicosSection" class="section">
+      <div class="servicos">
+        <header class="servicos-hero">
+          <div>
+            <p class="servicos-hero__kicker">Serviços essenciais</p>
+            <h2>Prestadores de Serviços</h2>
+            
+            
+          </div>
+          <aside class="servicos-hero__panel" aria-label="Benefícios para a população">
+            <h3>O que você encontra aqui</h3>
+            <ul>
+              <li>Profissionais autônomos e empresas locais.</li>
+              <li>Serviços essenciais usados no dia a dia.</li>
+              <li>Contato rápido para orçamento e agendamento.</li>
+            </ul>
+            <div class="servicos-hero__tag">Foco em Itapira</div>
+          </aside>
+          <div class="servicos-hero__actions">
+              <button id="announceServiceBtn" class="btn btn-primary comercios-cta" type="button">
+                Quero anunciar meus serviços
+              </button>
+              <button id="verCategoriasServicosBtn" class="btn btn-outline-light comercios-secondary" type="button">
+                Ver Serviços disponiveis
+              </button>
+            </div>
+        </header>
+
+        
+
+        <section class="servicos-destaques" aria-label="Destaques por perfil">
+          <article class="servicos-bloco">
+            <header>
+              <p class="servicos-bloco__kicker">Autônomos</p>
+              <h3>Profissionais independentes</h3>
+            </header>
+            <p>
+              Divulgue seus serviços, receba pedidos e orçamentos e seja encontrado por quem realmente
+              precisa do seu trabalho em Itapira.
+            </p>
+            <ul>
+              <li>Maior visibilidade local.</li>
+              <li>Contato rápido por WhatsApp.</li>
+              <li>Organização por categoria.</li>
+            </ul>
+          </article>
+
+          <article class="servicos-bloco">
+            <header>
+              <p class="servicos-bloco__kicker">Empresas</p>
+              <h3>Serviços especializados</h3>
+            </header>
+            <p>
+              Mostre autoridade, portfólio e diferenciais. Ideal para clínicas, oficinas, assistência técnica,
+              escritórios e prestadores com equipe.
+            </p>
+            <ul>
+              <li>Posicionamento profissional.</li>
+              <li>Mais confiança para o cliente.</li>
+              <li>Base pronta para escalar.</li>
+            </ul>
+          </article>
+        </section>
+
+        <div id="servicosModal" class="servicos-modal" role="dialog" aria-modal="true" aria-labelledby="servicosModalTitle" aria-hidden="true">
+          <div class="servicos-modal__backdrop" data-close-servicos-modal></div>
+          <div class="servicos-modal__panel">
+            <header class="servicos-modal__header">
+              <div>
+                <p class="servicos-modal__kicker">Anunciar serviços</p>
+                <h3 id="servicosModalTitle">Quero anunciar meus serviços</h3>
+                <p class="servicos-modal__lead">
+                  Escolha uma categoria essencial e descreva seu serviço. Vamos salvar em
+                  <strong>users/{uid}.servicesProfile</strong>.
+                </p>
+              </div>
+              <button class="servicos-modal__close" type="button" aria-label="Fechar" data-close-servicos-modal>
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </header>
+
+            <form id="servicosForm" class="servicos-form">
+              <div class="servicos-form__grid">
+                <label class="store-field">
+                  <span>Título do serviço</span>
+                  <input type="text" name="serviceTitle" placeholder="Ex: Eletricista residencial 24h" required />
+                </label>
+                <label class="store-field">
+                  <span>Categoria</span>
+                  <select name="serviceCategory" required>
+                    <option value="">Selecione uma categoria</option>
+                    <option value="Reparos & Manutenção">Reparos & Manutenção</option>
+                    <option value="Saúde & Bem-estar">Saúde & Bem-estar</option>
+                    <option value="Educação & Aulas">Educação & Aulas</option>
+                    <option value="Transporte & Fretes">Transporte & Fretes</option>
+                    <option value="Utilidades Essenciais">Utilidades Essenciais</option>
+                    <option value="Jurídico & Contábil">Jurídico & Contábil</option>
+                  </select>
+                </label>
+                <label class="store-field">
+                  <span>WhatsApp</span>
+                  <input type="tel" name="serviceWhatsApp" placeholder="5511999990000" required />
+                </label>
+                <label class="store-field">
+                  <span>Área de atendimento</span>
+                  <input type="text" name="serviceArea" placeholder="Ex: Centro, Prados, Santa Fé" required />
+                </label>
+                <label class="store-field store-field--full">
+                  <span>Descrição do serviço</span>
+                  <textarea name="serviceDescription" rows="3" placeholder="Explique o que você faz, diferenciais e prazos médios." required></textarea>
+                </label>
+                <label class="store-field store-field--full">
+                  <span>Foto do serviço realizado</span>
+                  <input id="serviceImageInput" type="file" name="serviceImage" accept="image/*" required />
+                  <small class="store-field__hint">Obrigatório (até 1MB): ajuda a identificar melhor o serviço e gera mais confiança.</small>
+                </label>
+              </div>
+
+              <div class="store-form__actions">
+                <p id="servicosFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
+                <button id="servicosFormSubmit" class="btn btn-primary comercios-cta" type="submit">
+                  Salvar serviço
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="redeSocialSection" class="section">
+      <h2>Rede Social</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Timeline, posts, perfis, etc.</div>
+    </section>
+
+    <section id="pontosInteresseSection" class="section">
+      <h2>Pontos de Interesse</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Mapa e locais aqui.</div>
+    </section>
+
+    <section id="gruposSection" class="section">
+      <h2>Grupos da Cidade</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Grupos aqui.</div>
+    </section>
+
+    <section id="noticiasSection" class="section">
+      <h2>Notícias Locais</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Notícias aqui.</div>
+    </section>
+
+    <section id="empregosSection" class="section">
+      <h2>Empregos Locais</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Vagas aqui.</div>
+    </section>
+
+    <section id="chatPublicoSection" class="section">
+      <h2>Chat Público</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Chat público aqui.</div>
+    </section>
+
+    <section id="bairrosSection" class="section">
+      <h2>Conheça os Bairros</h2>
+      <p>Seção vazia.</p>
+      <div class="placeholder">Bairros aqui.</div>
+    </section>
+
 
   </main>
 

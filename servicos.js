@@ -82,7 +82,7 @@ function buildWhatsAppLink(service) {
 function renderChips() {
   if (!servicosChips) return;
 
-  servicosChips.innerHTML = CATEGORY_ORDER.map((cat) => {
+  servicosChips.innerHTML = CATEGORY_ICONS.map((cat) => {
     const activeClass = cat === activeCategory ? "is-active" : "";
     const icon = CATEGORY_ICONS[cat] || "fa-tags";
 

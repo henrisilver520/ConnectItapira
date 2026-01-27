@@ -14,6 +14,19 @@ if (!firebase.apps.length) {
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+/* =========================
+   CATEGORIAS (TOPO DO ARQUIVO)
+========================= */
+
+const CATEGORY_ORDER = [
+  "Todos",
+  "Reparos & Manutenção",
+  "Saúde & Bem-estar",
+  "Educação & Aulas",
+  "Transporte & Fretes",
+  "Utilidades Essenciais",
+  "Jurídico & Contábil",
+];
 
 const CATEGORY_ICONS = {
   "Todos": "fa-layer-group",
@@ -79,6 +92,7 @@ function buildWhatsAppLink(service) {
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
+
 function renderChips() {
   if (!servicosChips) return;
 
@@ -101,6 +115,7 @@ function renderChips() {
     `;
   }).join("");
 }
+
 
 function setResultsInfo(count) {
   if (resultsCount) {
@@ -262,6 +277,7 @@ async function loadServices() {
 
     renderChips();
     renderServices();
+    
   } catch (err) {
     console.error(err);
     renderEmpty("Não foi possível carregar os serviços agora.");

@@ -521,11 +521,11 @@ input, select, textarea, button { font-size: 16px; }
 /* --- Área principal com padding menor --- */
 @media (max-width: 767px){
   .app{
-    padding: 10px;
+    padding: 1px;
   }
 
   .section{
-    padding: 12px;
+    padding: 1px;
     border-radius: 16px;
   }
 }
@@ -765,6 +765,8 @@ input, select, textarea, button { font-size: 16px; }
   grid-template-columns:minmax(0,1.35fr) minmax(280px,1fr);
   gap:20px;
   padding:22px;
+      text-align: center;
+
   border-radius:22px;
   border:1px solid rgba(148,163,184,.16);
   background:
@@ -1587,14 +1589,15 @@ body.modal-open{
 
 .servicos-hero{
   display:grid;
+      text-align: center;
+
   grid-template-columns:minmax(0,1.35fr) minmax(280px,1fr);
   gap:18px;
+  color: #262d3f;
   padding:20px;
   border-radius:22px;
   border:1px solid rgba(148,163,184,.16);
-  background:
-    linear-gradient(135deg, rgba(14,165,233,.16), rgba(59,130,246,.12)),
-    rgba(15,23,42,.7);
+ background: linear-gradient(135deg, rgba(14, 165, 233, .16), rgba(59, 130, 246, .12)), rgb(214 219 231 / 70%);
   box-shadow:0 22px 44px rgba(15,23,42,.5);
 }
 
@@ -1629,10 +1632,11 @@ body.modal-open{
   border:1px solid rgba(148,163,184,.18);
 }
 
-.servicos-hero__panel h3{
-  margin:0;
-  font-size:1.02rem;
-  font-weight:900;
+.servicos-hero__panel h3 {
+    margin: 0;
+    font-size: 1.10rem;
+    color: aliceblue;
+    font-weight: 900;
 }
 
 .servicos-hero__panel ul{
@@ -1684,6 +1688,7 @@ body.modal-open{
 .servico-card{
   border:1px solid rgba(148,163,184,.18);
   border-radius:20px;
+  
   padding:16px;
   background:rgba(15,23,42,.78);
   display:flex;
@@ -1950,18 +1955,6 @@ body.modal-open{
     gap:16px;
   }
 
-  .comercios-hero,
-  .comercios-toolbar,
-  .comercios-flow,
-  .comercios-seller-cta,
-  .store-dashboard,
-  .stores-section,
-  .servicos-hero,
-  .servicos-categorias,
-  .servicos-bloco,
-  .servicos-modal__panel{
-    padding:18px;
-  }
 
   .store-modal{
     padding:16px;

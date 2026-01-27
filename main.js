@@ -162,7 +162,6 @@ function buildStoreCard(store) {
 
   return `
     <article class="store-card">
-      <span class="store-card__category">${category}</span>
     <div class="store-card__top">
   
 

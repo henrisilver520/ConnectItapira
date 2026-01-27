@@ -1183,10 +1183,11 @@ input, select, textarea, button { font-size: 16px; }
 
 /* ===== HEADER COM LOGO ===== */
 .store-card__top{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-width:0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex-direction: column;
 }
 
 .store-card__head{

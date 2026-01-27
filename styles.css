@@ -726,15 +726,32 @@ input, select, textarea, button { font-size: 16px; }
   }
 }
 
-/* ===============================
-   DESKTOP (mantém elegante)
-================================ */
+
+
+/* Desktop grande: evita cortar o primeiro botão */
 @media (min-width: 1024px){
   #nav-header-buttons{
-    justify-content: center; /* centraliza no desktop */
-    overflow-x: visible;     /* sem scroll no desktop */
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
+
+/* Telas MUITO grandes (ex: 30"+): não centraliza com risco de corte */
+@media (min-width: 1600px){
+  #nav-header-buttons{
+    justify-content: flex-start;  /* evita empurrar pra fora */
+    overflow-x: auto;             /* se ainda faltar espaço, permite scroll */
+  }
+
+  #nav-header-buttons::-webkit-scrollbar{
+    height: 6px;
+  }
+  #nav-header-buttons::-webkit-scrollbar-thumb{
+    background: rgba(0,0,0,.18);
+    border-radius: 999px;
+  }
+}
+
 
 /* ===== Comércios Locais ===== */
 .comercios{

@@ -1988,7 +1988,9 @@ body.modal-open{
   font-weight:700;
 }
 
-
+/* ============================
+   IMÓVEIS (SEÇÃO + LISTA)
+============================ */
 .imoveis-section{
   padding: 0;
 }
@@ -2097,6 +2099,8 @@ body.modal-open{
   height:140px;
   background: linear-gradient(135deg, rgba(56,189,248,.22), rgba(168,85,247,.18));
   position:relative;
+  background-size: cover;
+  background-position: center;
 }
 
 .imovel-badges{
@@ -2141,7 +2145,7 @@ body.modal-open{
   margin:0;
   font-weight:950;
   line-height:1.25;
-  white-space:normal; /* não corta */
+  white-space:normal;
   word-break:break-word;
 }
 
@@ -2191,19 +2195,25 @@ body.modal-open{
   background:rgba(15,23,42,.55);
 }
 
-
-/* ===== Modal base (reaproveitável) ===== */
+/* ============================
+   MODAIS (DETALHES + ANÚNCIO)
+   FIX: sem corte e com scroll
+============================ */
 .ti-modal{
   position:fixed;
   inset:0;
-  display:none;
   z-index:9999;
+
+  display:none;
+  overflow-y:auto;                 /* modal vira área rolável */
+  -webkit-overflow-scrolling:touch;
+  padding:16px 0;                  /* respiro topo/baixo */
 }
 
 .ti-modal.is-open{ display:block; }
 
 .ti-modal__backdrop{
-  position:absolute;
+  position:fixed;                  /* backdrop fixo enquanto rola */
   inset:0;
   background:rgba(2,6,23,.70);
   backdrop-filter: blur(6px);
@@ -2212,12 +2222,16 @@ body.modal-open{
 .ti-modal__panel{
   position:relative;
   width:min(720px, calc(100% - 22px));
-  margin: 18px auto;
+  margin: 0 auto;
   border:1px solid rgba(148,163,184,.18);
   border-radius:20px;
   background:rgba(15,23,42,.92);
   box-shadow: 0 24px 60px rgba(2,6,23,.55);
-  overflow:hidden;
+
+  max-height: calc(100vh - 32px);  /* não estoura tela */
+  overflow:hidden;                 /* não vaza borda */
+  display:flex;
+  flex-direction:column;
 }
 
 .ti-modal__panel--wide{
@@ -2264,18 +2278,23 @@ body.modal-open{
 
 .ti-modal__body{
   padding:14px 16px 16px;
+  overflow-y:auto;                 /* rola dentro do painel */
+  -webkit-overflow-scrolling:touch;
 }
 
 @media (max-width:640px){
+  .ti-modal{ padding:10px 0; }
   .ti-modal__panel, .ti-modal__panel--wide{
-    margin: 10px auto;
     border-radius:16px;
+    max-height: calc(100vh - 20px);
   }
   .ti-modal__header{ padding:14px 14px 10px; }
   .ti-modal__body{ padding:12px 14px 14px; }
 }
 
-/* ===== Galeria ===== */
+/* ============================
+   GALERIA (DETALHES)
+============================ */
 .imovel-gallery{
   display:grid;
   grid-template-columns:44px 1fr 44px;
@@ -2319,6 +2338,7 @@ body.modal-open{
   cursor:pointer;
   opacity:.78;
 }
+
 .imovel-gallery__thumb.is-active{
   opacity:1;
   border-color: rgba(56,189,248,.55);
@@ -2330,7 +2350,9 @@ body.modal-open{
   .imovel-gallery__thumb{ width:84px; height:58px; }
 }
 
-/* ===== Detalhes ===== */
+/* ============================
+   DETALHES (INFO)
+============================ */
 .imovel-details{
   display:flex;
   flex-direction:column;
@@ -2441,8 +2463,12 @@ body.modal-open{
   .imovel-details__grid{ grid-template-columns:1fr; }
 }
 
-/* ===== Form anúncio ===== */
-.imovel-form{ padding: 12px 16px 16px; }
+/* ============================
+   FORM ANÚNCIO
+============================ */
+.imovel-form{
+  padding: 12px 16px 16px;
+}
 
 .imovel-form__grid{
   display:grid;

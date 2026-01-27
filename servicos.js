@@ -26,6 +26,7 @@ const CATEGORY_ICONS = {
 };
 
 
+
 const servicosChips = document.getElementById("servicosChips");
 const servicosGrid = document.getElementById("servicosGrid");
 const servicosSearch = document.getElementById("servicosSearch");
@@ -78,11 +79,10 @@ function buildWhatsAppLink(service) {
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
-
 function renderChips() {
   if (!servicosChips) return;
 
-  servicosChips.innerHTML = CATEGORY_ICONS.map((cat) => {
+  servicosChips.innerHTML = CATEGORY_ORDER.map((cat) => {
     const activeClass = cat === activeCategory ? "is-active" : "";
     const icon = CATEGORY_ICONS[cat] || "fa-tags";
 
@@ -101,7 +101,6 @@ function renderChips() {
     `;
   }).join("");
 }
-
 
 function setResultsInfo(count) {
   if (resultsCount) {
@@ -271,7 +270,7 @@ async function loadServices() {
 
 function bindEvents() {
   servicosChips?.addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip[data-category]");
+const chip = e.target.closest(".service-cat[data-category]");
     if (!chip) return;
     activeCategory = chip.getAttribute("data-category") || "Todos";
     renderChips();

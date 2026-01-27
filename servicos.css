@@ -34,6 +34,8 @@ a{color:inherit;}
   min-height:100vh;
   display:flex;
   flex-direction:column;
+  background-color: #0f172a8f;
+
 }
 
 .servicos-topbar{
@@ -534,7 +536,7 @@ a{color:inherit;}
   border:1px solid rgba(14,165,233,.14);
   border-radius:20px;
   padding:16px 18px;
-  background:rgba(14,165,233,.06);
+  background: rgb(255 255 255);
   color:#0f172a;
   font-weight:700;
 }
@@ -551,3 +553,117 @@ a{color:inherit;}
   .search-row{grid-template-columns:1fr;}
   .services-grid{grid-template-columns:1fr;}
 }
+
+
+/* =========================
+   CATEGORIAS DE SERVIÇOS
+========================= */
+
+.service-categories{
+  display: flex;
+  gap: 12px;
+  padding: 6px 2px 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* scrollbar discreta */
+.service-categories::-webkit-scrollbar{
+  height: 6px;
+}
+.service-categories::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.18);
+  border-radius: 999px;
+}
+
+/* card da categoria */
+.service-cat{
+  flex: 0 0 auto;
+  width: 96px;
+  height: 96px;
+
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.85);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  cursor: pointer;
+  transition: 
+    transform .18s ease,
+    box-shadow .18s ease,
+    background .18s ease,
+    border-color .18s ease;
+}
+
+/* ícone */
+.service-cat__icon{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+
+  background: linear-gradient(135deg,#38bdf8,#22d3ee);
+  color: #0f172a;
+  font-size: 1.15rem;
+
+  box-shadow: 0 10px 18px rgba(14,165,233,.25);
+}
+
+/* label */
+.service-cat__label{
+  font-size: .78rem;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.15;
+  color: #0f172a;
+}
+
+/* hover */
+.service-cat:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(14,165,233,.18);
+}
+
+/* ativo */
+.service-cat.is-active{
+  background: linear-gradient(135deg,#38bdf8,#22d3ee);
+  border-color: transparent;
+}
+
+.service-cat.is-active .service-cat__icon{
+  background: rgba(255,255,255,.95);
+  color: #0f172a;
+}
+
+.service-cat.is-active .service-cat__label{
+  color: #0f172a;
+}
+
+/* mobile */
+@media (max-width: 640px){
+  .service-cat{
+    width: 84px;
+    height: 84px;
+    border-radius: 16px;
+  }
+
+  .service-cat__icon{
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+  }
+
+  .service-cat__label{
+    font-size: .72rem;
+  }
+}
+

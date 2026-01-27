@@ -15,15 +15,16 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-const CATEGORY_ORDER = [
-  "Todos",
-  "Reparos & Manutenção",
-  "Saúde & Bem-estar",
-  "Educação & Aulas",
-  "Transporte & Fretes",
-  "Utilidades Essenciais",
-  "Jurídico & Contábil",
-];
+const CATEGORY_ICONS = {
+  "Todos": "fa-layer-group",
+  "Reparos & Manutenção": "fa-screwdriver-wrench",
+  "Saúde & Bem-estar": "fa-heart-pulse",
+  "Educação & Aulas": "fa-graduation-cap",
+  "Transporte & Fretes": "fa-truck-fast",
+  "Utilidades Essenciais": "fa-bolt",
+  "Jurídico & Contábil": "fa-scale-balanced",
+};
+
 
 const servicosChips = document.getElementById("servicosChips");
 const servicosGrid = document.getElementById("servicosGrid");
@@ -80,11 +81,27 @@ function buildWhatsAppLink(service) {
 
 function renderChips() {
   if (!servicosChips) return;
+
   servicosChips.innerHTML = CATEGORY_ORDER.map((cat) => {
     const activeClass = cat === activeCategory ? "is-active" : "";
-    return `<button class="chip ${activeClass}" type="button" data-category="${cat}">${cat}</button>`;
+    const icon = CATEGORY_ICONS[cat] || "fa-tags";
+
+    return `
+      <button
+        class="service-cat ${activeClass}"
+        type="button"
+        data-category="${cat}"
+        aria-pressed="${cat === activeCategory}"
+      >
+        <span class="service-cat__icon">
+          <i class="fa-solid ${icon}"></i>
+        </span>
+        <span class="service-cat__label">${cat}</span>
+      </button>
+    `;
   }).join("");
 }
+
 
 function setResultsInfo(count) {
   if (resultsCount) {
@@ -297,7 +314,10 @@ function bindEvents() {
 document.addEventListener("DOMContentLoaded", () => {
   bindEvents();
   loadServices();
+  enableDragScroll(document.getElementById("servicosChips"));
+
   auth.onAuthStateChanged(() => {
     loadServices();
+
   });
 });

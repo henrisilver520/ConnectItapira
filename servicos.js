@@ -321,3 +321,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 });
+
+
+
+
+function enableDragScroll(el) {
+  if (!el) return;
+
+  let isDown = false;
+  let startX = 0;
+  let scrollLeft = 0;
+
+  // evita selecionar texto enquanto arrasta
+  el.style.userSelect = "none";
+  el.style.cursor = "grab";
+
+  const onDown = (pageX) => {
+    isDown = true;
+    el.classList.add("is-dragging");
+    el.style.cursor = "grabbing";
+    startX = pageX;
+    scrollLeft = el.scrollLeft;
+  };
+
+  const onMove = (pageX) => {
+    if (!isDown) return;
+    const walk = (pageX - startX);
+    el.scrollLeft = scrollLeft - walk;
+  };
+
+  const onUp = () => {
+    isDown = false;
+    el.classList.remove("is-dragging");
+    el.style.cursor = "grab";
+  };
+
+  // Mouse
+  el.addEventListener("mousedown", (e) => {
+    // só botão esquerdo
+    if (e.button !== 0) return;
+    onDown(e.pageX);
+  });
+
+  window.addEventListener("mousemove", (e) => onMove(e.pageX));
+  window.addEventListener("mouseup", onUp);
+
+  // Touch
+  el.addEventListener("touchstart", (e) => {
+    const t = e.touches?.[0];
+    if (!t) return;
+    onDown(t.pageX);
+  }, { passive: true });
+
+  el.addEventListener("touchmove", (e) => {
+    const t = e.touches?.[0];
+    if (!t) return;
+    onMove(t.pageX);
+  }, { passive: true });
+
+  el.addEventListener("touchend", onUp);
+  el.addEventListener("mouseleave", onUp);
+
+  // Evita clique acidental no botão quando arrastou
+  let moved = false;
+  el.addEventListener("mousemove", () => { if (isDown) moved = true; });
+  el.addEventListener("click", (e) => {
+    if (moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      moved = false;
+    }
+  }, true);
+}

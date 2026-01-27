@@ -564,6 +564,10 @@
 
 
   
+
+</section>
+
+
   
     <div id="imovelDetailsModal" class="ti-modal" aria-hidden="true">
   <div class="ti-modal__backdrop" data-close-imovel-details></div>
@@ -657,115 +661,117 @@
       </button>
     </header>
 
-    <form id="imovelForm" class="imovel-form">
-      <div class="imovel-form__grid">
+    <!-- ✅ IMPORTANTE: body rolável -->
+    <div class="ti-modal__body">
+      <form id="imovelForm" class="imovel-form">
+        <div class="imovel-form__grid">
 
-        <label class="store-field">
-          <span>Finalidade</span>
-          <select name="purpose" required>
-            <option value="">Selecione</option>
-            <option value="venda">Venda</option>
-            <option value="aluguel">Aluguel</option>
-          </select>
-        </label>
+          <label class="store-field">
+            <span>Finalidade</span>
+            <select name="purpose" required>
+              <option value="">Selecione</option>
+              <option value="venda">Venda</option>
+              <option value="aluguel">Aluguel</option>
+            </select>
+          </label>
 
-        <label class="store-field">
-          <span>Tipo</span>
-          <select name="type" required>
-            <option value="">Selecione</option>
-            <option>Casa</option>
-            <option>Apartamento</option>
-            <option>Terreno</option>
-            <option>Sobrado</option>
-            <option>Chácara/Sítio</option>
-            <option>Comercial</option>
-            <option>Kitnet</option>
-            <option>Outro</option>
-          </select>
-        </label>
+          <label class="store-field">
+            <span>Tipo</span>
+            <select name="type" required>
+              <option value="">Selecione</option>
+              <option>Casa</option>
+              <option>Apartamento</option>
+              <option>Terreno</option>
+              <option>Sobrado</option>
+              <option>Chácara/Sítio</option>
+              <option>Comercial</option>
+              <option>Kitnet</option>
+              <option>Outro</option>
+            </select>
+          </label>
 
-        <label class="store-field store-field--full">
-          <span>Título do anúncio</span>
-          <input name="title" type="text" placeholder="Ex: Casa térrea com quintal" required />
-        </label>
+          <label class="store-field store-field--full">
+            <span>Título do anúncio</span>
+            <input name="title" type="text" placeholder="Ex: Casa térrea com quintal" required />
+          </label>
 
-        <label class="store-field store-field--full">
-          <span>Descrição completa</span>
-          <textarea name="description" rows="4" placeholder="Detalhe pontos fortes, acabamento, localização (sem nº), etc." required></textarea>
-        </label>
+          <label class="store-field store-field--full">
+            <span>Descrição completa</span>
+            <textarea name="description" rows="4" placeholder="Detalhe pontos fortes, acabamento, localização (sem nº), etc." required></textarea>
+          </label>
 
-        <label class="store-field">
-          <span>Preço (R$)</span>
-          <input name="price" type="number" min="0" step="1" placeholder="Ex: 350000" required />
-        </label>
+          <label class="store-field">
+            <span>Preço (R$)</span>
+            <input name="price" type="number" min="0" step="1" placeholder="Ex: 350000" required />
+          </label>
 
-        <label class="store-field">
-          <span>Condomínio (R$) (opcional)</span>
-          <input name="condominiumFee" type="number" min="0" step="1" placeholder="Ex: 450" />
-        </label>
+          <label class="store-field">
+            <span>Condomínio (R$) (opcional)</span>
+            <input name="condominiumFee" type="number" min="0" step="1" placeholder="Ex: 450" />
+          </label>
 
-        <label class="store-field">
-          <span>IPTU anual (R$) (opcional)</span>
-          <input name="iptuYear" type="number" min="0" step="1" placeholder="Ex: 1200" />
-        </label>
+          <label class="store-field">
+            <span>IPTU anual (R$) (opcional)</span>
+            <input name="iptuYear" type="number" min="0" step="1" placeholder="Ex: 1200" />
+          </label>
 
-        <label class="store-field">
-          <span>Área (m²)</span>
-          <input name="areaM2" type="number" min="0" step="1" placeholder="Ex: 120" required />
-        </label>
+          <label class="store-field">
+            <span>Área (m²)</span>
+            <input name="areaM2" type="number" min="0" step="1" placeholder="Ex: 120" required />
+          </label>
 
-        <label class="store-field">
-          <span>Dormitórios</span>
-          <input name="bedrooms" type="number" min="0" step="1" placeholder="Ex: 3" required />
-        </label>
+          <label class="store-field">
+            <span>Dormitórios</span>
+            <input name="bedrooms" type="number" min="0" step="1" placeholder="Ex: 3" required />
+          </label>
 
-        <label class="store-field">
-          <span>Banheiros</span>
-          <input name="bathrooms" type="number" min="0" step="1" placeholder="Ex: 2" required />
-        </label>
+          <label class="store-field">
+            <span>Banheiros</span>
+            <input name="bathrooms" type="number" min="0" step="1" placeholder="Ex: 2" required />
+          </label>
 
-        <label class="store-field">
-          <span>Vagas</span>
-          <input name="parking" type="number" min="0" step="1" placeholder="Ex: 2" required />
-        </label>
+          <label class="store-field">
+            <span>Vagas</span>
+            <input name="parking" type="number" min="0" step="1" placeholder="Ex: 2" required />
+          </label>
 
-        <label class="store-field">
-          <span>WhatsApp (DDI+DDD)</span>
-          <input name="whatsapp" type="tel" placeholder="5511999990000" required />
-        </label>
+          <label class="store-field">
+            <span>WhatsApp (DDI+DDD)</span>
+            <input name="whatsapp" type="tel" placeholder="5511999990000" required />
+          </label>
 
-        <div class="store-field store-field--full">
-          <span><strong>Endereço (parcial)</strong> — não exibiremos o número publicamente</span>
-          <div class="imovel-form__addr">
-            <input name="addressStreet" type="text" placeholder="Rua/Avenida (sem nº no público)" required />
-            <input name="addressNumber" type="text" placeholder="Número (não público)" />
-            <input name="addressNeighborhood" type="text" placeholder="Bairro" required />
-            <input name="addressCity" type="text" value="Itapira" required />
-            <input name="addressState" type="text" value="SP" required />
-            <input name="addressCep" type="text" placeholder="CEP (opcional)" />
-            <input name="addressComplement" type="text" placeholder="Complemento (opcional)" />
+          <div class="store-field store-field--full">
+            <span><strong>Endereço (parcial)</strong> — não exibiremos o número publicamente</span>
+            <div class="imovel-form__addr">
+              <input name="addressStreet" type="text" placeholder="Rua/Avenida (sem nº no público)" required />
+              <input name="addressNumber" type="text" placeholder="Número (não público)" />
+              <input name="addressNeighborhood" type="text" placeholder="Bairro" required />
+              <input name="addressCity" type="text" value="Itapira" required />
+              <input name="addressState" type="text" value="SP" required />
+              <input name="addressCep" type="text" placeholder="CEP (opcional)" />
+              <input name="addressComplement" type="text" placeholder="Complemento (opcional)" />
+            </div>
+            <small class="muted">O mapa pode usar o endereço completo, mas o público verá apenas rua/bairro/cidade.</small>
           </div>
-          <small class="muted">O mapa pode usar o endereço completo, mas o público verá apenas rua/bairro/cidade.</small>
+
+          <div class="store-field store-field--full">
+            <span>Fotos do imóvel (até 6 · máx. 1MB cada)</span>
+            <input id="imovelPhotos" name="photos" type="file" accept="image/*" multiple required />
+            <div id="imovelPhotosPreview" class="imovel-photos-preview"></div>
+          </div>
         </div>
 
-        <div class="store-field store-field--full">
-          <span>Fotos do imóvel (até 6 · máx. 1MB cada)</span>
-          <input id="imovelPhotos" name="photos" type="file" accept="image/*" multiple required />
-          <div id="imovelPhotosPreview" class="imovel-photos-preview"></div>
+        <div class="store-form__actions">
+          <p id="imovelFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
+          <button id="imovelFormSubmit" class="btn btn-primary glow-on-hover" type="submit">
+            Publicar anúncio
+          </button>
         </div>
-      </div>
-
-      <div class="store-form__actions">
-        <p id="imovelFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
-        <button id="imovelFormSubmit" class="btn btn-primary glow-on-hover" type="submit">
-          Publicar anúncio
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
 
-</section>
 
 
     <section id="eventosSection" class="section">

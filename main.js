@@ -1520,3 +1520,15 @@ function bindImoveis() {
     }
   });
 }
+
+
+function openModalById(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+
+  modal.scrollTop = 0;
+  modal.querySelector(".ti-modal__body")?.scrollTo({ top: 0 });
+}

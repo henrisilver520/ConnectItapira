@@ -2518,3 +2518,20 @@ body.modal-open{
 #nav-header-buttons.is-dragging{
   cursor: grabbing;
 }
+
+
+
+
+  .comercios-hero,
+  .comercios-toolbar,
+  .comercios-flow,
+  .comercios-seller-cta,
+  .store-dashboard,
+  .stores-section,
+  .servicos-hero,
+  .servicos-categorias,
+  .servicos-bloco,
+  .servicos-modal__panel{
+    padding:2px;
+  }
+  

@@ -3046,3 +3046,61 @@ body.modal-open{
 #suggestPlaceBtn {
     background-color: #243866;
 }
+
+.locais-search{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,.12);
+  background:#ffffff;
+  box-shadow: 0 10px 18px rgba(15,23,42,.06);
+  min-width: 320px;
+}
+
+.locais-search i{
+  color:#64748b;
+}
+
+.locais-search input{
+  border:none;
+  outline:none;
+  font-weight:800;
+  color:#0f172a;
+  width: 260px;
+  background:transparent;
+}
+
+.locais-search input::placeholder{
+  color:#94a3b8;
+  font-weight:700;
+}
+
+.locais-search__clear{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  color:#94a3b8;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+}
+
+.locais-search__clear:hover{
+  background:#f1f5f9;
+  color:#0f172a;
+}
+
+@media (max-width: 640px){
+  .locais-search{
+    min-width: 100%;
+    width: 100%;
+  }
+  .locais-search input{
+    width: 100%;
+  }
+}
+

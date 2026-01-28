@@ -2464,9 +2464,13 @@ function renderLocaisCats() {
 }
 
 function getPlacesFiltered() {
-  if (locaisActiveCat === "Todos") return placesCache;
-  return placesCache.filter(p => p.category === locaisActiveCat);
+  const byCategory = (locaisActiveCat === "Todos")
+    ? placesCache
+    : placesCache.filter(p => p.category === locaisActiveCat);
+
+  return byCategory.filter(matchesSearch);
 }
+
 
 function renderLocaisGrid() {
   const grid = document.getElementById("locaisGrid");
@@ -2832,6 +2836,28 @@ function bindLocaisFirestore() {
     }
   });
 
+  const searchInput = document.getElementById("locaisSearch");
+const clearBtn = document.getElementById("locaisSearchClear");
+
+searchInput?.addEventListener("input", () => {
+  locaisQuery = normalizeText(searchInput.value);
+
+  if (locaisQuery) {
+    locaisActiveCat = "Todos";
+    renderLocaisCats();
+  }
+
+  renderLocaisGrid();
+});
+
+
+clearBtn?.addEventListener("click", () => {
+  locaisQuery = "";
+  if (searchInput) searchInput.value = "";
+  renderLocaisGrid();
+});
+
+
   // salvar admin
   document.getElementById("placeAdminForm")?.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -2839,4 +2865,38 @@ function bindLocaisFirestore() {
   });
 
   document.getElementById("placeAdminDelete")?.addEventListener("click", deletePlaceAdmin);
+}
+
+
+let locaisQuery = "";
+
+function normalizeText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+function buildPlaceHaystack(p) {
+  // “todos os textos” (orgânico)
+  return normalizeText([
+    p.name,
+    p.category,
+    p.short,
+    p.description,
+    p.addressNeighborhood,
+    p.addressCity,
+    p.addressState,
+    p.addressStreet,
+    p.hours,
+    p.phone,
+    p.mapsQuery,
+  ].filter(Boolean).join(" "));
+}
+
+function matchesSearch(p) {
+  if (!locaisQuery) return true;
+  const hay = buildPlaceHaystack(p);
+  return hay.includes(locaisQuery);
 }

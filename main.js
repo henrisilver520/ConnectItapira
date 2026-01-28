@@ -2537,12 +2537,39 @@ function openLocalDetails(place) {
   document.getElementById("localDetailsDesc").textContent = place.description || place.short || "Sem detalhes.";
   document.getElementById("localDetailsCat").textContent = place.category || "—";
 
-  const addr = [
-    place.addressStreet || "",
-    place.addressNeighborhood || "",
+
+  // imagem (cover)
+const coverUrl =
+  place.coverImage ||
+  place.image ||
+  place.photo ||
+  place.cover ||
+  "";
+
+const coverWrap = document.getElementById("localDetailsCoverWrap");
+const coverImg = document.getElementById("localDetailsCover");
+
+if (coverWrap && coverImg) {
+  if (coverUrl) {
+    coverWrap.classList.remove("is-hidden");
+    coverImg.src = coverUrl;
+  } else {
+    coverWrap.classList.add("is-hidden");
+    coverImg.src = "";
+  }
+}
+
+
+
+const addr =
+  place.address ||
+  [
+    place.addressStreet,
+    place.addressNeighborhood,
     `${place.addressCity || "Itapira"} - ${place.addressState || "SP"}`
   ].filter(Boolean).join(" · ");
-  document.getElementById("localDetailsAddr").textContent = addr || "—";
+
+document.getElementById("localDetailsAddr").textContent = addr || "—";
 
   document.getElementById("localDetailsHours").textContent = place.hours || "—";
   document.getElementById("localDetailsPhone").textContent = place.phone || "—";

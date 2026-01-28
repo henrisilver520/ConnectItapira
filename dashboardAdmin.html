@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin • Locais</title>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <link rel="stylesheet" href="dashboardAdmin.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-badge"><i class="fa-solid fa-shield-halved"></i></span>
+        <span>Dashboard Admin • Locais</span>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="btnRefresh" class="btn btn-outline" type="button">
+          <i class="fa-solid fa-rotate"></i> Atualizar
+        </button>
+        <button id="btnLogout" class="btn btn-outline" type="button">
+          <i class="fa-solid fa-right-from-bracket"></i> Sair
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h1>Revisão de Sugestões</h1>
+          <p>Gerencie sugestões de locais enviadas pela comunidade. Aprove e publique em <strong>places</strong> ou rejeite com nota.</p>
+        </div>
+        <div class="panel-meta">
+          <span id="adminState" class="pill pill-info">Verificando permissão...</span>
+          <span id="pendingCount" class="pill pill-neutral">Pendentes: —</span>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="chip is-active" data-filter="pending" type="button"><i class="fa-solid fa-hourglass-half"></i> Pendentes</button>
+        <button class="chip" data-filter="approved" type="button"><i class="fa-solid fa-circle-check"></i> Aprovadas</button>
+        <button class="chip" data-filter="rejected" type="button"><i class="fa-solid fa-circle-xmark"></i> Rejeitadas</button>
+      </div>
+
+      <div id="suggestionsGrid" class="grid">
+        <!-- cards -->
+      </div>
+
+      <div id="emptyState" class="empty is-hidden">
+        Nenhuma sugestão encontrada para este filtro.
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Revisão -->
+  <div id="reviewModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-review></div>
+
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Revisar sugestão">
+      <header class="modal-header">
+        <div>
+          <p class="kicker">Revisão</p>
+          <h2 id="reviewTitle">Sugestão</h2>
+          <p id="reviewSub" class="muted"></p>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Fechar" data-close-review>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <div class="review-layout">
+          <div class="review-left">
+            <div id="reviewCoverWrap" class="cover-wrap">
+              <img id="reviewCover" alt="Imagem do local" />
+            </div>
+
+            <div class="review-box">
+              <h3>Sobre</h3>
+              <p id="reviewDesc" class="text"></p>
+            </div>
+
+            <div class="review-box">
+              <h3>Metadados</h3>
+              <ul class="list">
+                <li><strong>Status:</strong> <span id="reviewStatus">—</span></li>
+                <li><strong>Enviado por:</strong> <span id="reviewBy">—</span></li>
+                <li><strong>Criado em:</strong> <span id="reviewAt">—</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="review-right">
+            <form id="reviewForm" class="form">
+              <input type="hidden" name="suggestionId" />
+              <input type="hidden" name="currentStatus" />
+
+              <div class="form-grid">
+                <label class="field field-full">
+                  <span>Nome</span>
+                  <input name="name" required maxlength="80" />
+                </label>
+
+                <label class="field">
+                  <span>Categoria</span>
+                  <select name="category" required></select>
+                </label>
+
+                <label class="field">
+                  <span>Ícone (FA)</span>
+                  <input name="icon" placeholder="fa-tree" />
+                </label>
+
+                <label class="field field-full">
+                  <span>Descrição curta</span>
+                  <input name="short" required maxlength="120" />
+                </label>
+
+                <label class="field field-full">
+                  <span>Descrição completa</span>
+                  <textarea name="description" rows="5" maxlength="600" required></textarea>
+                </label>
+
+                <label class="field">
+                  <span>Bairro</span>
+                  <input name="addressNeighborhood" required />
+                </label>
+
+                <label class="field">
+                  <span>Cidade</span>
+                  <input name="addressCity" value="Itapira" required />
+                </label>
+
+                <label class="field">
+                  <span>Estado</span>
+                  <input name="addressState" value="SP" required />
+                </label>
+
+                <label class="field field-full">
+                  <span>Rua (opcional)</span>
+                  <input name="addressStreet" />
+                </label>
+
+                <label class="field">
+                  <span>Horário (opcional)</span>
+                  <input name="hours" />
+                </label>
+
+                <label class="field">
+                  <span>Telefone (opcional)</span>
+                  <input name="phone" />
+                </label>
+
+                <label class="field field-full">
+                  <span>Mapa (query opcional)</span>
+                  <input name="mapsQuery" />
+                </label>
+
+                <label class="field field-full">
+                  <span>Nota de revisão (aparecerá para o usuário)</span>
+                  <textarea name="reviewNote" rows="3" maxlength="280" placeholder="Ex: faltou endereço / ajustar categoria..."></textarea>
+                </label>
+              </div>
+
+              <div class="actions">
+                <button id="btnApprove" class="btn btn-primary" type="button">
+                  <i class="fa-solid fa-circle-check"></i> Aprovar e publicar
+                </button>
+
+                <button id="btnReject" class="btn btn-danger" type="button">
+                  <i class="fa-solid fa-circle-xmark"></i> Rejeitar
+                </button>
+
+                <button class="btn btn-outline" type="button" data-close-review>
+                  <i class="fa-solid fa-arrow-left"></i> Voltar
+                </button>
+              </div>
+
+              <p id="reviewMsg" class="msg" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore-compat.js"></script>
+
+  <script src="dashboardAdmin.js"></script>
+</body>
+</html>

@@ -1605,3 +1605,53 @@ function enableDragScroll(el) {
     }
   }, true);
 }
+
+
+
+// EVENTOS
+
+function renderEventos(eventos = []) {
+  const grid = document.getElementById("eventosGrid");
+  const empty = document.getElementById("eventosEmpty");
+  if (!grid) return;
+
+  if (!eventos.length) {
+    grid.innerHTML = "";
+    empty.classList.remove("is-hidden");
+    return;
+  }
+
+  empty.classList.add("is-hidden");
+
+  grid.innerHTML = eventos.map(ev => `
+    <article class="evento-card">
+      <div class="evento-cover" style="background-image:url('${ev.cover || ""}')">
+        ${ev.gratuito ? `<span class="evento-badge">Gratuito</span>` : ""}
+      </div>
+
+      <div class="evento-body">
+        <p class="evento-date">
+          <i class="fa-solid fa-calendar"></i> ${ev.data} • ${ev.hora}
+        </p>
+
+        <h3 class="evento-title">${ev.titulo}</h3>
+
+        <p class="evento-loc">
+          <i class="fa-solid fa-location-dot"></i> ${ev.local}
+        </p>
+
+        <p class="evento-desc">${ev.descricao}</p>
+
+        <div class="evento-actions">
+          <button class="btn btn-outline-primary">
+            <i class="fa-solid fa-check"></i> Vou
+          </button>
+
+          <button class="btn btn-outline-light">
+            <i class="fa-solid fa-comments"></i> Comentários
+          </button>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}

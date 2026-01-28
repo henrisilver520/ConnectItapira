@@ -2528,3 +2528,153 @@ body.modal-open{
 
 
 
+
+
+
+/* =========================
+   EVENTOS
+========================= */
+
+.eventos-section{
+  padding: 0;
+}
+
+.eventos-shell{
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* Header */
+.eventos-header{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.eventos-title h2{
+  margin:0;
+  font-size:1.25rem;
+  font-weight:950;
+}
+
+.eventos-subtitle{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-weight:700;
+}
+
+/* Filtros */
+.eventos-filters{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+}
+
+.eventos-filter{
+  flex:0 0 auto;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.75);
+  font-weight:900;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.eventos-filter.is-active{
+  background: var(--brand-soft);
+  border-color: rgba(37,99,235,.3);
+}
+
+/* Grid */
+.eventos-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+@media(max-width:980px){
+  .eventos-grid{ grid-template-columns:repeat(2,1fr); }
+}
+
+@media(max-width:640px){
+  .eventos-grid{ grid-template-columns:1fr; }
+}
+
+/* Card */
+.evento-card{
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+}
+
+.evento-cover{
+  height:150px;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+}
+
+.evento-badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:.75rem;
+  background:#22c55e;
+  color:#022c22;
+}
+
+.evento-body{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.evento-date{
+  margin:0;
+  font-weight:900;
+  font-size:.85rem;
+  color:var(--muted);
+}
+
+.evento-title{
+  margin:0;
+  font-weight:950;
+  line-height:1.25;
+}
+
+.evento-loc{
+  margin:0;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.evento-desc{
+  margin:0;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+.evento-actions{
+  margin-top:auto;
+  display:flex;
+  gap:10px;
+}
+

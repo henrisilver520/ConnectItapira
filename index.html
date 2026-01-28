@@ -55,19 +55,19 @@
       </button>
 
       <button id="locais" class="btn btn-primary glow-on-hover" type="button" data-target="pontosInteresseSection">
-        <i class="fas fa-map-marker-alt"></i> Pontos de Interesse
+        <i class="fas fa-map-marker-alt"></i> Locais
       </button>
 
       <button id="grupos" class="btn btn-primary glow-on-hover" type="button" data-target="gruposSection">
-        <i class="fa-solid fa-people-group"></i> Grupos da Cidade
+        <i class="fa-solid fa-people-group"></i> Grupos
       </button>
 
       <button id="noticiasLocaisButton" class="btn btn-primary glow-on-hover" type="button" data-target="noticiasSection">
-        <i class="fas fa-newspaper"></i> Notícias Locais
+        <i class="fas fa-newspaper"></i> Notícias
       </button>
 
       <button id="empregosLocaisButton" class="btn btn-primary glow-on-hover" type="button" data-target="empregosSection">
-        <i class="fas fa-briefcase"></i> Empregos Locais
+        <i class="fas fa-briefcase"></i> Vagas de Empregos
       </button>
 
       <button id="openChatButton" class="btn btn-primary glow-on-hover" type="button" data-target="chatPublicoSection">
@@ -774,11 +774,54 @@
 
 
 
-    <section id="eventosSection" class="section">
-      <h2>Eventos</h2>
-      <p>Seção vazia.</p>
-      <div class="placeholder">Conteúdo de eventos aqui.</div>
-    </section>
+    <section id="eventosSection" class="section eventos-section">
+  <div class="eventos-shell">
+
+    <!-- Header -->
+    <header class="eventos-header">
+      <div class="eventos-title">
+        <h2>Eventos da Cidade</h2>
+        <p class="eventos-subtitle">
+          Shows, festas, feiras, eventos culturais e esportivos em Itapira.
+        </p>
+      </div>
+
+      <div class="eventos-cta">
+        <button id="anunciarEventoBtn" class="btn btn-primary glow-on-hover" type="button">
+          <i class="fas fa-calendar-plus"></i> Anunciar evento
+        </button>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <div class="eventos-filters">
+      <button class="eventos-filter is-active" data-filter="todos">
+        <i class="fa-solid fa-calendar-days"></i> Todos
+      </button>
+      <button class="eventos-filter" data-filter="hoje">
+        <i class="fa-solid fa-bolt"></i> Hoje
+      </button>
+      <button class="eventos-filter" data-filter="fim-de-semana">
+        <i class="fa-solid fa-umbrella-beach"></i> Fim de semana
+      </button>
+      <button class="eventos-filter" data-filter="gratuito">
+        <i class="fa-solid fa-ticket"></i> Gratuitos
+      </button>
+    </div>
+
+    <!-- Lista -->
+    <div class="eventos-grid" id="eventosGrid">
+      <!-- Cards renderizados via JS -->
+    </div>
+
+    <!-- Estado vazio -->
+    <div id="eventosEmpty" class="eventos-empty is-hidden">
+      Nenhum evento cadastrado no momento.
+    </div>
+
+  </div>
+</section>
+
 
     <section id="servicosSection" class="section">
       <div class="servicos">
@@ -951,6 +994,40 @@
       <p>Seção vazia.</p>
       <div class="placeholder">Bairros aqui.</div>
     </section>
+
+
+
+    <article class="evento-card">
+  <div class="evento-cover" style="background-image:url('banner.jpg')">
+    <span class="evento-badge gratuito">Gratuito</span>
+  </div>
+
+  <div class="evento-body">
+    <p class="evento-date">
+      <i class="fa-solid fa-calendar"></i> 25/02 • 19:00
+    </p>
+
+    <h3 class="evento-title">Show ao Vivo na Praça Central</h3>
+
+    <p class="evento-loc">
+      <i class="fa-solid fa-location-dot"></i> Praça Central – Itapira
+    </p>
+
+    <p class="evento-desc">
+      Música ao vivo com bandas locais, food trucks e espaço para família.
+    </p>
+
+    <div class="evento-actions">
+      <button class="btn btn-outline-primary btn-presenca">
+        <i class="fa-solid fa-check"></i> Vou
+      </button>
+
+      <button class="btn btn-outline-light btn-comentar">
+        <i class="fa-solid fa-comments"></i> Comentários
+      </button>
+    </div>
+  </div>
+</article>
 
 
   </main>

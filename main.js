@@ -1616,74 +1616,6 @@ function enableDragScroll(el) {
 
 
 // EVENTOS
-function renderEvents() {
-  const grid = document.getElementById("eventosGrid");
-  const empty = document.getElementById("eventosEmpty");
-  if (!grid || !empty) return;
-
-  const filtered = eventsCache.filter(eventMatchesFilter);
-
-  if (!filtered.length) {
-    grid.innerHTML = "";
-    empty.classList.remove("is-hidden");
-    return;
-  }
-
-  empty.classList.add("is-hidden");
-
-  grid.innerHTML = filtered.map((ev) => {
-    const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
-    const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
-    const mapsLink = buildMapsLinkFromEvent(ev);
-
-    // ✅ AQUI é o lugar certo
-    const commentCount = Number(ev.commentCount || 0);
-
-    return `
-      <article class="evento-card" data-event-id="${ev.id}">
-        <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
-          ${badge}
-        </div>
-
-        <div class="evento-body">
-          <p class="evento-date">
-            <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
-          </p>
-
-          <h3 class="evento-title">${ev.title || "Evento"}</h3>
-
-          <p class="evento-loc">
-            <i class="fa-solid fa-location-dot"></i> ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
-          </p>
-
-          <p class="evento-desc">${ev.description || ""}</p>
-
-          <div class="evento-actions">
-            <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
-              <i class="fa-solid fa-check"></i> Vou
-            </button>
-
-            <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
-              <i class="fa-solid fa-xmark"></i> Não vou
-            </button>
-
-            <button class="btn btn-outline-light js-open-comments" type="button">
-              <i class="fa-solid fa-comments"></i> ${commentCount}
-            </button>
-
-            <a class="btn btn-outline-light" href="${mapsLink}" target="_blank" rel="noopener">
-              <i class="fa-solid fa-map"></i>
-            </a>
-          </div>
-
-          <p class="evento-meta">
-            <strong class="js-att-count">${Number(ev.attendanceCount || 0)}</strong> vão
-          </p>
-        </div>
-      </article>
-    `;
-  }).join("");
-}
 
 
 function openEventCreateModal() {
@@ -2185,14 +2117,12 @@ function bindEventCommentsModal() {
 }
 
 
-
 function renderEvents() {
   const grid = document.getElementById("eventosGrid");
   const empty = document.getElementById("eventosEmpty");
   if (!grid || !empty) return;
 
-  const filtered = eventsCache.filter(eventMatchesFilter);
-  const commentCount = Number(ev.commentCount || 0);
+  const filtered = (eventsCache || []).filter(eventMatchesFilter);
 
   if (!filtered.length) {
     grid.innerHTML = "";
@@ -2202,50 +2132,58 @@ function renderEvents() {
 
   empty.classList.add("is-hidden");
 
-  grid.innerHTML = filtered.map((ev) => {
-    const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
-    const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
-    const mapsLink = buildMapsLinkFromEvent(ev);
+  grid.innerHTML = filtered
+    .map((ev) => {
+      const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
+      const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
+      const mapsLink = buildMapsLinkFromEvent(ev);
+      const commentCount = Number(ev.commentCount || 0);
+      const attendanceCount = Number(ev.attendanceCount || 0);
 
-    return `
-      <article class="evento-card" data-event-id="${ev.id}">
-        <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
-          ${badge}
-        </div>
+      return `
+        <article class="evento-card" data-event-id="${ev.id}">
+          <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
+            ${badge}
+          </div>
 
-        <div class="evento-body">
-          <p class="evento-date">
-            <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
-          </p>
+          <div class="evento-body">
+            <p class="evento-date">
+              <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
+            </p>
 
-          <h3 class="evento-title">${ev.title || "Evento"}</h3>
+            <h3 class="evento-title">${ev.title || "Evento"}</h3>
 
-          <p class="evento-loc">
-            <i class="fa-solid fa-location-dot"></i> ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
-          </p>
+            <p class="evento-loc">
+              <i class="fa-solid fa-location-dot"></i>
+              ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
+            </p>
 
-          <p class="evento-desc">${ev.description || ""}</p>
+            <p class="evento-desc">${ev.description || ""}</p>
 
-          <div class="evento-actions">
-  <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
-    <i class="fa-solid fa-check"></i> Vou
-  </button>
+            <div class="evento-actions">
+              <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
+                <i class="fa-solid fa-check"></i> Vou
+              </button>
 
-  <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
-    <i class="fa-solid fa-xmark"></i> Não vou
-  </button>
+              <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
+                <i class="fa-solid fa-xmark"></i> Não vou
+              </button>
 
-  <button class="btn btn-outline-light js-open-comments" type="button">
-    <i class="fa-solid fa-comments"></i> ${commentCount}
-  </button>
-</div>
+              <button class="btn btn-outline-light js-open-comments" type="button">
+                <i class="fa-solid fa-comments"></i> ${commentCount}
+              </button>
 
+              <a class="btn btn-outline-light" href="${mapsLink}" target="_blank" rel="noopener">
+                <i class="fa-solid fa-map"></i>
+              </a>
+            </div>
 
-          <p class="evento-meta">
-            <strong class="js-att-count">${Number(ev.attendanceCount || 0)}</strong> vão
-          </p>
-        </div>
-      </article>
-    `;
-  }).join("");
+            <p class="evento-meta">
+              <strong class="js-att-count">${attendanceCount}</strong> vão
+            </p>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
 }

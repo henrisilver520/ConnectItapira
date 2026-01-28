@@ -1616,13 +1616,14 @@ function enableDragScroll(el) {
 
 
 // EVENTOS
-
-function renderEventos(eventos = []) {
+function renderEvents() {
   const grid = document.getElementById("eventosGrid");
   const empty = document.getElementById("eventosEmpty");
-  if (!grid) return;
+  if (!grid || !empty) return;
 
-  if (!eventos.length) {
+  const filtered = eventsCache.filter(eventMatchesFilter);
+
+  if (!filtered.length) {
     grid.innerHTML = "";
     empty.classList.remove("is-hidden");
     return;
@@ -1630,39 +1631,59 @@ function renderEventos(eventos = []) {
 
   empty.classList.add("is-hidden");
 
-  grid.innerHTML = eventos.map(ev => `
-    <article class="evento-card">
-      <div class="evento-cover" style="background-image:url('${ev.cover || ""}')">
-        ${ev.gratuito ? `<span class="evento-badge">Gratuito</span>` : ""}
-      </div>
+  grid.innerHTML = filtered.map((ev) => {
+    const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
+    const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
+    const mapsLink = buildMapsLinkFromEvent(ev);
 
-      <div class="evento-body">
-        <p class="evento-date">
-          <i class="fa-solid fa-calendar"></i> ${ev.data} • ${ev.hora}
-        </p>
+    // ✅ AQUI é o lugar certo
+    const commentCount = Number(ev.commentCount || 0);
 
-        <h3 class="evento-title">${ev.titulo}</h3>
-
-        <p class="evento-loc">
-          <i class="fa-solid fa-location-dot"></i> ${ev.local}
-        </p>
-
-        <p class="evento-desc">${ev.descricao}</p>
-
-        <div class="evento-actions">
-          <button class="btn btn-outline-primary">
-            <i class="fa-solid fa-check"></i> Vou
-          </button>
-
-          <button class="btn btn-outline-light">
-            <i class="fa-solid fa-comments"></i> Comentários
-          </button>
+    return `
+      <article class="evento-card" data-event-id="${ev.id}">
+        <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
+          ${badge}
         </div>
-      </div>
-    </article>
-  `).join("");
-}
 
+        <div class="evento-body">
+          <p class="evento-date">
+            <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
+          </p>
+
+          <h3 class="evento-title">${ev.title || "Evento"}</h3>
+
+          <p class="evento-loc">
+            <i class="fa-solid fa-location-dot"></i> ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
+          </p>
+
+          <p class="evento-desc">${ev.description || ""}</p>
+
+          <div class="evento-actions">
+            <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
+              <i class="fa-solid fa-check"></i> Vou
+            </button>
+
+            <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
+              <i class="fa-solid fa-xmark"></i> Não vou
+            </button>
+
+            <button class="btn btn-outline-light js-open-comments" type="button">
+              <i class="fa-solid fa-comments"></i> ${commentCount}
+            </button>
+
+            <a class="btn btn-outline-light" href="${mapsLink}" target="_blank" rel="noopener">
+              <i class="fa-solid fa-map"></i>
+            </a>
+          </div>
+
+          <p class="evento-meta">
+            <strong class="js-att-count">${Number(ev.attendanceCount || 0)}</strong> vão
+          </p>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
 
 
 function openEventCreateModal() {
@@ -1918,12 +1939,11 @@ async function setAttendance(eventId, status) {
   }
 }
 
-
 function bindEventos() {
   const section = document.getElementById("eventosSection");
   if (!section) return;
 
-  // abrir modal de anúncio
+  // Abrir modal de anúncio
   document.getElementById("anunciarEventoBtn")?.addEventListener("click", () => {
     if (!auth?.currentUser) {
       alert("Você precisa estar logado para anunciar um evento.");
@@ -1932,57 +1952,60 @@ function bindEventos() {
     openEventCreateModal();
   });
 
-  // filtros
+  // Filtros
   section.querySelector(".eventos-filters")?.addEventListener("click", (e) => {
     const btn = e.target.closest(".eventos-filter[data-filter]");
     if (!btn) return;
 
-    section.querySelectorAll(".eventos-filter").forEach(b => b.classList.remove("is-active"));
+    section.querySelectorAll(".eventos-filter").forEach((b) => b.classList.remove("is-active"));
     btn.classList.add("is-active");
 
     activeEventFilter = btn.getAttribute("data-filter") || "todos";
     renderEvents();
   });
 
-  // presença
+  // Ações dos cards (comentários + presença + mapa)
   document.getElementById("eventosGrid")?.addEventListener("click", (e) => {
-    const btn = e.target.closest(".js-attend[data-action]");
-    if (!btn) return;
+    // 1) Abrir comentários
+    const commentsBtn = e.target.closest(".js-open-comments");
+    if (commentsBtn) {
+      const card = commentsBtn.closest(".evento-card");
+      const eventId = card?.getAttribute("data-event-id");
+      if (!eventId) return;
 
-    const card = btn.closest(".evento-card");
-    const eventId = card?.getAttribute("data-event-id");
-    if (!eventId) return;
+      const ev = eventsCache.find((x) => x.id === eventId);
+      if (ev) openEventCommentsModal(ev);
+      return;
+    }
 
-    const action = btn.getAttribute("data-action");
-    if (action === "going") setAttendance(eventId, "going");
-    if (action === "not_going") setAttendance(eventId, "not_going");
+    // 2) Presença (Vou / Não vou)
+    const attendBtn = e.target.closest(".js-attend[data-action]");
+    if (attendBtn) {
+      const card = attendBtn.closest(".evento-card");
+      const eventId = card?.getAttribute("data-event-id");
+      if (!eventId) return;
 
-    // abrir comentários
-const commentsBtn = e.target.closest(".js-open-comments");
-if (commentsBtn) {
-  const card = commentsBtn.closest(".evento-card");
-  const eventId = card?.getAttribute("data-event-id");
-  const ev = eventsCache.find(x => x.id === eventId);
-  if (ev) openEventCommentsModal(ev);
-  return;
-}
-
-
+      const action = attendBtn.getAttribute("data-action");
+      if (action === "going") setAttendance(eventId, "going");
+      if (action === "not_going") setAttendance(eventId, "not_going");
+      return;
+    }
   });
 
-  // submit anúncio
+  // Submit anúncio
   const form = document.getElementById("eventCreateForm");
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
     saveEvent(form);
   });
 
-  // preview da capa
+  // Preview da capa
   document.getElementById("eventCoverInput")?.addEventListener("change", async (e) => {
     try {
       const file = e.target.files?.[0];
       const b64 = await readSingleImageAsBase64(file);
-      document.getElementById("eventCoverPreview").innerHTML = `<img src="${b64}" alt="Prévia do banner">`;
+      document.getElementById("eventCoverPreview").innerHTML =
+        `<img src="${b64}" alt="Prévia do banner">`;
       setEventCreateMessage("Banner selecionado.");
     } catch (err) {
       document.getElementById("eventCoverPreview").innerHTML = "";

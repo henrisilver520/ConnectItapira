@@ -2312,27 +2312,25 @@ function renderLocaisGrid() {
   grid.innerHTML = items.map((p) => {
     const icon = p.icon || "fa-location-dot";
 
-    const coverUrl =
-      p.coverImage ||
-      p.image ||
-      p.photo ||
-      p.cover ||
-      "";
+   const coverUrl =
+  p.coverImage ||
+  p.image ||
+  p.photo ||
+  p.cover ||
+  "";
 
-    const cover = coverUrl
-      ? `<img src="${coverUrl}" alt="${p.name}" loading="lazy">`
-      : `
-        <div class="local-card__cover-fallback">
-          <i class="fa-solid ${icon}"></i>
-        </div>
-      `;
+const coverHtml = coverUrl
+  ? `<div class="local-card__cover-img" style="background-image:url('${coverUrl}')"></div>`
+  : `<div class="local-card__cover-fallback"><i class="fa-solid ${icon}"></i></div>`;
+
 
     return `
       <article class="local-card" data-place-id="${p.id}">
         <div class="local-card__cover">
-          ${cover}
-          <span class="local-card__category">${p.category}</span>
-        </div>
+  ${coverHtml}
+  <span class="local-card__category">${p.category}</span>
+</div>
+
 
         <div class="local-card__body">
           <h3 class="local-card__name">${p.name}</h3>

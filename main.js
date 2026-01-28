@@ -798,15 +798,16 @@ document.addEventListener("DOMContentLoaded", () => {
   bindComercios();
   bindServicos();
   loadStoresFromFirestore();
-bindEventCommentsModal();
+  bindEventCommentsModal();
+  bindLocais();
 
-bindImoveis();
-bindImovelDetailsModal();
-bindImovelAnuncioModal();
-loadPropertiesFromFirestore();
-enableDragScroll(document.getElementById("nav-header-buttons"));
+  bindImoveis();
+  bindImovelDetailsModal();
+  bindImovelAnuncioModal();
+  loadPropertiesFromFirestore();
+  enableDragScroll(document.getElementById("nav-header-buttons"));
 
- bindEventos();
+  bindEventos();
   bindEventCreateModal();
   loadEvents();
 
@@ -2187,3 +2188,198 @@ function renderEvents() {
     })
     .join("");
 }
+
+
+// ========================
+// LOCAIS (Pontos de Interesse)
+// ========================
+const LOCAIS_CATEGORIES = [
+  "Todos",
+  "Praças & Parques",
+  "Turismo & Pontos Históricos",
+  "Cultura & Lazer",
+  "Esporte",
+  "Saúde",
+  "Educação",
+  "Serviços Públicos",
+  "Compras & Conveniência",
+  "Igrejas & Templos",
+];
+
+const LOCAIS_CAT_ICONS = {
+  "Todos": "fa-compass",
+  "Praças & Parques": "fa-tree",
+  "Turismo & Pontos Históricos": "fa-landmark",
+  "Cultura & Lazer": "fa-masks-theater",
+  "Esporte": "fa-dumbbell",
+  "Saúde": "fa-heart-pulse",
+  "Educação": "fa-graduation-cap",
+  "Serviços Públicos": "fa-building-columns",
+  "Compras & Conveniência": "fa-basket-shopping",
+  "Igrejas & Templos": "fa-place-of-worship",
+};
+
+let locaisActiveCat = "Todos";
+
+// Dados exemplo (depois vira Firestore)
+const PLACES = [
+  {
+    id: "p1",
+    name: "Praça Central",
+    category: "Praças & Parques",
+    short: "Ponto de encontro e eventos ao ar livre.",
+    address: "Centro, Itapira - SP",
+    hours: "Aberto 24h",
+    phone: "",
+    icon: "fa-tree",
+    mapsQuery: "Praça Central Itapira SP",
+    details: "Área central com circulação, bancos e espaço para eventos.",
+  },
+  {
+    id: "p2",
+    name: "Prefeitura Municipal",
+    category: "Serviços Públicos",
+    short: "Atendimento e serviços do município.",
+    address: "Centro, Itapira - SP",
+    hours: "Seg-Sex 08:00–17:00",
+    phone: "",
+    icon: "fa-building-columns",
+    mapsQuery: "Prefeitura Itapira SP",
+    details: "Serviços administrativos e atendimento ao cidadão.",
+  },
+  {
+    id: "p3",
+    name: "Hospital (referência)",
+    category: "Saúde",
+    short: "Serviços de saúde e atendimento.",
+    address: "Itapira - SP",
+    hours: "24h",
+    phone: "",
+    icon: "fa-heart-pulse",
+    mapsQuery: "Hospital Itapira SP",
+    details: "Procure o local para horários e serviços.",
+  },
+];
+
+function buildMapsLink(queryOrAddress) {
+  const q = encodeURIComponent(queryOrAddress || "Itapira SP");
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
+function renderLocaisCats() {
+  const wrap = document.getElementById("locaisCats");
+  if (!wrap) return;
+
+  wrap.innerHTML = LOCAIS_CATEGORIES.map((cat) => {
+    const active = cat === locaisActiveCat ? "is-active" : "";
+    const icon = LOCAIS_CAT_ICONS[cat] || "fa-location-dot";
+    return `
+      <button class="local-cat ${active}" type="button" data-cat="${cat}">
+        <span class="local-cat__icon"><i class="fa-solid ${icon}"></i></span>
+        <span class="local-cat__label">${cat}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function getLocaisFiltered() {
+  if (locaisActiveCat === "Todos") return PLACES;
+  return PLACES.filter((p) => p.category === locaisActiveCat);
+}
+
+function renderLocaisGrid() {
+  const grid = document.getElementById("locaisGrid");
+  const empty = document.getElementById("locaisEmpty");
+  if (!grid || !empty) return;
+
+  const items = getLocaisFiltered();
+  if (!items.length) {
+    grid.innerHTML = "";
+    empty.classList.remove("is-hidden");
+    return;
+  }
+  empty.classList.add("is-hidden");
+
+  grid.innerHTML = items.map((p) => {
+    const icon = p.icon || "fa-location-dot";
+    return `
+      <article class="local-card" data-place-id="${p.id}">
+        <div class="local-card__top">
+          <div class="local-card__icon"><i class="fa-solid ${icon}"></i></div>
+          <div style="min-width:0;">
+            <h3 class="local-card__name">${p.name}</h3>
+            <p class="local-card__meta"><i class="fa-solid fa-location-dot"></i> ${p.address}</p>
+          </div>
+        </div>
+        <span class="local-card__tag">${p.category}</span>
+        <p class="local-card__meta">${p.short || ""}</p>
+      </article>
+    `;
+  }).join("");
+}
+
+function openLocalDetails(place) {
+  if (!place) return;
+
+  document.getElementById("localDetailsTitle").textContent = place.name || "Local";
+  document.getElementById("localDetailsSub").textContent = place.category || "";
+
+  document.getElementById("localDetailsDesc").textContent = place.details || place.short || "Sem detalhes.";
+  document.getElementById("localDetailsCat").textContent = place.category || "—";
+  document.getElementById("localDetailsAddr").textContent = place.address || "—";
+  document.getElementById("localDetailsHours").textContent = place.hours || "—";
+  document.getElementById("localDetailsPhone").textContent = place.phone || "—";
+
+  // ícone
+  const iconEl = document.getElementById("localDetailsIcon");
+  const iconClass = place.icon || "fa-location-dot";
+  iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+
+  // mapa
+  const mapLink = document.getElementById("localDetailsMap");
+  mapLink.href = buildMapsLink(place.mapsQuery || place.address);
+
+  // telefone (opcional)
+  const call = document.getElementById("localDetailsCall");
+  if (place.phone) {
+    call.classList.remove("is-hidden");
+    call.href = `tel:${place.phone.replace(/\D/g, "")}`;
+  } else {
+    call.classList.add("is-hidden");
+    call.href = "#";
+  }
+
+  openModalById("localDetailsModal");
+}
+
+function bindLocais() {
+  const section = document.getElementById("pontosInteresseSection");
+  if (!section) return;
+
+  // categorias
+  document.getElementById("locaisCats")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".local-cat[data-cat]");
+    if (!btn) return;
+    locaisActiveCat = btn.getAttribute("data-cat") || "Todos";
+    renderLocaisCats();
+    renderLocaisGrid();
+  });
+
+  // abrir detalhes
+  document.getElementById("locaisGrid")?.addEventListener("click", (e) => {
+    const card = e.target.closest(".local-card[data-place-id]");
+    if (!card) return;
+    const id = card.getAttribute("data-place-id");
+    const place = PLACES.find((p) => p.id === id);
+    openLocalDetails(place);
+  });
+
+  // fechar modal
+  document.getElementById("localDetailsModal")?.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-local-details]")) closeModalById("localDetailsModal");
+  });
+
+  renderLocaisCats();
+  renderLocaisGrid();
+}
+

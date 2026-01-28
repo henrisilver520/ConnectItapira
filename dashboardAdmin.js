@@ -1,6 +1,7 @@
-// ======================
-// Firebase config (use o seu)
-// ======================
+if (!window.firebase) {
+  throw new Error("Firebase não carregou. Verifique se os <script> 8.10.0 compat estão antes do dashboardAdmin.js.");
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyA-7HOp-Ycvyf3b_03ev__8aJEwAbWSQZY",
   authDomain: "connectfamilia-312dc.firebaseapp.com",
@@ -11,16 +12,9 @@ const firebaseConfig = {
   measurementId: "G-QKN9NFXZZQ",
 };
 
-function initFirebase() {
-  if (!window.firebase) return;
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  auth = firebase.auth();
-  db = firebase.firestore();
-}
-
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+
 
 const auth = firebase.auth();
 const db = firebase.firestore();

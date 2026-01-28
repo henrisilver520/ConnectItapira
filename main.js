@@ -1844,69 +1844,6 @@ function eventMatchesFilter(ev) {
   return true;
 }
 
-function renderEvents() {
-  const grid = document.getElementById("eventosGrid");
-  const empty = document.getElementById("eventosEmpty");
-  if (!grid || !empty) return;
-
-  const filtered = eventsCache.filter(eventMatchesFilter);
-  const commentCount = Number(ev.commentCount || 0);
-
-  if (!filtered.length) {
-    grid.innerHTML = "";
-    empty.classList.remove("is-hidden");
-    return;
-  }
-
-  empty.classList.add("is-hidden");
-
-  grid.innerHTML = filtered.map((ev) => {
-    const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
-    const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
-    const mapsLink = buildMapsLinkFromEvent(ev);
-
-    return `
-      <article class="evento-card" data-event-id="${ev.id}">
-        <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
-          ${badge}
-        </div>
-
-        <div class="evento-body">
-          <p class="evento-date">
-            <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
-          </p>
-
-          <h3 class="evento-title">${ev.title || "Evento"}</h3>
-
-          <p class="evento-loc">
-            <i class="fa-solid fa-location-dot"></i> ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
-          </p>
-
-          <p class="evento-desc">${ev.description || ""}</p>
-
-          <div class="evento-actions">
-  <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
-    <i class="fa-solid fa-check"></i> Vou
-  </button>
-
-  <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
-    <i class="fa-solid fa-xmark"></i> Não vou
-  </button>
-
-  <button class="btn btn-outline-light js-open-comments" type="button">
-    <i class="fa-solid fa-comments"></i> ${commentCount}
-  </button>
-</div>
-
-
-          <p class="evento-meta">
-            <strong class="js-att-count">${Number(ev.attendanceCount || 0)}</strong> vão
-          </p>
-        </div>
-      </article>
-    `;
-  }).join("");
-}
 
 async function loadEvents() {
   const grid = document.getElementById("eventosGrid");
@@ -2222,4 +2159,70 @@ function bindEventCommentsModal() {
       sendEventComment();
     }
   });
+}
+
+
+
+function renderEvents() {
+  const grid = document.getElementById("eventosGrid");
+  const empty = document.getElementById("eventosEmpty");
+  if (!grid || !empty) return;
+
+  const filtered = eventsCache.filter(eventMatchesFilter);
+  const commentCount = Number(ev.commentCount || 0);
+
+  if (!filtered.length) {
+    grid.innerHTML = "";
+    empty.classList.remove("is-hidden");
+    return;
+  }
+
+  empty.classList.add("is-hidden");
+
+  grid.innerHTML = filtered.map((ev) => {
+    const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
+    const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
+    const mapsLink = buildMapsLinkFromEvent(ev);
+
+    return `
+      <article class="evento-card" data-event-id="${ev.id}">
+        <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
+          ${badge}
+        </div>
+
+        <div class="evento-body">
+          <p class="evento-date">
+            <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
+          </p>
+
+          <h3 class="evento-title">${ev.title || "Evento"}</h3>
+
+          <p class="evento-loc">
+            <i class="fa-solid fa-location-dot"></i> ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
+          </p>
+
+          <p class="evento-desc">${ev.description || ""}</p>
+
+          <div class="evento-actions">
+  <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
+    <i class="fa-solid fa-check"></i> Vou
+  </button>
+
+  <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
+    <i class="fa-solid fa-xmark"></i> Não vou
+  </button>
+
+  <button class="btn btn-outline-light js-open-comments" type="button">
+    <i class="fa-solid fa-comments"></i> ${commentCount}
+  </button>
+</div>
+
+
+          <p class="evento-meta">
+            <strong class="js-att-count">${Number(ev.attendanceCount || 0)}</strong> vão
+          </p>
+        </div>
+      </article>
+    `;
+  }).join("");
 }

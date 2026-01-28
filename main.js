@@ -810,7 +810,15 @@ document.addEventListener("DOMContentLoaded", () => {
   bindEventos();
   bindEventCreateModal();
   loadEvents();
+  
+auth?.onAuthStateChanged(async () => {
+    isUserAdmin = await checkIsAdmin();
+    document.getElementById("adminPlaceBtn")?.classList.toggle("is-hidden", !isUserAdmin);
 
+    await loadPlaces();
+  });
+
+  bindLocaisFirestore();
   
 
   auth?.onAuthStateChanged(() => {
@@ -2383,3 +2391,452 @@ function bindLocais() {
   renderLocaisGrid();
 }
 
+
+
+
+
+let placesCache = [];
+let selectedPlace = null;
+let isUserAdmin = false;
+
+function onlyDigits(v){ return String(v||"").replace(/\D/g,""); }
+
+async function readSingleImageAsBase64(file) {
+  if (!file) return "";
+  if (!file.type.startsWith("image/")) throw new Error("Envie uma imagem válida.");
+  if (file.size > 1024 * 1024) throw new Error("Imagem muito grande (máx. 1MB).");
+  const dataUrl = await new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result||""));
+    r.onerror = () => reject(new Error("Falha ao ler imagem."));
+    r.readAsDataURL(file);
+  });
+  if (!dataUrl.startsWith("data:image/")) throw new Error("Imagem inválida.");
+  return dataUrl;
+}
+
+function buildMapsLink(queryOrAddress){
+  const q = encodeURIComponent(queryOrAddress || "Itapira SP");
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
+function fillCategorySelect(selectEl){
+  if (!selectEl) return;
+  selectEl.innerHTML = `<option value="">Selecione</option>` + LOCAIS_CATEGORIES
+    .filter(c => c !== "Todos")
+    .map(c => `<option value="${c}">${c}</option>`)
+    .join("");
+}
+
+
+async function checkIsAdmin() {
+  if (!auth?.currentUser || !db) return false;
+  const snap = await db.collection("admins").doc(auth.currentUser.uid).get();
+  return snap.exists;
+}
+
+
+async function loadPlaces() {
+  if (!db) return;
+
+  const snap = await db.collection("places")
+    .where("status", "==", "published")
+    .get();
+
+  placesCache = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) }));
+  renderLocaisCats();
+  renderLocaisGrid();
+}
+
+function renderLocaisCats() {
+  const wrap = document.getElementById("locaisCats");
+  if (!wrap) return;
+
+  wrap.innerHTML = LOCAIS_CATEGORIES.map((cat) => {
+    const active = cat === locaisActiveCat ? "is-active" : "";
+    return `
+      <button class="local-cat ${active}" type="button" data-cat="${cat}">
+        <span class="local-cat__icon"><i class="fa-solid fa-location-dot"></i></span>
+        <span class="local-cat__label">${cat}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function getPlacesFiltered() {
+  if (locaisActiveCat === "Todos") return placesCache;
+  return placesCache.filter(p => p.category === locaisActiveCat);
+}
+
+function renderLocaisGrid() {
+  const grid = document.getElementById("locaisGrid");
+  const empty = document.getElementById("locaisEmpty");
+  if (!grid || !empty) return;
+
+  const items = getPlacesFiltered();
+  if (!items.length) {
+    grid.innerHTML = "";
+    empty.classList.remove("is-hidden");
+    return;
+  }
+  empty.classList.add("is-hidden");
+
+  grid.innerHTML = items.map((p) => `
+    <article class="local-card" data-place-id="${p.id}">
+      <div class="local-card__top">
+        <div class="local-card__icon"><i class="fa-solid ${p.icon || "fa-location-dot"}"></i></div>
+        <div style="min-width:0;">
+          <h3 class="local-card__name">${p.name}</h3>
+          <p class="local-card__meta"><i class="fa-solid fa-location-dot"></i>
+            ${p.addressNeighborhood || ""} · ${p.addressCity || "Itapira"}
+          </p>
+        </div>
+      </div>
+      <span class="local-card__tag">${p.category || "Local"}</span>
+      <p class="local-card__meta">${p.short || ""}</p>
+    </article>
+  `).join("");
+}
+
+
+function openLocalDetails(place) {
+  selectedPlace = place;
+  if (!selectedPlace) return;
+
+  document.getElementById("localDetailsTitle").textContent = place.name || "Local";
+  document.getElementById("localDetailsSub").textContent = place.category || "";
+
+  document.getElementById("localDetailsDesc").textContent = place.description || place.short || "Sem detalhes.";
+  document.getElementById("localDetailsCat").textContent = place.category || "—";
+
+  const addr = [
+    place.addressStreet || "",
+    place.addressNeighborhood || "",
+    `${place.addressCity || "Itapira"} - ${place.addressState || "SP"}`
+  ].filter(Boolean).join(" · ");
+  document.getElementById("localDetailsAddr").textContent = addr || "—";
+
+  document.getElementById("localDetailsHours").textContent = place.hours || "—";
+  document.getElementById("localDetailsPhone").textContent = place.phone || "—";
+
+  const iconEl = document.getElementById("localDetailsIcon");
+  iconEl.innerHTML = `<i class="fa-solid ${place.icon || "fa-location-dot"}"></i>`;
+
+  document.getElementById("localDetailsMap").href = buildMapsLink(place.mapsQuery || addr);
+
+  const call = document.getElementById("localDetailsCall");
+  if (place.phone) {
+    call.classList.remove("is-hidden");
+    call.href = `tel:${onlyDigits(place.phone)}`;
+  } else {
+    call.classList.add("is-hidden");
+    call.href = "#";
+  }
+
+  // rating UI
+  renderRatingUI(place);
+
+  openModalById("localDetailsModal");
+}
+
+function renderRatingUI(place) {
+  const starsWrap = document.getElementById("localRatingStars");
+  if (!starsWrap) return;
+
+  const avg = Number(place.ratingAvg || 0).toFixed(1);
+  const count = Number(place.ratingCount || 0);
+
+  document.getElementById("localRatingAvg").textContent = avg;
+  document.getElementById("localRatingCount").textContent = String(count);
+
+  starsWrap.innerHTML = [1,2,3,4,5].map(v => `
+    <button class="star-btn" type="button" data-star="${v}" title="${v} estrelas">
+      <i class="fa-solid fa-star"></i>
+    </button>
+  `).join("");
+}
+
+async function ratePlace(placeId, value) {
+  if (!auth?.currentUser) {
+    alert("Você precisa estar logado para avaliar.");
+    return;
+  }
+  const uid = auth.currentUser.uid;
+
+  const placeRef = db.collection("places").doc(placeId);
+  const ratingRef = placeRef.collection("ratings").doc(uid);
+
+  try {
+    await db.runTransaction(async (tx) => {
+      const placeSnap = await tx.get(placeRef);
+      if (!placeSnap.exists) throw new Error("Local não encontrado.");
+
+      const place = placeSnap.data() || {};
+      const prevAvg = Number(place.ratingAvg || 0);
+      const prevCount = Number(place.ratingCount || 0);
+
+      const ratingSnap = await tx.get(ratingRef);
+      const hadPrev = ratingSnap.exists;
+      const prevValue = hadPrev ? Number(ratingSnap.data()?.value || 0) : 0;
+
+      // recalcula agregados
+      let newCount = prevCount;
+      let total = prevAvg * prevCount;
+
+      if (hadPrev) {
+        total = total - prevValue + value;
+      } else {
+        total = total + value;
+        newCount = prevCount + 1;
+      }
+
+      const newAvg = newCount ? (total / newCount) : 0;
+
+      tx.set(ratingRef, {
+        uid,
+        value,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: hadPrev ? ratingSnap.data()?.createdAt : firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+
+      tx.update(placeRef, {
+        ratingAvg: newAvg,
+        ratingCount: newCount,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    });
+
+    // reflete na UI
+    await loadPlaces();
+    const updated = placesCache.find(p => p.id === placeId);
+    if (updated) openLocalDetails(updated);
+
+  } catch (e) {
+    console.error(e);
+    alert(e?.message || "Não foi possível salvar sua avaliação.");
+  }
+}
+
+
+async function submitPlaceSuggestion(form) {
+  if (!auth?.currentUser) {
+    alert("Você precisa estar logado para sugerir.");
+    return;
+  }
+
+  const data = new FormData(form);
+  const coverFile = document.getElementById("placeSuggestCover")?.files?.[0];
+  let coverImage = "";
+
+  try {
+    if (coverFile) coverImage = await readSingleImageAsBase64(coverFile);
+
+    const payload = {
+      status: "pending",
+      name: String(data.get("name") || "").trim(),
+      category: String(data.get("category") || "").trim(),
+      icon: String(data.get("icon") || "").trim() || null,
+      short: String(data.get("short") || "").trim(),
+      description: String(data.get("description") || "").trim(),
+
+      addressNeighborhood: String(data.get("neighborhood") || "").trim(),
+      addressCity: String(data.get("city") || "Itapira").trim(),
+      addressState: String(data.get("state") || "SP").trim(),
+      addressStreet: String(data.get("street") || "").trim() || null,
+
+      hours: String(data.get("hours") || "").trim() || null,
+      phone: String(data.get("phone") || "").trim() || null,
+      mapsQuery: String(data.get("mapsQuery") || "").trim() || null,
+
+      coverImage: coverImage || null,
+
+      suggestedByUid: auth.currentUser.uid,
+      suggestedByName: auth.currentUser.displayName || "Morador",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      reviewedByUid: null,
+      reviewedAt: null,
+      reviewNote: null,
+    };
+
+    if (!payload.name || !payload.category || !payload.short || !payload.description) {
+      document.getElementById("placeSuggestMsg").textContent = "Preencha nome, categoria, descrição curta e completa.";
+      return;
+    }
+
+    await db.collection("place_suggestions").add(payload);
+
+    document.getElementById("placeSuggestMsg").textContent = "Sugestão enviada! Aguarde revisão do ADM.";
+    form.reset();
+    document.getElementById("placeSuggestPreview").innerHTML = "";
+    setTimeout(() => closeModalById("placeSuggestModal"), 900);
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById("placeSuggestMsg").textContent = e?.message || "Falha ao enviar sugestão.";
+  }
+}
+
+
+async function savePlaceAdmin(form) {
+  if (!isUserAdmin) {
+    alert("Acesso restrito ao ADM.");
+    return;
+  }
+
+  const data = new FormData(form);
+  const placeId = String(data.get("placeId") || "").trim();
+  const coverFile = document.getElementById("placeAdminCover")?.files?.[0];
+
+  let coverImage = "";
+  try { if (coverFile) coverImage = await readSingleImageAsBase64(coverFile); } catch(e){}
+
+  const payload = {
+    status: String(data.get("status") || "published"),
+    name: String(data.get("name") || "").trim(),
+    category: String(data.get("category") || "").trim(),
+    icon: String(data.get("icon") || "").trim() || "fa-location-dot",
+    short: String(data.get("short") || "").trim(),
+    description: String(data.get("description") || "").trim(),
+    addressNeighborhood: String(data.get("neighborhood") || "").trim(),
+    addressCity: String(data.get("city") || "Itapira").trim(),
+    addressState: String(data.get("state") || "SP").trim(),
+    addressStreet: String(data.get("street") || "").trim() || null,
+    hours: String(data.get("hours") || "").trim() || null,
+    phone: String(data.get("phone") || "").trim() || null,
+    mapsQuery: String(data.get("mapsQuery") || "").trim() || null,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  if (!payload.name || !payload.category || !payload.short || !payload.description) {
+    document.getElementById("placeAdminMsg").textContent = "Preencha nome, categoria, descrição curta e completa.";
+    return;
+  }
+
+  const ref = placeId ? db.collection("places").doc(placeId) : db.collection("places").doc();
+  const snap = await ref.get();
+
+  await ref.set({
+    ...payload,
+    coverImage: coverImage ? coverImage : (snap.exists ? (snap.data()?.coverImage || null) : null),
+    ratingAvg: snap.exists ? Number(snap.data()?.ratingAvg || 0) : 0,
+    ratingCount: snap.exists ? Number(snap.data()?.ratingCount || 0) : 0,
+    createdByUid: snap.exists ? snap.data()?.createdByUid : auth.currentUser.uid,
+    createdByName: snap.exists ? snap.data()?.createdByName : (auth.currentUser.displayName || "ADM"),
+    createdAt: snap.exists ? snap.data()?.createdAt : firebase.firestore.FieldValue.serverTimestamp(),
+  }, { merge: true });
+
+  document.getElementById("placeAdminMsg").textContent = "Local salvo!";
+  await loadPlaces();
+}
+
+async function deletePlaceAdmin() {
+  const form = document.getElementById("placeAdminForm");
+  const data = new FormData(form);
+  const placeId = String(data.get("placeId") || "").trim();
+  if (!placeId) return alert("Selecione um local para excluir.");
+  if (!isUserAdmin) return alert("Acesso restrito ao ADM.");
+
+  await db.collection("places").doc(placeId).delete();
+  document.getElementById("placeAdminMsg").textContent = "Local excluído.";
+  await loadPlaces();
+}
+
+
+
+function bindLocaisFirestore() {
+  const section = document.getElementById("pontosInteresseSection");
+  if (!section) return;
+
+  // selects dos forms
+  fillCategorySelect(document.querySelector("#placeSuggestForm select[name='category']"));
+  fillCategorySelect(document.querySelector("#placeAdminForm select[name='category']"));
+
+  // categorias
+  document.getElementById("locaisCats")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".local-cat[data-cat]");
+    if (!btn) return;
+    locaisActiveCat = btn.getAttribute("data-cat") || "Todos";
+    renderLocaisCats();
+    renderLocaisGrid();
+  });
+
+  // abrir detalhes
+  document.getElementById("locaisGrid")?.addEventListener("click", (e) => {
+    const card = e.target.closest(".local-card[data-place-id]");
+    if (!card) return;
+    const id = card.getAttribute("data-place-id");
+    const place = placesCache.find(p => p.id === id);
+    if (place) openLocalDetails(place);
+  });
+
+  // fechar modal detalhes
+  document.getElementById("localDetailsModal")?.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-local-details]")) closeModalById("localDetailsModal");
+  });
+
+  // rating click
+  document.getElementById("localRatingStars")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".star-btn[data-star]");
+    if (!btn || !selectedPlace?.id) return;
+    const v = Number(btn.getAttribute("data-star"));
+    ratePlace(selectedPlace.id, v);
+  });
+
+  // abrir sugerir
+  document.getElementById("suggestPlaceBtn")?.addEventListener("click", () => {
+    if (!auth?.currentUser) return alert("Você precisa estar logado para sugerir.");
+    openModalById("placeSuggestModal");
+  });
+
+  // fechar sugerir
+  document.getElementById("placeSuggestModal")?.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-place-suggest]")) closeModalById("placeSuggestModal");
+  });
+
+  // preview sugerir
+  document.getElementById("placeSuggestCover")?.addEventListener("change", async (e) => {
+    try{
+      const b64 = await readSingleImageAsBase64(e.target.files?.[0]);
+      document.getElementById("placeSuggestPreview").innerHTML = `<img src="${b64}" alt="Prévia">`;
+    }catch(err){
+      document.getElementById("placeSuggestPreview").innerHTML = "";
+      e.target.value = "";
+    }
+  });
+
+  // submit sugerir
+  document.getElementById("placeSuggestForm")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    submitPlaceSuggestion(e.target);
+  });
+
+  // admin abrir
+  document.getElementById("adminPlaceBtn")?.addEventListener("click", () => {
+    if (!isUserAdmin) return alert("Acesso restrito ao ADM.");
+    openModalById("placeAdminModal");
+  });
+
+  // fechar admin
+  document.getElementById("placeAdminModal")?.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-place-admin]")) closeModalById("placeAdminModal");
+  });
+
+  // preview admin
+  document.getElementById("placeAdminCover")?.addEventListener("change", async (e) => {
+    try{
+      const b64 = await readSingleImageAsBase64(e.target.files?.[0]);
+      document.getElementById("placeAdminPreview").innerHTML = `<img src="${b64}" alt="Prévia">`;
+    }catch(err){
+      document.getElementById("placeAdminPreview").innerHTML = "";
+      e.target.value = "";
+    }
+  });
+
+  // salvar admin
+  document.getElementById("placeAdminForm")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    savePlaceAdmin(e.target);
+  });
+
+  document.getElementById("placeAdminDelete")?.addEventListener("click", deletePlaceAdmin);
+}

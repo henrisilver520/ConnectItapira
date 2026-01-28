@@ -966,6 +966,16 @@
         <h2>Locais</h2>
         <p class="locais-subtitle">Explore pontos de interesse, serviços públicos e lugares úteis de Itapira.</p>
       </div>
+      <div class="locais-cta" style="display:flex; gap:10px; flex-wrap:wrap;">
+  <button id="suggestPlaceBtn" class="btn btn-outline-light" type="button">
+    <i class="fa-solid fa-plus"></i> Sugerir local
+  </button>
+
+  <button id="adminPlaceBtn" class="btn btn-primary glow-on-hover is-hidden" type="button">
+    <i class="fa-solid fa-pen-to-square"></i> Cadastrar/Editar
+  </button>
+</div>
+
     </header>
 
     <!-- categorias (scroll horizontal) -->
@@ -991,6 +1001,13 @@
         <h3 id="localDetailsTitle" class="ti-modal__title">Local</h3>
         <p id="localDetailsSub" class="ti-modal__lead"></p>
       </div>
+      <div class="local-rating" id="localRating">
+  <div class="local-rating__stars" id="localRatingStars"></div>
+  <div class="local-rating__info">
+    <span id="localRatingAvg">0.0</span> • <span id="localRatingCount">0</span> avaliações
+  </div>
+</div>
+
       <button class="ti-modal__close" type="button" aria-label="Fechar" data-close-local-details>
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1225,6 +1242,213 @@
 
   </main>
 
+<div id="placeSuggestModal" class="ti-modal" aria-hidden="true">
+  <div class="ti-modal__backdrop" data-close-place-suggest></div>
+
+  <div class="ti-modal__panel ti-modal__panel--wide" role="dialog" aria-modal="true" aria-label="Sugerir local">
+    <header class="ti-modal__header">
+      <div>
+        <p class="ti-modal__kicker">Sugestão</p>
+        <h3 class="ti-modal__title">Sugerir um local</h3>
+        <p class="ti-modal__lead">Seu local será revisado pelo ADM antes de aparecer para todos.</p>
+      </div>
+      <button class="ti-modal__close" type="button" data-close-place-suggest aria-label="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <div class="ti-modal__body">
+      <form id="placeSuggestForm" class="event-form">
+        <div class="event-form__grid">
+          <label class="store-field store-field--full">
+            <span>Nome do local</span>
+            <input name="name" required maxlength="80" placeholder="Ex: Praça Central" />
+          </label>
+
+          <label class="store-field">
+            <span>Categoria</span>
+            <select name="category" required></select>
+          </label>
+
+          <label class="store-field">
+            <span>Ícone (opcional)</span>
+            <input name="icon" placeholder="fa-tree" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Descrição curta</span>
+            <input name="short" required maxlength="120" placeholder="Uma frase sobre o local" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Descrição completa</span>
+            <textarea name="description" rows="4" maxlength="600" placeholder="Detalhes úteis do local" required></textarea>
+          </label>
+
+          <label class="store-field">
+            <span>Bairro</span>
+            <input name="neighborhood" required placeholder="Centro" />
+          </label>
+
+          <label class="store-field">
+            <span>Cidade</span>
+            <input name="city" value="Itapira" required />
+          </label>
+
+          <label class="store-field">
+            <span>Estado</span>
+            <input name="state" value="SP" required />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Rua (opcional)</span>
+            <input name="street" placeholder="Rua/Avenida" />
+          </label>
+
+          <label class="store-field">
+            <span>Horário (opcional)</span>
+            <input name="hours" placeholder="Seg-Sex 08:00–17:00" />
+          </label>
+
+          <label class="store-field">
+            <span>Telefone (opcional)</span>
+            <input name="phone" placeholder="(19) 99999-0000" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Mapa (opcional)</span>
+            <input name="mapsQuery" placeholder="Nome do local + cidade" />
+          </label>
+
+          <div class="store-field store-field--full">
+            <span>Imagem (opcional · 1MB)</span>
+            <input id="placeSuggestCover" type="file" accept="image/*" />
+            <div id="placeSuggestPreview" class="event-cover-preview"></div>
+          </div>
+        </div>
+
+        <div class="store-form__actions">
+          <p id="placeSuggestMsg" class="store-form__message" role="status" aria-live="polite"></p>
+          <button class="btn btn-primary glow-on-hover" type="submit">
+            <i class="fa-solid fa-paper-plane"></i> Enviar sugestão
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="placeAdminModal" class="ti-modal" aria-hidden="true">
+  <div class="ti-modal__backdrop" data-close-place-admin></div>
+
+  <div class="ti-modal__panel ti-modal__panel--wide" role="dialog" aria-modal="true" aria-label="Cadastro de local">
+    <header class="ti-modal__header">
+      <div>
+        <p class="ti-modal__kicker">Admin</p>
+        <h3 class="ti-modal__title">Cadastrar/Editar local</h3>
+        <p class="ti-modal__lead">Somente administradores podem publicar locais.</p>
+      </div>
+      <button class="ti-modal__close" type="button" data-close-place-admin aria-label="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <div class="ti-modal__body">
+      <form id="placeAdminForm" class="event-form">
+        <input type="hidden" name="placeId" value="" />
+
+        <div class="event-form__grid">
+          <label class="store-field store-field--full">
+            <span>Nome do local</span>
+            <input name="name" required maxlength="80" />
+          </label>
+
+          <label class="store-field">
+            <span>Categoria</span>
+            <select name="category" required></select>
+          </label>
+
+          <label class="store-field">
+            <span>Status</span>
+            <select name="status" required>
+              <option value="published">Publicado</option>
+              <option value="pending">Pendente</option>
+              <option value="rejected">Rejeitado</option>
+            </select>
+          </label>
+
+          <label class="store-field">
+            <span>Ícone</span>
+            <input name="icon" placeholder="fa-tree" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Descrição curta</span>
+            <input name="short" required maxlength="120" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Descrição completa</span>
+            <textarea name="description" rows="4" maxlength="600" required></textarea>
+          </label>
+
+          <label class="store-field">
+            <span>Bairro</span>
+            <input name="neighborhood" required />
+          </label>
+
+          <label class="store-field">
+            <span>Cidade</span>
+            <input name="city" value="Itapira" required />
+          </label>
+
+          <label class="store-field">
+            <span>Estado</span>
+            <input name="state" value="SP" required />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Rua (opcional)</span>
+            <input name="street" />
+          </label>
+
+          <label class="store-field">
+            <span>Horário (opcional)</span>
+            <input name="hours" />
+          </label>
+
+          <label class="store-field">
+            <span>Telefone (opcional)</span>
+            <input name="phone" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Mapa (opcional)</span>
+            <input name="mapsQuery" />
+          </label>
+
+          <div class="store-field store-field--full">
+            <span>Imagem (opcional · 1MB)</span>
+            <input id="placeAdminCover" type="file" accept="image/*" />
+            <div id="placeAdminPreview" class="event-cover-preview"></div>
+          </div>
+        </div>
+
+        <div class="store-form__actions">
+          <p id="placeAdminMsg" class="store-form__message" role="status" aria-live="polite"></p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-primary glow-on-hover" type="submit">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar
+            </button>
+            <button id="placeAdminDelete" class="btn btn-outline-light" type="button">
+              <i class="fa-solid fa-trash"></i> Excluir
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
   
 

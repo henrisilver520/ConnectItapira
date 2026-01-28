@@ -3006,3 +3006,38 @@ body.modal-open{
   font-weight:800;
   font-size:.9rem;
 }
+
+
+.local-rating{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.local-rating__stars{
+  display:flex;
+  gap:6px;
+}
+
+.star-btn{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  border:1px solid rgba(15,23,42,.10);
+  background:#fff;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.1rem;
+}
+
+.star-btn.is-on{
+  background:#fff7ed;
+  border-color:#fdba74;
+}
+
+.local-rating__info{
+  font-weight:800;
+  color:#64748b;
+}

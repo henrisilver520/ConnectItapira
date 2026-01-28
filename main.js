@@ -2301,6 +2301,7 @@ function renderLocaisGrid() {
   if (!grid || !empty) return;
 
   const items = getLocaisFiltered();
+
   if (!items.length) {
     grid.innerHTML = "";
     empty.classList.remove("is-hidden");
@@ -2310,17 +2311,33 @@ function renderLocaisGrid() {
 
   grid.innerHTML = items.map((p) => {
     const icon = p.icon || "fa-location-dot";
+    const cover = p.coverImage
+      ? `<img src="${p.coverImage}" alt="${p.name}" loading="lazy">`
+      : `
+        <div class="local-card__cover-fallback">
+          <i class="fa-solid ${icon}"></i>
+        </div>
+      `;
+
     return `
       <article class="local-card" data-place-id="${p.id}">
-        <div class="local-card__top">
-          <div class="local-card__icon"><i class="fa-solid ${icon}"></i></div>
-          <div style="min-width:0;">
-            <h3 class="local-card__name">${p.name}</h3>
-            <p class="local-card__meta"><i class="fa-solid fa-location-dot"></i> ${p.address}</p>
-          </div>
+        
+        <div class="local-card__cover">
+          ${cover}
+          <span class="local-card__category">${p.category}</span>
         </div>
-        <span class="local-card__tag">${p.category}</span>
-        <p class="local-card__meta">${p.short || ""}</p>
+
+        <div class="local-card__body">
+          <h3 class="local-card__name">${p.name}</h3>
+
+          <p class="local-card__location">
+            <i class="fa-solid fa-location-dot"></i>
+            ${p.addressNeighborhood || ""} · ${p.addressCity || "Itapira"}
+          </p>
+
+          ${p.short ? `<p class="local-card__desc">${p.short}</p>` : ""}
+        </div>
+
       </article>
     `;
   }).join("");
@@ -2375,12 +2392,14 @@ function bindLocais() {
 
   // abrir detalhes
   document.getElementById("locaisGrid")?.addEventListener("click", (e) => {
-    const card = e.target.closest(".local-card[data-place-id]");
-    if (!card) return;
-    const id = card.getAttribute("data-place-id");
-    const place = PLACES.find((p) => p.id === id);
-    openLocalDetails(place);
-  });
+  const card = e.target.closest(".local-card");
+  if (!card) return;
+
+  const placeId = card.getAttribute("data-place-id");
+  const place = placesCache.find(p => p.id === placeId);
+  if (place) openLocalDetailsModal(place);
+});
+
 
   // fechar modal
   document.getElementById("localDetailsModal")?.addEventListener("click", (e) => {

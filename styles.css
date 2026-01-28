@@ -3041,3 +3041,8 @@ body.modal-open{
   font-weight:800;
   color:#64748b;
 }
+
+
+#suggestPlaceBtn {
+    background-color: #243866;
+}

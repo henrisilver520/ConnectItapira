@@ -2402,7 +2402,8 @@ function bindLocais() {
 
   const placeId = card.getAttribute("data-place-id");
   const place = placesCache.find(p => p.id === placeId);
-  if (place) openLocalDetailsModal(place);
+  if (place) openLocalDetails(place);
+
 });
 
 
@@ -2816,13 +2817,17 @@ function bindLocaisFirestore() {
   });
 
   // abrir detalhes
-  document.getElementById("locaisGrid")?.addEventListener("click", (e) => {
-    const card = e.target.closest(".local-card[data-place-id]");
-    if (!card) return;
-    const id = card.getAttribute("data-place-id");
-    const place = placesCache.find(p => p.id === id);
-    if (place) openLocalDetails(place);
-  });
+document.getElementById("locaisGrid")?.addEventListener("click", (e) => {
+  const card = e.target.closest(".local-card[data-place-id]");
+  if (!card) return;
+
+  const placeId = card.getAttribute("data-place-id");
+  const place = placesCache.find(p => p.id === placeId);
+  if (!place) return;
+
+  openLocalDetails(place);
+});
+
 
   // fechar modal detalhes
   document.getElementById("localDetailsModal")?.addEventListener("click", (e) => {

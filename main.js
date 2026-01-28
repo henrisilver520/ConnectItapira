@@ -798,18 +798,25 @@ document.addEventListener("DOMContentLoaded", () => {
   bindComercios();
   bindServicos();
   loadStoresFromFirestore();
+bindEventCommentsModal();
 
 bindImoveis();
 bindImovelDetailsModal();
 bindImovelAnuncioModal();
 loadPropertiesFromFirestore();
+enableDragScroll(document.getElementById("nav-header-buttons"));
 
-  enableDragScroll(document.getElementById("nav-header-buttons"));
+ bindEventos();
+  bindEventCreateModal();
+  loadEvents();
 
+  
 
   auth?.onAuthStateChanged(() => {
     loadStoreForDashboard();
     loadStoresFromFirestore();
+    loadEvents();
+
   });
   openHome();
 });
@@ -1654,4 +1661,565 @@ function renderEventos(eventos = []) {
       </div>
     </article>
   `).join("");
+}
+
+
+
+function openEventCreateModal() {
+  openModalById("eventCreateModal");
+}
+
+function bindEventCreateModal() {
+  const modal = document.getElementById("eventCreateModal");
+  if (!modal) return;
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-event-create]")) closeModalById("eventCreateModal");
+  });
+}
+
+function setEventCreateMessage(text, type="info") {
+  const el = document.getElementById("eventCreateMessage");
+  if (!el) return;
+  el.textContent = text || "";
+  el.classList.remove("is-error", "is-success");
+  if (type === "error") el.classList.add("is-error");
+  if (type === "success") el.classList.add("is-success");
+}
+
+function setEventCreateLoading(isLoading) {
+  const btn = document.getElementById("eventCreateSubmit");
+  if (!btn) return;
+  btn.disabled = isLoading;
+  btn.textContent = isLoading ? "Publicando..." : "Publicar evento";
+}
+
+async function readSingleImageAsBase64(file) {
+  if (!file) return "";
+  if (!file.type.startsWith("image/")) throw new Error("Envie um arquivo de imagem válido.");
+  if (file.size > 1024 * 1024) throw new Error("Imagem muito grande (máx. 1MB).");
+
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Falha ao ler a imagem."));
+    reader.readAsDataURL(file);
+  });
+
+  if (!dataUrl.startsWith("data:image/")) throw new Error("Imagem inválida.");
+  return dataUrl;
+}
+
+
+function parseDatetimeLocal(value) {
+  // "YYYY-MM-DDTHH:mm" -> Date
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return d;
+}
+
+function validateEventPayload(p) {
+  if (!p.title || !p.description || !p.category) return "Preencha título, descrição e categoria.";
+  if (!p.startAt) return "Informe a data e hora de início.";
+  if (!p.placeName || !p.addressNeighborhood || !p.addressCity || !p.addressState) return "Informe local, bairro, cidade e estado.";
+  if (!p.coverImage) return "Envie um banner do evento.";
+  if (!p.isFree && (!p.price || p.price <= 0)) return "Informe o preço (R$) para evento pago.";
+  return "";
+}
+
+async function saveEvent(form) {
+  if (!auth || !db) {
+    setEventCreateMessage("Firebase não foi carregado corretamente.", "error");
+    return;
+  }
+  const user = auth.currentUser;
+  if (!user) {
+    setEventCreateMessage("Você precisa estar logado para anunciar evento.", "error");
+    return;
+  }
+
+  setEventCreateLoading(true);
+  setEventCreateMessage("Processando e publicando evento...");
+
+  try {
+    const data = new FormData(form);
+
+    const isFree = String(data.get("isFree")) === "true";
+    const price = Number(data.get("price") || 0);
+
+    const startAtDate = parseDatetimeLocal(String(data.get("startAt") || ""));
+    const endAtDate = parseDatetimeLocal(String(data.get("endAt") || ""));
+
+    const coverFile = document.getElementById("eventCoverInput")?.files?.[0];
+    const coverImage = await readSingleImageAsBase64(coverFile);
+
+    const payload = {
+      title: String(data.get("title") || "").trim(),
+      description: String(data.get("description") || "").trim(),
+      category: String(data.get("category") || "").trim(),
+      isFree,
+      price: isFree ? null : (price || null),
+
+      startAt: startAtDate ? firebase.firestore.Timestamp.fromDate(startAtDate) : null,
+      endAt: endAtDate ? firebase.firestore.Timestamp.fromDate(endAtDate) : null,
+
+      placeName: String(data.get("placeName") || "").trim(),
+      addressNeighborhood: String(data.get("neighborhood") || "").trim(),
+      addressCity: String(data.get("city") || "Itapira").trim(),
+      addressState: String(data.get("state") || "SP").trim(),
+      addressStreet: String(data.get("street") || "").trim() || null,
+
+      coverImage,
+      status: "active",
+      attendanceCount: 0,
+
+      createdByUid: user.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+
+    const err = validateEventPayload(payload);
+    if (err) {
+      setEventCreateMessage(err, "error");
+      setEventCreateLoading(false);
+      return;
+    }
+
+    await db.collection("events").add(payload);
+
+    setEventCreateMessage("Evento publicado com sucesso!", "success");
+    form.reset();
+    document.getElementById("eventCoverPreview").innerHTML = "";
+    setTimeout(() => closeModalById("eventCreateModal"), 800);
+
+    loadEvents(); // recarrega lista
+  } catch (e) {
+    console.error(e);
+    setEventCreateMessage(e?.message || "Não foi possível publicar agora.", "error");
+  } finally {
+    setEventCreateLoading(false);
+  }
+}
+
+
+let eventsCache = [];
+let activeEventFilter = "todos"; // todos | hoje | fim-de-semana | gratuito
+
+function formatDateTime(ts) {
+  if (!ts?.toDate) return "";
+  const d = ts.toDate();
+  const date = d.toLocaleDateString("pt-BR");
+  const time = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  return `${date} • ${time}`;
+}
+
+function buildMapsLinkFromEvent(ev) {
+  const q = encodeURIComponent(
+    `${ev.placeName || ""} ${ev.addressStreet || ""}, ${ev.addressNeighborhood || ""}, ${ev.addressCity || "Itapira"} - ${ev.addressState || "SP"}`
+  );
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
+function eventMatchesFilter(ev) {
+  if (activeEventFilter === "todos") return true;
+
+  if (activeEventFilter === "gratuito") return !!ev.isFree;
+
+  const start = ev.startAt?.toDate ? ev.startAt.toDate() : null;
+  if (!start) return true;
+
+  const now = new Date();
+
+  if (activeEventFilter === "hoje") {
+    return start.toDateString() === now.toDateString();
+  }
+
+  if (activeEventFilter === "fim-de-semana") {
+    // sábado (6) e domingo (0)
+    const day = start.getDay();
+    return day === 6 || day === 0;
+  }
+
+  return true;
+}
+
+function renderEvents() {
+  const grid = document.getElementById("eventosGrid");
+  const empty = document.getElementById("eventosEmpty");
+  if (!grid || !empty) return;
+
+  const filtered = eventsCache.filter(eventMatchesFilter);
+  const commentCount = Number(ev.commentCount || 0);
+
+  if (!filtered.length) {
+    grid.innerHTML = "";
+    empty.classList.remove("is-hidden");
+    return;
+  }
+
+  empty.classList.add("is-hidden");
+
+  grid.innerHTML = filtered.map((ev) => {
+    const badge = ev.isFree ? `<span class="evento-badge">Gratuito</span>` : "";
+    const price = ev.isFree ? "" : ` • R$ ${Number(ev.price || 0)}`;
+    const mapsLink = buildMapsLinkFromEvent(ev);
+
+    return `
+      <article class="evento-card" data-event-id="${ev.id}">
+        <div class="evento-cover" style="background-image:url('${ev.coverImage || ""}')">
+          ${badge}
+        </div>
+
+        <div class="evento-body">
+          <p class="evento-date">
+            <i class="fa-solid fa-calendar"></i> ${formatDateTime(ev.startAt)}${price}
+          </p>
+
+          <h3 class="evento-title">${ev.title || "Evento"}</h3>
+
+          <p class="evento-loc">
+            <i class="fa-solid fa-location-dot"></i> ${ev.placeName || ""} · ${ev.addressNeighborhood || ""} · ${ev.addressCity || "Itapira"}
+          </p>
+
+          <p class="evento-desc">${ev.description || ""}</p>
+
+          <div class="evento-actions">
+  <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
+    <i class="fa-solid fa-check"></i> Vou
+  </button>
+
+  <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
+    <i class="fa-solid fa-xmark"></i> Não vou
+  </button>
+
+  <button class="btn btn-outline-light js-open-comments" type="button">
+    <i class="fa-solid fa-comments"></i> ${commentCount}
+  </button>
+</div>
+
+
+          <p class="evento-meta">
+            <strong class="js-att-count">${Number(ev.attendanceCount || 0)}</strong> vão
+          </p>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+async function loadEvents() {
+  const grid = document.getElementById("eventosGrid");
+  if (grid) grid.innerHTML = `<div class="placeholder">Carregando eventos...</div>`;
+
+  try {
+    const snap = await db.collection("events")
+      .where("status", "==", "active")
+      .orderBy("startAt", "asc")
+      .get();
+
+    eventsCache = snap.docs.map((d) => ({ id: d.id, ...(d.data() || {}) }));
+    renderEvents();
+  } catch (e) {
+    console.error(e);
+    if (grid) grid.innerHTML = `<div class="placeholder">Não foi possível carregar os eventos agora.</div>`;
+  }
+}
+
+async function setAttendance(eventId, status) {
+  if (!auth?.currentUser) {
+    alert("Você precisa estar logado para marcar presença.");
+    return;
+  }
+
+  const uid = auth.currentUser.uid;
+  const eventRef = db.collection("events").doc(eventId);
+  const attendRef = eventRef.collection("attendance").doc(uid);
+
+  try {
+    await db.runTransaction(async (tx) => {
+      const evSnap = await tx.get(eventRef);
+      if (!evSnap.exists) throw new Error("Evento não encontrado.");
+
+      const currentCount = Number(evSnap.data()?.attendanceCount || 0);
+
+      const attSnap = await tx.get(attendRef);
+      const prevStatus = attSnap.exists ? attSnap.data()?.status : null;
+
+      // Regras de contagem:
+      // - Se antes era "going" e agora não é, decrementa
+      // - Se antes não era "going" e agora é, incrementa
+      let nextCount = currentCount;
+
+      const prevGoing = prevStatus === "going";
+      const nextGoing = status === "going";
+
+      if (prevGoing && !nextGoing) nextCount = Math.max(0, currentCount - 1);
+      if (!prevGoing && nextGoing) nextCount = currentCount + 1;
+
+      tx.set(attendRef, {
+        uid,
+        status,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+
+      tx.update(eventRef, {
+        attendanceCount: nextCount,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    });
+
+    // Atualiza UI local (otimista)
+    const ev = eventsCache.find(e => e.id === eventId);
+    if (ev) {
+      // recarrega do server é mais fiel, mas isso dá sensação instantânea
+      loadEvents();
+    }
+  } catch (e) {
+    console.error(e);
+    alert(e?.message || "Não foi possível marcar presença.");
+  }
+}
+
+
+function bindEventos() {
+  const section = document.getElementById("eventosSection");
+  if (!section) return;
+
+  // abrir modal de anúncio
+  document.getElementById("anunciarEventoBtn")?.addEventListener("click", () => {
+    if (!auth?.currentUser) {
+      alert("Você precisa estar logado para anunciar um evento.");
+      return;
+    }
+    openEventCreateModal();
+  });
+
+  // filtros
+  section.querySelector(".eventos-filters")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".eventos-filter[data-filter]");
+    if (!btn) return;
+
+    section.querySelectorAll(".eventos-filter").forEach(b => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+
+    activeEventFilter = btn.getAttribute("data-filter") || "todos";
+    renderEvents();
+  });
+
+  // presença
+  document.getElementById("eventosGrid")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".js-attend[data-action]");
+    if (!btn) return;
+
+    const card = btn.closest(".evento-card");
+    const eventId = card?.getAttribute("data-event-id");
+    if (!eventId) return;
+
+    const action = btn.getAttribute("data-action");
+    if (action === "going") setAttendance(eventId, "going");
+    if (action === "not_going") setAttendance(eventId, "not_going");
+
+    // abrir comentários
+const commentsBtn = e.target.closest(".js-open-comments");
+if (commentsBtn) {
+  const card = commentsBtn.closest(".evento-card");
+  const eventId = card?.getAttribute("data-event-id");
+  const ev = eventsCache.find(x => x.id === eventId);
+  if (ev) openEventCommentsModal(ev);
+  return;
+}
+
+
+  });
+
+  // submit anúncio
+  const form = document.getElementById("eventCreateForm");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveEvent(form);
+  });
+
+  // preview da capa
+  document.getElementById("eventCoverInput")?.addEventListener("change", async (e) => {
+    try {
+      const file = e.target.files?.[0];
+      const b64 = await readSingleImageAsBase64(file);
+      document.getElementById("eventCoverPreview").innerHTML = `<img src="${b64}" alt="Prévia do banner">`;
+      setEventCreateMessage("Banner selecionado.");
+    } catch (err) {
+      document.getElementById("eventCoverPreview").innerHTML = "";
+      setEventCreateMessage(err?.message || "Falha ao processar banner.", "error");
+      e.target.value = "";
+    }
+  });
+}
+
+
+let activeCommentsEventId = null;
+let commentsUnsub = null;
+
+function setEventCommentsMessage(text, type="info") {
+  const el = document.getElementById("eventCommentsMessage");
+  if (!el) return;
+  el.textContent = text || "";
+  el.classList.remove("is-error", "is-success");
+  if (type === "error") el.classList.add("is-error");
+  if (type === "success") el.classList.add("is-success");
+}
+
+function formatTime(ts) {
+  if (!ts?.toDate) return "";
+  const d = ts.toDate();
+  return d.toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
+}
+
+function renderCommentsList(comments) {
+  const wrap = document.getElementById("eventCommentsList");
+  if (!wrap) return;
+
+  if (!comments.length) {
+    wrap.innerHTML = `<div class="placeholder">Seja o primeiro a comentar.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = comments.map(c => `
+    <div class="event-comment">
+      <div class="event-comment__top">
+        <span class="event-comment__name">${c.userName || "Morador"}</span>
+        <span class="event-comment__time">${formatTime(c.createdAt)}</span>
+      </div>
+      <p class="event-comment__text">${(c.text || "").replace(/</g,"&lt;")}</p>
+    </div>
+  `).join("");
+}
+
+
+function openEventCommentsModal(eventObj) {
+  if (!eventObj?.id) return;
+
+  activeCommentsEventId = eventObj.id;
+
+  document.getElementById("eventCommentsTitle").textContent = eventObj.title || "Evento";
+  document.getElementById("eventCommentsSubtitle").textContent =
+    `${eventObj.placeName || ""} · ${eventObj.addressNeighborhood || ""} · ${eventObj.addressCity || "Itapira"}`;
+
+  // limpa estado
+  document.getElementById("eventCommentInput").value = "";
+  setEventCommentsMessage("");
+
+  // cancela listener anterior
+  if (commentsUnsub) {
+    commentsUnsub();
+    commentsUnsub = null;
+  }
+
+  // realtime
+  commentsUnsub = db.collection("events")
+    .doc(activeCommentsEventId)
+    .collection("comments")
+    .orderBy("createdAt", "asc")
+    .limit(200)
+    .onSnapshot((snap) => {
+      const comments = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) }));
+      renderCommentsList(comments);
+
+      // rola pro fim
+      const list = document.getElementById("eventCommentsList");
+      if (list) list.scrollTop = list.scrollHeight;
+    }, (err) => {
+      console.error(err);
+      setEventCommentsMessage("Não foi possível carregar comentários agora.", "error");
+    });
+
+  openModalById("eventCommentsModal");
+}
+
+
+async function sendEventComment() {
+  if (!activeCommentsEventId) return;
+
+  const user = auth?.currentUser;
+  if (!user) {
+    setEventCommentsMessage("Você precisa estar logado para comentar.", "error");
+    return;
+  }
+
+  const input = document.getElementById("eventCommentInput");
+  const text = String(input?.value || "").trim();
+
+  if (text.length < 2) {
+    setEventCommentsMessage("Digite pelo menos 2 caracteres.", "error");
+    return;
+  }
+
+  // simples anti-spam: limite de tamanho
+  if (text.length > 280) {
+    setEventCommentsMessage("Comentário muito longo (máx. 280).", "error");
+    return;
+  }
+
+  const eventRef = db.collection("events").doc(activeCommentsEventId);
+  const commentRef = eventRef.collection("comments").doc();
+
+  setEventCommentsMessage("Enviando...");
+
+  try {
+    await db.runTransaction(async (tx) => {
+      const evSnap = await tx.get(eventRef);
+      if (!evSnap.exists) throw new Error("Evento não encontrado.");
+
+      const currentCount = Number(evSnap.data()?.commentCount || 0);
+
+      tx.set(commentRef, {
+        uid: user.uid,
+        userName: user.displayName || "Morador",
+        text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      tx.update(eventRef, {
+        commentCount: currentCount + 1,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    });
+
+    input.value = "";
+    setEventCommentsMessage("Comentário enviado!", "success");
+
+    // Atualiza cards (contador)
+    loadEvents();
+  } catch (err) {
+    console.error(err);
+    setEventCommentsMessage(err?.message || "Não foi possível enviar comentário.", "error");
+  }
+}
+
+
+function bindEventCommentsModal() {
+  const modal = document.getElementById("eventCommentsModal");
+  if (!modal) return;
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-event-comments]")) {
+      closeModalById("eventCommentsModal");
+
+      // encerra realtime
+      if (commentsUnsub) {
+        commentsUnsub();
+        commentsUnsub = null;
+      }
+      activeCommentsEventId = null;
+    }
+  });
+
+  document.getElementById("eventCommentSend")?.addEventListener("click", sendEventComment);
+
+  // Enter envia
+  document.getElementById("eventCommentInput")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendEventComment();
+    }
+  });
 }

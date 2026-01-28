@@ -2704,3 +2704,34 @@ body.modal-open{
   display:flex;
   gap:10px;
 }
+
+
+.event-form{ padding: 0; }
+
+.event-form__grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap:12px;
+}
+
+@media (max-width:640px){
+  .event-form__grid{ grid-template-columns: 1fr; }
+}
+
+.event-cover-preview{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.event-cover-preview img{
+  width: 160px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.12);
+  box-shadow: 0 10px 18px rgba(15,23,42,.08);
+}
+
+

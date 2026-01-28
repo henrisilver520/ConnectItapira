@@ -1018,16 +1018,173 @@
     </p>
 
     <div class="evento-actions">
-      <button class="btn btn-outline-primary btn-presenca">
-        <i class="fa-solid fa-check"></i> Vou
-      </button>
+  <button class="btn btn-outline-primary js-attend" type="button" data-action="going">
+    <i class="fa-solid fa-check"></i> Vou
+  </button>
 
-      <button class="btn btn-outline-light btn-comentar">
-        <i class="fa-solid fa-comments"></i> Comentários
-      </button>
-    </div>
+  <button class="btn btn-outline-light js-attend" type="button" data-action="not_going">
+    <i class="fa-solid fa-xmark"></i> Não vou
+  </button>
+
+  <button class="btn btn-outline-light js-open-comments" type="button">
+    <i class="fa-solid fa-comments"></i> ${commentCount}
+  </button>
+</div>
+
   </div>
 </article>
+
+
+<div id="eventCreateModal" class="ti-modal" aria-hidden="true">
+  <div class="ti-modal__backdrop" data-close-event-create></div>
+
+  <div class="ti-modal__panel ti-modal__panel--wide" role="dialog" aria-modal="true" aria-label="Anunciar evento">
+    <header class="ti-modal__header">
+      <div>
+        <p class="ti-modal__kicker">Cadastro de evento</p>
+        <h3 class="ti-modal__title">Anunciar evento</h3>
+        <p class="ti-modal__lead">Preencha as informações para aparecer na lista de eventos da cidade.</p>
+      </div>
+      <button class="ti-modal__close" type="button" aria-label="Fechar" data-close-event-create>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <div class="ti-modal__body">
+      <form id="eventCreateForm" class="event-form">
+        <div class="event-form__grid">
+
+          <label class="store-field store-field--full">
+            <span>Título do evento</span>
+            <input name="title" type="text" maxlength="80" placeholder="Ex: Feira de Artesanato" required />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Descrição</span>
+            <textarea name="description" rows="4" maxlength="500" placeholder="O que vai ter? horários, atrações..." required></textarea>
+          </label>
+
+          <label class="store-field">
+            <span>Categoria</span>
+            <select name="category" required>
+              <option value="">Selecione</option>
+              <option>Show</option>
+              <option>Festa</option>
+              <option>Feira</option>
+              <option>Cultura</option>
+              <option>Esporte</option>
+              <option>Religioso</option>
+              <option>Infantil</option>
+              <option>Outros</option>
+            </select>
+          </label>
+
+          <label class="store-field">
+            <span>Gratuito?</span>
+            <select name="isFree" required>
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+          </label>
+
+          <label class="store-field">
+            <span>Preço (R$) (se não for gratuito)</span>
+            <input name="price" type="number" min="0" step="1" placeholder="Ex: 30" />
+          </label>
+
+          <label class="store-field">
+            <span>Data e hora (início)</span>
+            <input name="startAt" type="datetime-local" required />
+          </label>
+
+          <label class="store-field">
+            <span>Data e hora (fim) (opcional)</span>
+            <input name="endAt" type="datetime-local" />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Local (nome)</span>
+            <input name="placeName" type="text" maxlength="80" placeholder="Ex: Praça Central / Clube / AABB" required />
+          </label>
+
+          <label class="store-field">
+            <span>Bairro</span>
+            <input name="neighborhood" type="text" placeholder="Ex: Centro" required />
+          </label>
+
+          <label class="store-field">
+            <span>Cidade</span>
+            <input name="city" type="text" value="Itapira" required />
+          </label>
+
+          <label class="store-field">
+            <span>Estado</span>
+            <input name="state" type="text" value="SP" required />
+          </label>
+
+          <label class="store-field store-field--full">
+            <span>Rua (opcional)</span>
+            <input name="street" type="text" placeholder="Ex: Praça Bernardino de Campos" />
+          </label>
+
+          <div class="store-field store-field--full">
+            <span>Banner do evento (1 imagem · máx. 1MB)</span>
+            <input id="eventCoverInput" name="cover" type="file" accept="image/*" required />
+            <div class="event-cover-preview" id="eventCoverPreview"></div>
+          </div>
+        </div>
+
+        <div class="store-form__actions">
+          <p id="eventCreateMessage" class="store-form__message" role="status" aria-live="polite"></p>
+          <button id="eventCreateSubmit" class="btn btn-primary glow-on-hover" type="submit">
+            Publicar evento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div id="eventCommentsModal" class="ti-modal" aria-hidden="true">
+  <div class="ti-modal__backdrop" data-close-event-comments></div>
+
+  <div class="ti-modal__panel ti-modal__panel--wide" role="dialog" aria-modal="true" aria-label="Comentários do evento">
+    <header class="ti-modal__header">
+      <div>
+        <p class="ti-modal__kicker">Comentários</p>
+        <h3 id="eventCommentsTitle" class="ti-modal__title">Evento</h3>
+        <p id="eventCommentsSubtitle" class="ti-modal__lead">Converse com quem vai.</p>
+      </div>
+      <button class="ti-modal__close" type="button" aria-label="Fechar" data-close-event-comments>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <div class="ti-modal__body">
+      <div class="event-comments">
+        <div id="eventCommentsList" class="event-comments__list"></div>
+
+        <div class="event-comments__composer">
+          <input
+            id="eventCommentInput"
+            class="event-comments__input"
+            type="text"
+            maxlength="280"
+            placeholder="Escreva um comentário…"
+          />
+          <button id="eventCommentSend" class="btn btn-primary glow-on-hover" type="button">
+            <i class="fa-solid fa-paper-plane"></i> Enviar
+          </button>
+        </div>
+
+        <p id="eventCommentsMessage" class="store-form__message" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 
   </main>

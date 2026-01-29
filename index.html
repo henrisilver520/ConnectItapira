@@ -236,6 +236,15 @@
   <div class="comercios-toolbar__title">
     <h3>Categorias em alta</h3>
     <p>Explore por tipo de produto e encontre o que precisa rapidinho.</p>
+    <div class="comercios-search">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input id="comerciosSearch" type="text" placeholder="Digite o que procura" autocomplete="off" />
+  <button id="comerciosSearchClear" class="comercios-search__clear" type="button" aria-label="Limpar busca">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+
   </div>
 
   <div class="comercios-categories" id="comerciosCategories">
@@ -278,7 +287,24 @@
             <h3>Lojas disponíveis</h3>
             <p id="storesCount" class="stores-section__count">Carregando lojas...</p>
           </header>
-          <div id="storesGrid" class="stores-grid"></div>
+          <div id="storesGrid" class="stores-grid">
+            <div id="comerciosSearchResults" class="comercios-search-results is-hidden">
+  <div class="comercios-search-results__header">
+    <h4>Resultados</h4>
+    <span id="comerciosSearchCount" class="muted"></span>
+  </div>
+
+  <div id="comerciosSearchStores" class="stores-grid"></div>
+
+  <div class="comercios-search-results__header" style="margin-top:14px;">
+    <h4>Produtos</h4>
+    <span id="comerciosProductsCount" class="muted"></span>
+  </div>
+
+  <div id="comerciosSearchProducts" class="comercios-products-grid"></div>
+</div>
+
+          </div>
         </section>
 
         <div class="section-note">

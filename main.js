@@ -248,9 +248,17 @@ async function loadStoresFromFirestore() {
 
   try {
     const snap = await db.collection("users").get();
-    storesCache = snap.docs
-      .map((doc) => ({ uid: doc.id, ...doc.data()?.store }))
-      .filter((store) => store && store.name);
+   storesCache = snap.docs
+  .map((doc) => {
+    const store = doc.data()?.store || {};
+    return {
+      uid: doc.id,
+      ...store,
+      categories: Array.isArray(store.categories) ? store.categories : [],
+      products: Array.isArray(store.products) ? store.products : [],
+    };
+  })
+  .filter((store) => store && store.name);
 
     if (!storesCache.length) {
       renderStoresEmpty("Nenhuma loja disponível ainda.");
@@ -800,6 +808,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadStoresFromFirestore();
   bindEventCommentsModal();
   bindLocais();
+bindComerciosSearch();
 
   bindImoveis();
   bindImovelDetailsModal();
@@ -2998,3 +3007,132 @@ document.getElementById("comerciosCategories")?.addEventListener("click", (e) =>
   // usa sua função existente
   filterStoresByCategory(category);
 });
+
+
+function normalizeText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+function buildStoreHaystack(store) {
+  return normalizeText([
+    store.name,
+    store.category,
+    store.description,
+    store.fulfillment,
+    store.whatsapp,
+    ...(store.categories || []),
+  ].filter(Boolean).join(" "));
+}
+
+function buildProductHaystack(store, product) {
+  return normalizeText([
+    store.name,
+    store.category,
+    product?.name,
+    product?.category,
+    product?.description,
+  ].filter(Boolean).join(" "));
+}
+
+function moneyBR(value) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
+}
+
+
+
+function buildMiniProductCard(store, product) {
+  const image = product.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=900&auto=format&fit=crop";
+  const category = product.category || store.category || "Produto";
+  const price = moneyBR(product.price);
+  const storeUid = store.uid || "";
+
+  return `
+    <article class="product-mini">
+      <div class="product-mini__media">
+        <img src="${image}" alt="${product.name || "Produto"}" loading="lazy">
+      </div>
+      <div class="product-mini__body">
+        <h5 class="product-mini__name">${product.name || "Produto"}</h5>
+        <p class="product-mini__desc">${product.description || ""}</p>
+        <div class="product-mini__meta">
+          <span class="product-mini__price">${price}</span>
+          <span class="product-mini__tag">${category}</span>
+        </div>
+        <div class="product-mini__actions">
+          <a class="btn btn-outline-light comercios-secondary" href="Vitrine.html?storeUid=${encodeURIComponent(storeUid)}">
+            Ver vitrine
+          </a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderComerciosSearchResults(query) {
+  const wrap = document.getElementById("comerciosSearchResults");
+  const storesEl = document.getElementById("comerciosSearchStores");
+  const productsEl = document.getElementById("comerciosSearchProducts");
+  const countEl = document.getElementById("comerciosSearchCount");
+  const prodCountEl = document.getElementById("comerciosProductsCount");
+
+  if (!wrap || !storesEl || !productsEl) return;
+
+  const q = normalizeText(query);
+  if (!q) {
+    wrap.classList.add("is-hidden");
+    storesEl.innerHTML = "";
+    productsEl.innerHTML = "";
+    countEl && (countEl.textContent = "");
+    prodCountEl && (prodCountEl.textContent = "");
+    return;
+  }
+
+  // Lojas que combinam
+  const matchedStores = (storesCache || []).filter((s) => buildStoreHaystack(s).includes(q));
+
+  // Produtos que combinam (flatten)
+  const matchedProducts = [];
+  (storesCache || []).forEach((store) => {
+    (store.products || []).forEach((product) => {
+      if (buildProductHaystack(store, product).includes(q)) {
+        matchedProducts.push({ store, product });
+      }
+    });
+  });
+
+  // Limite pra não “explodir”
+  const maxStores = 12;
+  const maxProducts = 16;
+
+  wrap.classList.remove("is-hidden");
+
+  countEl && (countEl.textContent = `${matchedStores.length} comércio(s)`);
+  prodCountEl && (prodCountEl.textContent = `${matchedProducts.length} produto(s)`);
+
+  storesEl.innerHTML = matchedStores.slice(0, maxStores).map((s) => buildStoreCard(s)).join("")
+    || `<div class="store-card__empty">Nenhum comércio encontrado.</div>`;
+
+  productsEl.innerHTML = matchedProducts.slice(0, maxProducts).map(({ store, product }) => buildMiniProductCard(store, product)).join("")
+    || `<div class="store-card__empty">Nenhum produto encontrado.</div>`;
+}
+
+
+function bindComerciosSearch() {
+  const input = document.getElementById("comerciosSearch");
+  const clear = document.getElementById("comerciosSearchClear");
+  if (!input) return;
+
+  input.addEventListener("input", () => {
+    renderComerciosSearchResults(input.value);
+  });
+
+  clear?.addEventListener("click", () => {
+    input.value = "";
+    renderComerciosSearchResults("");
+    input.focus();
+  });
+}

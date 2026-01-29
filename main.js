@@ -2956,21 +2956,21 @@ function matchesSearch(p) {
   const hay = buildPlaceHaystack(p);
   return hay.includes(locaisQuery);
 }
-
-
 document.getElementById("comerciosCategories")?.addEventListener("click", (e) => {
   const btn = e.target.closest(".comercio-cat[data-category]");
   if (!btn) return;
 
-  document
-    .querySelectorAll(".comercio-cat")
+  // estado ativo visual
+  document.querySelectorAll("#comerciosCategories .comercio-cat")
     .forEach(b => b.classList.remove("is-active"));
 
   btn.classList.add("is-active");
 
-  const category = btn.getAttribute("data-category");
-  activeComercioCategory = category; // variável que você já usa
-  renderComerciosGrid(); // ou a função que filtra seus cards
+  // categoria selecionada
+  const category = btn.getAttribute("data-category") || "todos";
+
+  // ✅ usa sua função existente
+  filterStoresByCategory(category);
 });
 
 

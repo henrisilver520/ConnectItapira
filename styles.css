@@ -3215,96 +3215,86 @@ body.modal-open{
 
 
 
-/* ===============================
-   COMÉRCIOS – CATEGORIAS HORIZONTAL
-================================ */
-
-.comercios-categories-scroll{
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 6px 2px 10px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+.comercios-categories{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  padding-bottom:6px;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
 }
 
-.comercios-categories-scroll::-webkit-scrollbar{
-  height: 6px;
+.comercios-categories::-webkit-scrollbar{
+  height:6px;
 }
-.comercios-categories-scroll::-webkit-scrollbar-thumb{
-  background: rgba(148,163,184,.35);
-  border-radius: 999px;
+.comercios-categories::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.2);
+  border-radius:999px;
 }
 
-/* Card da categoria */
 .comercio-cat{
-  flex: 0 0 auto;
-  width: 96px;
-  height: 96px;
-  border-radius: 18px;
-  border: 1px solid rgba(148,163,184,.22);
-  background: rgba(255,255,255,.85);
-  color: #0f172a;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  font-weight: 900;
-  font-size: .8rem;
-  cursor: pointer;
-
-  transition: 
-    transform .15s ease,
-    box-shadow .15s ease,
-    border-color .15s ease,
-    background .15s ease;
+  position:relative;
+  flex:0 0 auto;
+  width:110px;
+  height:110px;
+  border-radius:18px;
+  overflow:hidden;
+  border:none;
+  cursor:pointer;
+  padding:0;
+  background:#eee;
+  box-shadow:0 8px 18px rgba(0,0,0,.15);
+  transition:transform .2s ease, box-shadow .2s ease;
 }
 
-.comercio-cat__icon{
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  background: linear-gradient(135deg,#38bdf8,#22d3ee);
-  color: #0f172a;
-
-  display: grid;
-  place-items: center;
-  font-size: 1.1rem;
-
-  box-shadow: 0 8px 16px rgba(14,165,233,.28);
+.comercio-cat img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
-/* Hover */
-.comercio-cat:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(15,23,42,.15);
+.comercio-cat::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,.65),
+    rgba(0,0,0,.15)
+  );
 }
 
-/* Ativo */
-.comercio-cat.is-active{
-  border-color: #38bdf8;
-  background: #ecfeff;
-}
-
-.comercio-cat.is-active .comercio-cat__icon{
-  background: linear-gradient(135deg,#2563eb,#38bdf8);
-  color: #fff;
-}
-
-/* Texto */
 .comercio-cat span{
-  text-align: center;
-  line-height: 1.1;
+  position:absolute;
+  bottom:8px;
+  left:8px;
+  right:8px;
+  z-index:2;
+  color:#fff;
+  font-weight:900;
+  font-size:.85rem;
+  text-align:left;
+  line-height:1.1;
 }
 
-/* Mobile ajuste */
-@media (max-width:640px){
+/* hover */
+.comercio-cat:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 28px rgba(0,0,0,.25);
+}
+
+/* ativo */
+.comercio-cat.is-active{
+  outline:3px solid #2563eb;
+  transform:translateY(-2px);
+}
+
+/* mobile */
+@media(max-width:640px){
   .comercio-cat{
-    width: 88px;
-    height: 88px;
-    font-size: .75rem;
+    width:96px;
+    height:96px;
+    border-radius:16px;
   }
 }

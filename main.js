@@ -2956,22 +2956,6 @@ function matchesSearch(p) {
   const hay = buildPlaceHaystack(p);
   return hay.includes(locaisQuery);
 }
-document.getElementById("comerciosCategories")?.addEventListener("click", (e) => {
-  const btn = e.target.closest(".comercio-cat[data-category]");
-  if (!btn) return;
-
-  // estado ativo visual
-  document.querySelectorAll("#comerciosCategories .comercio-cat")
-    .forEach(b => b.classList.remove("is-active"));
-
-  btn.classList.add("is-active");
-
-  // categoria selecionada
-  const category = btn.getAttribute("data-category") || "todos";
-
-  // ✅ usa sua função existente
-  filterStoresByCategory(category);
-});
 
 
 
@@ -2997,4 +2981,20 @@ scroller?.addEventListener("mousemove", (e) => {
   const x = e.pageX - scroller.offsetLeft;
   const walk = (x - startX) * 1.6;
   scroller.scrollLeft = scrollLeft - walk;
+});
+
+
+document.getElementById("comerciosCategories")?.addEventListener("click", (e) => {
+  const btn = e.target.closest(".comercio-cat[data-category]");
+  if (!btn) return;
+
+  document.querySelectorAll(".comercio-cat")
+    .forEach(b => b.classList.remove("is-active"));
+
+  btn.classList.add("is-active");
+
+  const category = btn.getAttribute("data-category") || "todos";
+
+  // usa sua função existente
+  filterStoresByCategory(category);
 });

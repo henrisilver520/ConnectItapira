@@ -284,7 +284,6 @@
 
         <section class="stores-section" aria-label="Lojas disponíveis">
           <header class="stores-section__header">
-            <h3>Lojas disponíveis</h3>
              <div id="comerciosSearchResults" class="comercios-search-results is-hidden">
   <div class="comercios-search-results__header">
     <h4>Resultados</h4>
@@ -608,6 +607,47 @@
 
       <div class="imoveis-count" id="imoveisCount">Carregando imóveis...</div>
     </div>
+<div class="imoveis-filters">
+  <!-- Venda -->
+  <div class="imoveis-filters__panel is-active" data-panel="venda">
+    <div class="imoveis-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="imoveisSearchVenda" type="text" placeholder="Buscar imóveis à venda (ex: 3 quartos, centro...)" autocomplete="off">
+      <button class="imoveis-search__clear" type="button" data-clear="venda" aria-label="Limpar busca">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="imoveis-filter-row">
+      <select id="imoveisBairroVenda">
+        <option value="">Todos os bairros</option>
+      </select>
+
+      <input id="imoveisMinVenda" type="number" min="0" step="1" placeholder="Preço mín.">
+      <input id="imoveisMaxVenda" type="number" min="0" step="1" placeholder="Preço máx.">
+    </div>
+  </div>
+
+  <!-- Aluguel -->
+  <div class="imoveis-filters__panel" data-panel="aluguel">
+    <div class="imoveis-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="imoveisSearchAluguel" type="text" placeholder="Buscar imóveis para aluguel (ex: kitnet, centro...)" autocomplete="off">
+      <button class="imoveis-search__clear" type="button" data-clear="aluguel" aria-label="Limpar busca">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="imoveis-filter-row">
+      <select id="imoveisBairroAluguel">
+        <option value="">Todos os bairros</option>
+      </select>
+
+      <input id="imoveisMinAluguel" type="number" min="0" step="1" placeholder="Aluguel mín.">
+      <input id="imoveisMaxAluguel" type="number" min="0" step="1" placeholder="Aluguel máx.">
+    </div>
+  </div>
+</div>
 
     <div class="imoveis-grid" id="imoveisGrid">
       <!-- Cards renderizados via JS -->

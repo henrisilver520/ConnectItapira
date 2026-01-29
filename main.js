@@ -808,12 +808,17 @@ document.addEventListener("DOMContentLoaded", () => {
   loadStoresFromFirestore();
   bindEventCommentsModal();
   bindLocais();
-bindComerciosSearch();
+ bindComerciosSearch();
 
   bindImoveis();
   bindImovelDetailsModal();
   bindImovelAnuncioModal();
   loadPropertiesFromFirestore();
+  fillNeighborhoodSelect("imoveisBairroVenda", "venda");
+  fillNeighborhoodSelect("imoveisBairroAluguel", "aluguel");
+  renderPropertiesFiltered();
+  bindImoveisFilters();
+
   enableDragScroll(document.getElementById("nav-header-buttons"));
 
   bindEventos();
@@ -1044,7 +1049,9 @@ async function loadPropertiesFromFirestore() {
       .get();
 
     propertiesCache = snap.docs.map((d) => ({ id: d.id, ...(d.data() || {}) }));
-    filterPropertiesByPurpose(activePropertyPurpose);
+fillNeighborhoodSelect("imoveisBairroVenda", "venda");
+fillNeighborhoodSelect("imoveisBairroAluguel", "aluguel");
+filterPropertiesByPurpose(activePropertyPurpose);
   } catch (err) {
     console.error("Erro ao carregar imóveis:", err);
     if (count) count.textContent = "Não foi possível carregar os imóveis agora.";
@@ -1128,9 +1135,97 @@ function renderProperties(list) {
 
 function filterPropertiesByPurpose(purpose) {
   activePropertyPurpose = purpose || "venda";
-  const filtered = propertiesCache.filter((p) => (p.purpose || "venda") === activePropertyPurpose);
-  renderProperties(filtered);
+
+  // alterna painel de filtros
+  document.querySelectorAll(".imoveis-filters__panel").forEach(p => p.classList.remove("is-active"));
+  document.querySelector(`.imoveis-filters__panel[data-panel="${activePropertyPurpose}"]`)?.classList.add("is-active");
+
+  // popula bairros do purpose atual
+  if (activePropertyPurpose === "venda") {
+    fillNeighborhoodSelect("imoveisBairroVenda", "venda");
+  } else {
+    fillNeighborhoodSelect("imoveisBairroAluguel", "aluguel");
+  }
+
+  renderPropertiesFiltered();
 }
+
+
+function bindImoveisFilters() {
+  const vendaSearch = document.getElementById("imoveisSearchVenda");
+  const aluguelSearch = document.getElementById("imoveisSearchAluguel");
+
+  const vendaBairro = document.getElementById("imoveisBairroVenda");
+  const aluguelBairro = document.getElementById("imoveisBairroAluguel");
+
+  const vendaMin = document.getElementById("imoveisMinVenda");
+  const vendaMax = document.getElementById("imoveisMaxVenda");
+
+  const aluguelMin = document.getElementById("imoveisMinAluguel");
+  const aluguelMax = document.getElementById("imoveisMaxAluguel");
+
+  vendaSearch?.addEventListener("input", () => {
+    imoveisQuery.venda = normalizeText(vendaSearch.value);
+    if (activePropertyPurpose === "venda") renderPropertiesFiltered();
+  });
+
+  aluguelSearch?.addEventListener("input", () => {
+    imoveisQuery.aluguel = normalizeText(aluguelSearch.value);
+    if (activePropertyPurpose === "aluguel") renderPropertiesFiltered();
+  });
+
+  vendaBairro?.addEventListener("change", () => {
+    imoveisBairro.venda = vendaBairro.value || "";
+    if (activePropertyPurpose === "venda") renderPropertiesFiltered();
+  });
+
+  aluguelBairro?.addEventListener("change", () => {
+    imoveisBairro.aluguel = aluguelBairro.value || "";
+    if (activePropertyPurpose === "aluguel") renderPropertiesFiltered();
+  });
+
+  function numOrNull(v) {
+    const n = Number(v);
+    return v === "" || Number.isNaN(n) ? null : n;
+  }
+
+  vendaMin?.addEventListener("input", () => {
+    imoveisMin.venda = numOrNull(vendaMin.value);
+    if (activePropertyPurpose === "venda") renderPropertiesFiltered();
+  });
+  vendaMax?.addEventListener("input", () => {
+    imoveisMax.venda = numOrNull(vendaMax.value);
+    if (activePropertyPurpose === "venda") renderPropertiesFiltered();
+  });
+
+  aluguelMin?.addEventListener("input", () => {
+    imoveisMin.aluguel = numOrNull(aluguelMin.value);
+    if (activePropertyPurpose === "aluguel") renderPropertiesFiltered();
+  });
+  aluguelMax?.addEventListener("input", () => {
+    imoveisMax.aluguel = numOrNull(aluguelMax.value);
+    if (activePropertyPurpose === "aluguel") renderPropertiesFiltered();
+  });
+
+  // clear buttons
+  document.querySelectorAll(".imoveis-search__clear[data-clear]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.getAttribute("data-clear");
+      if (key === "venda") {
+        imoveisQuery.venda = "";
+        vendaSearch.value = "";
+        renderPropertiesFiltered();
+      }
+      if (key === "aluguel") {
+        imoveisQuery.aluguel = "";
+        aluguelSearch.value = "";
+        renderPropertiesFiltered();
+      }
+    });
+  });
+}
+
+
 
 function setGallery(index) {
   if (!galleryPhotos.length) return;
@@ -3135,4 +3230,105 @@ function bindComerciosSearch() {
     renderComerciosSearchResults("");
     input.focus();
   });
+}
+
+
+let imoveisQuery = { venda: "", aluguel: "" };
+let imoveisBairro = { venda: "", aluguel: "" };
+let imoveisMin = { venda: null, aluguel: null };
+let imoveisMax = { venda: null, aluguel: null };
+
+function normalizeText(v) {
+  return String(v || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+function buildImovelHaystack(p) {
+  return normalizeText([
+    p.title,
+    p.type,
+    p.description,
+    p.addressNeighborhood,
+    p.addressCity,
+    p.addressStreet,
+    p.areaM2 ? `${p.areaM2}m2` : "",
+    p.bedrooms ? `${p.bedrooms} quartos` : "",
+    p.bathrooms ? `${p.bathrooms} banheiros` : "",
+    p.parking ? `${p.parking} vagas` : "",
+  ].filter(Boolean).join(" "));
+}
+
+function getPurposeFilters() {
+  const key = activePropertyPurpose || "venda";
+  return {
+    q: imoveisQuery[key] || "",
+    bairro: imoveisBairro[key] || "",
+    min: imoveisMin[key],
+    max: imoveisMax[key],
+  };
+}
+
+function matchesImovelFilters(p) {
+  // sempre filtra pela aba ativa
+  const purpose = (p.purpose || "venda");
+  if (purpose !== activePropertyPurpose) return false;
+
+  const f = getPurposeFilters();
+
+  // bairro
+  if (f.bairro) {
+    const nb = normalizeText(p.addressNeighborhood || "");
+    if (nb !== f.bairro) return false;
+  }
+
+  // preço
+  const price = Number(p.price || 0);
+  if (typeof f.min === "number" && price < f.min) return false;
+  if (typeof f.max === "number" && price > f.max) return false;
+
+  // busca orgânica
+  if (f.q) {
+    const hay = buildImovelHaystack(p);
+    if (!hay.includes(f.q)) return false;
+  }
+
+  return true;
+}
+
+function renderPropertiesFiltered() {
+  const filtered = (propertiesCache || []).filter(matchesImovelFilters);
+  renderProperties(filtered);
+}
+
+
+
+function getNeighborhoodOptions(purpose) {
+  const set = new Set();
+  (propertiesCache || [])
+    .filter(p => (p.purpose || "venda") === purpose)
+    .forEach(p => {
+      const nb = String(p.addressNeighborhood || "").trim();
+      if (nb) set.add(nb);
+    });
+
+  return Array.from(set).sort((a,b) => a.localeCompare(b, "pt-BR"));
+}
+
+function fillNeighborhoodSelect(selectId, purpose) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+
+  const current = sel.value || "";
+  const opts = getNeighborhoodOptions(purpose);
+
+  sel.innerHTML = `<option value="">Todos os bairros</option>` +
+    opts.map(nb => {
+      const key = normalizeText(nb);
+      return `<option value="${key}">${nb}</option>`;
+    }).join("");
+
+  sel.value = current;
 }

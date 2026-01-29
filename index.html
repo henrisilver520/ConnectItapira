@@ -232,20 +232,57 @@
           
         </header>
 
-        <section class="comercios-toolbar" aria-label="Filtros de categorias">
-          <div class="comercios-toolbar__title">
-            <h3>Categorias em alta</h3>
-            <p>Explore por tipo de produto e encontre o que precisa rapidinho.</p>
-          </div>
-          <div class="comercios-chips">
-            <button class="chip is-active" type="button" data-category="todos">Todos</button>
-            <button class="chip" type="button" data-category="alimentação">Alimentação</button>
-            <button class="chip" type="button" data-category="moda">Moda</button>
-            <button class="chip" type="button" data-category="casa">Casa</button>
-            <button class="chip" type="button" data-category="tecnologia">Tecnologia</button>
-            <button class="chip" type="button" data-category="serviços">Serviços</button>
-          </div>
-        </section>
+       <section class="comercios-toolbar" aria-label="Filtros de categorias">
+  <div class="comercios-toolbar__title">
+    <h3>Categorias em alta</h3>
+    <p>Explore por tipo de produto e encontre o que precisa rapidinho.</p>
+  </div>
+
+  <div class="comercios-categories-scroll" id="comerciosCategories">
+    <button class="comercio-cat is-active" data-category="todos">
+      <div class="comercio-cat__icon">
+        <i class="fa-solid fa-store"></i>
+      </div>
+      <span>Todos</span>
+    </button>
+
+    <button class="comercio-cat" data-category="alimentação">
+      <div class="comercio-cat__icon">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <span>Alimentação</span>
+    </button>
+
+    <button class="comercio-cat" data-category="moda">
+      <div class="comercio-cat__icon">
+        <i class="fa-solid fa-shirt"></i>
+      </div>
+      <span>Moda</span>
+    </button>
+
+    <button class="comercio-cat" data-category="casa">
+      <div class="comercio-cat__icon">
+        <i class="fa-solid fa-couch"></i>
+      </div>
+      <span>Casa</span>
+    </button>
+
+    <button class="comercio-cat" data-category="tecnologia">
+      <div class="comercio-cat__icon">
+        <i class="fa-solid fa-laptop"></i>
+      </div>
+      <span>Tecnologia</span>
+    </button>
+
+    <button class="comercio-cat" data-category="serviços">
+      <div class="comercio-cat__icon">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+      </div>
+      <span>Serviços</span>
+    </button>
+  </div>
+</section>
+
 
         <section class="stores-section" aria-label="Lojas disponíveis">
           <header class="stores-section__header">

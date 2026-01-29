@@ -2956,3 +2956,45 @@ function matchesSearch(p) {
   const hay = buildPlaceHaystack(p);
   return hay.includes(locaisQuery);
 }
+
+
+document.getElementById("comerciosCategories")?.addEventListener("click", (e) => {
+  const btn = e.target.closest(".comercio-cat[data-category]");
+  if (!btn) return;
+
+  document
+    .querySelectorAll(".comercio-cat")
+    .forEach(b => b.classList.remove("is-active"));
+
+  btn.classList.add("is-active");
+
+  const category = btn.getAttribute("data-category");
+  activeComercioCategory = category; // variável que você já usa
+  renderComerciosGrid(); // ou a função que filtra seus cards
+});
+
+
+
+const scroller = document.getElementById("comerciosCategories");
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+scroller?.addEventListener("mousedown", (e) => {
+  isDown = true;
+  scroller.classList.add("dragging");
+  startX = e.pageX - scroller.offsetLeft;
+  scrollLeft = scroller.scrollLeft;
+});
+
+scroller?.addEventListener("mouseleave", () => isDown = false);
+scroller?.addEventListener("mouseup", () => isDown = false);
+
+scroller?.addEventListener("mousemove", (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - scroller.offsetLeft;
+  const walk = (x - startX) * 1.6;
+  scroller.scrollLeft = scrollLeft - walk;
+});

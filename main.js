@@ -179,11 +179,7 @@ function buildStoreCard(store) {
 
       <div class="store-card__meta">
         <span><i class="fa-solid fa-truck-fast"></i> ${fulfillment}</span>
-        ${
-          phoneDigits
-            ? `<span><i class="fa-brands fa-whatsapp"></i> ${phoneDigits}</span>`
-            : ""
-        }
+       
       </div>
 
       <div class="store-card__actions">

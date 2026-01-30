@@ -1284,7 +1284,7 @@ input, select, textarea, button { font-size: 16px; }
 
 @media (max-width: 640px){
   .store-card__name{
-    font-size:1rem;
+    font-size:1.35rem;
   }
 }
 
@@ -1365,7 +1365,7 @@ input, select, textarea, button { font-size: 16px; }
 }
 
 .icon-btn-whatsapp i{
-  font-size: 18px;
+  font-size: 30px;
 }
 
 .icon-btn-whatsapp:hover{
@@ -1384,7 +1384,7 @@ input, select, textarea, button { font-size: 16px; }
   padding: 10px 14px;
   border-radius: 999px;
 
-  font-size: 13px;
+  font-size: 20px;
   font-weight: 900;
 
   text-decoration: none;
@@ -1443,7 +1443,7 @@ input, select, textarea, button { font-size: 16px; }
   border-radius:22px;
   background:rgba(15,23,42,.68);
   padding:22px;
-  display:flex;
+    display: none;
   flex-direction:column;
   gap:16px;
 }

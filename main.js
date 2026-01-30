@@ -151,52 +151,69 @@ function buildStoreCard(store) {
   const whatsapp = store.whatsapp || "";
   const phoneDigits = whatsapp.replace(/\D/g, "");
 
- const logoSrc = store.logoUrl || store.logo || ""; // compatível com antigo e novo
-
-const logoHtml = logoSrc
-  ? `<img src="${logoSrc}" class="store-card__logo" alt="Logo ${store.name || "loja"}" loading="lazy" referrerpolicy="no-referrer">`
-  : `<div class="store-card__logo placeholder">Logo</div>`;
-
+  const logoSrc = store.logoUrl || store.logo || "";
+  const logoHtml = logoSrc
+    ? `<img src="${logoSrc}" class="store-card__logo" alt="Logo ${store.name || "loja"}" loading="lazy" referrerpolicy="no-referrer">`
+    : `<div class="store-card__logo placeholder">CI</div>`;
 
   const whatsappUrl = phoneDigits
-    ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(`Olá, ${store.name}! Vim pelos Comércios Locais.`)}`
+    ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(`Olá, ${store.name || "loja"}! Vim pelos Comércios Locais.`)}`
     : "";
+
+  const vitrineUrl = `Vitrine.html?storeUid=${encodeURIComponent(store.uid || "")}`;
 
   return `
     <article class="store-card">
-    <div class="store-card__top">
-  
+      <div class="store-card__top">
+        <div class="store-card__logo-wrap">
+          ${logoHtml}
+        </div>
 
-  <div class="store-card__head">
-
-  <h4 class="store-card__name">${store.name || "Loja sem nome"}</h4>
-  </div>
-  <div class="store-card__logo-wrap">
-    ${logoHtml}
-  </div>
-</div>
-
+        <div class="store-card__head">
+          <h4 class="store-card__name">${store.name || "Loja sem nome"}</h4>
+          <div class="store-card__badges">
+            <span class="badge-pill">
+              <i class="fa-solid fa-tags"></i> ${category}
+            </span>
+            <span class="badge-pill badge-pill--soft">
+              <i class="fa-solid fa-truck-fast"></i> ${fulfillment}
+            </span>
+          </div>
+        </div>
+      </div>
 
       <p class="store-card__desc">${description}</p>
-      <div class="store-card__meta">
-        <span><i class="fa-solid fa-truck-fast"></i> ${fulfillment}</span>
-        ${phoneDigits ? `<span><i class="fa-brands fa-whatsapp"></i> ${phoneDigits}</span>` : ""}
-      </div>
-      <div class="store-card__actions">
-        ${
-          whatsappUrl
-            ? `<a class="btn btn-success" href="${whatsappUrl}" target="_blank" rel="noopener">
-                 <i class="fa-brands fa-whatsapp"></i> 
-               </a>`
-            : `<span class="muted">WhatsApp não informado</span>`
-        }
-        <a class="btnVerVitrine" href="Vitrine.html?storeUid=${encodeURIComponent(store.uid || "")}">
-          Ver vitrine
-        </a>
+
+      <div class="store-card__footer">
+        <div class="store-card__meta">
+          ${
+            phoneDigits
+              ? `<span class="store-card__phone"><i class="fa-brands fa-whatsapp"></i> ${phoneDigits}</span>`
+              : `<span class="store-card__phone muted">WhatsApp não informado</span>`
+          }
+        </div>
+
+        <div class="store-card__actions">
+          ${
+            whatsappUrl
+              ? `<a class="icon-btn icon-btn--whats" href="${whatsappUrl}" target="_blank" rel="noopener" aria-label="Chamar no WhatsApp">
+                   <i class="fa-brands fa-whatsapp"></i>
+                 </a>`
+              : `<button class="icon-btn is-disabled" type="button" aria-label="WhatsApp não informado" disabled>
+                   <i class="fa-brands fa-whatsapp"></i>
+                 </button>`
+          }
+
+          <a class="btn-pill btn-pill--primary" href="${vitrineUrl}">
+            Ver vitrine
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
       </div>
     </article>
   `;
 }
+
 
 function renderStoresList(stores) {
   const grid = document.getElementById("storesGrid");

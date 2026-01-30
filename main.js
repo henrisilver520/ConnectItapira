@@ -186,11 +186,11 @@ const logoHtml = logoSrc
         ${
           whatsappUrl
             ? `<a class="btn btn-success" href="${whatsappUrl}" target="_blank" rel="noopener">
-                 <i class="fa-brands fa-whatsapp"></i> Conversar
+                 <i class="fa-brands fa-whatsapp"></i> 
                </a>`
             : `<span class="muted">WhatsApp não informado</span>`
         }
-        <a class="btn btn-outline-light comercios-secondary" href="Vitrine.html?storeUid=${encodeURIComponent(store.uid || "")}">
+        <a class="btnVerVitrine" href="Vitrine.html?storeUid=${encodeURIComponent(store.uid || "")}">
           Ver vitrine
         </a>
       </div>

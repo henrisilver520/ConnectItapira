@@ -151,9 +151,11 @@ function buildStoreCard(store) {
   const whatsapp = store.whatsapp || "";
   const phoneDigits = whatsapp.replace(/\D/g, "");
 
-  const logoHtml = store.logo
-  ? `<img src="${store.logo}" class="store-card__logo" alt="Logo ${store.name}">`
-  : `<div class="store-card__logo placeholder">Logo</div>`
+ const logoSrc = store.logoUrl || store.logo || ""; // compatível com antigo e novo
+
+const logoHtml = logoSrc
+  ? `<img src="${logoSrc}" class="store-card__logo" alt="Logo ${store.name || "loja"}" loading="lazy" referrerpolicy="no-referrer">`
+  : `<div class="store-card__logo placeholder">Logo</div>`;
 
 
   const whatsappUrl = phoneDigits

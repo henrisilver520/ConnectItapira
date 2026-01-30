@@ -15,7 +15,7 @@ if (!firebase.apps.length) {
 const db = firebase.firestore();
 
 const storeNameEl = document.getElementById("storeName");
-const storeNameTopEl = document.getElementById("storeNameTop");
+const storeNameTopEl = document.getElementById("storeNameTop").textContent = store.name || "Vitrine";
 const storeDescriptionEl = document.getElementById("storeDescription");
 const storeMetaEl = document.getElementById("storeMeta");
 const storeActionsEl = document.getElementById("storeActions");

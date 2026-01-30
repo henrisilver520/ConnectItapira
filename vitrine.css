@@ -1,64 +1,135 @@
 :root{
-  --bg: #f3f6fb;
+  --bg: #f3f7ff;
   --card: #ffffff;
   --text: #0f172a;
   --muted: #64748b;
-  --border: #e6edf6;
+  --border: #e6eef8;
 
-  /* verde “mercado” semelhante ao exemplo */
   --brand: #22c55e;
-  --brand-2: #16a34a;
+  --brand2: #16a34a;
 
-  --shadow: 0 10px 24px rgba(15, 23, 42, .08);
+  --shadow: 0 10px 26px rgba(15, 23, 42, .08);
   --radius: 16px;
 }
 
+/* Base */
 *{ box-sizing: border-box; }
 html, body{ height: 100%; }
 body{
   margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
   background: var(--bg);
   color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
 }
 
-/* ===== Top (logo) ===== */
-.shop-top{
+.vitrine{
+  min-height: 100vh;
+}
+
+/* ===== TOPBAR (seu header) ===== */
+.vitrine-topbar{
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--card);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
-.shop-top__inner{
+
+.vitrine-topbar__inner{
   max-width: 1100px;
   margin: 0 auto;
   padding: 10px 14px;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+}
+
+.brand-badge{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), var(--brand2));
+  box-shadow: 0 10px 18px rgba(34,197,94,.25);
+  font-weight: 1000;
+  letter-spacing: .4px;
+}
+
+#storeNameTop{
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: -0.2px;
+}
+
+.vitrine-topbar__actions{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* botão “ghost” por cima do bootstrap */
+.btn-ghost{
+  border: 1px solid var(--border) !important;
+  background: #ffffff !important;
+  color: var(--text) !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  font-weight: 800 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: 0 8px 18px rgba(15,23,42,.06);
+}
+.btn-ghost:hover{
+  background: #f8fbff !important;
+}
+
+/* ===== MAIN ===== */
+.vitrine-main{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 14px 30px;
+}
+
+/* ===== LOGO ===== */
+.shop-top__inner{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .shop-logo{
-  height: 44px;
+  height: 48px;
   width: auto;
   object-fit: contain;
 }
 
-/* ===== Main container ===== */
-.vitrine-main{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 12px 14px 28px;
-}
-
-/* ===== Slider ===== */
+/* ===== SLIDER ===== */
 .ad-slider{
+  margin-top: 12px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
 }
+
 .ad-slider__track{
   display: flex;
   overflow-x: auto;
@@ -71,8 +142,7 @@ body{
 .ad-slide{
   flex: 0 0 100%;
   scroll-snap-align: start;
-  height: 130px;
-  position: relative;
+  height: 140px;
 }
 .ad-slide img{
   width: 100%;
@@ -96,22 +166,20 @@ body{
 }
 .dot.is-active{ background: var(--brand); }
 
-/* ===== Header info (nome/desc/cta) ===== */
+/* ===== NOME + CTA ===== */
 .shop-head{
   margin-top: 12px;
   display: grid;
   gap: 10px;
-  align-items: start;
 }
-.shop-head__title{
-  background: transparent;
-}
+
 .shop-name{
   margin: 0;
   font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
+  font-weight: 1000;
+  letter-spacing: -0.3px;
 }
+
 .shop-desc{
   margin: 4px 0 0;
   color: var(--muted);
@@ -119,29 +187,28 @@ body{
   line-height: 1.35;
 }
 
-/* Botões (WhatsApp) */
-.shop-actions .btn,
-.shop-actions a.btn{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  border: 1px solid transparent;
+.shop-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-.btn-success{
-  background: var(--brand);
-  color: #fff;
-}
-.btn-success:hover{ background: var(--brand-2); }
 
-/* ===== Categorias (scroll horizontal) ===== */
+/* seu botão de whatsapp pode receber .btn-success do bootstrap
+   e aqui damos “cara de loja” */
+.shop-actions .btn-success,
+.products-grid .btn-success{
+  border: 0 !important;
+  background: linear-gradient(135deg, var(--brand), var(--brand2)) !important;
+  font-weight: 900 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 18px rgba(34,197,94,.22);
+}
+
+/* ===== CATEGORIAS (scroll horizontal) ===== */
 .cats{
   margin-top: 10px;
 }
+
 .cats-scroll{
   display: flex;
   gap: 10px;
@@ -152,6 +219,7 @@ body{
 }
 .cats-scroll::-webkit-scrollbar{ height: 0; }
 
+/* seu JS pode criar botões com class "chip" */
 .chip{
   scroll-snap-align: start;
   border: 1px solid var(--border);
@@ -160,29 +228,35 @@ body{
   padding: 9px 12px;
   border-radius: 999px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 900;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgba(15,23,42,.06);
+  box-shadow: 0 8px 16px rgba(15,23,42,.06);
+  transition: transform .12s ease;
 }
+.chip:active{ transform: scale(.98); }
+
 .chip.is-active{
   border-color: rgba(34,197,94,.35);
   background: rgba(34,197,94,.12);
   color: #0b3b1d;
 }
 
-/* ===== Produtos ===== */
+/* ===== PRODUTOS ===== */
 .products{
   margin-top: 6px;
 }
+
 .products__head{
-  margin: 6px 0 8px;
+  margin: 6px 0 10px;
 }
+
 .products__title{
   margin: 0;
   font-size: 16px;
-  font-weight: 900;
+  font-weight: 1000;
 }
+
 .products__sub{
   margin: 4px 0 0;
   color: var(--muted);
@@ -191,12 +265,11 @@ body{
 
 .products-grid{
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 colunas como na imagem */
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 colunas no mobile */
   gap: 12px;
-  margin-top: 10px;
 }
 
-/* Card produto (compacto tipo “mercado”) */
+/* Cards de produto (seu JS deve renderizar com essas classes) */
 .product-card{
   background: var(--card);
   border: 1px solid var(--border);
@@ -207,6 +280,7 @@ body{
   flex-direction: column;
   min-height: 230px;
 }
+
 .product-card__media{
   height: 118px;
   background: #eef5ff;
@@ -227,7 +301,7 @@ body{
 .product-card__name{
   margin: 0;
   font-size: 13.5px;
-  font-weight: 900;
+  font-weight: 1000;
   line-height: 1.2;
 }
 
@@ -251,8 +325,8 @@ body{
 }
 
 .product-card__price{
-  font-weight: 950;
-  color: var(--brand-2);
+  font-weight: 1000;
+  color: var(--brand2);
   font-size: 14px;
 }
 
@@ -268,14 +342,14 @@ body{
 .product-card__actions{
   margin-top: 4px;
 }
-.product-card__actions .btn-success{
+.product-card__actions .btn{
   width: 100%;
   justify-content: center;
-  padding: 10px 12px;
   border-radius: 12px;
+  font-weight: 900;
 }
 
-/* Empty state */
+/* Estado vazio */
 .empty-state{
   grid-column: 1 / -1;
   background: var(--card);
@@ -286,9 +360,9 @@ body{
   text-align: center;
 }
 
-/* Responsivo: em telas maiores, pode virar 3-4 colunas (opcional) */
+/* Desktop opcional: mais colunas */
 @media (min-width: 700px){
-  .ad-slide{ height: 170px; }
+  .ad-slide{ height: 180px; }
   .products-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (min-width: 1024px){

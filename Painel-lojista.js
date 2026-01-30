@@ -14,6 +14,7 @@ if (!firebase.apps.length) {
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 let currentUid = "";
 let storeData = null;
@@ -35,22 +36,33 @@ const productEditingId = document.getElementById("productEditingId");
 const productName = document.getElementById("productName");
 const productCategory = document.getElementById("productCategory");
 const productPrice = document.getElementById("productPrice");
-const productImage = document.getElementById("productImage");
+const productImage = document.getElementById("productImage"); // por enquanto URL
 const productDescription = document.getElementById("productDescription");
 const productMessage = document.getElementById("productMessage");
 const productList = document.getElementById("productList");
 const productCancelEdit = document.getElementById("productCancelEdit");
 const productSubmit = document.getElementById("productSubmit");
 
+// ===== NOVO: LOGO UPLOAD =====
+const storeLogoPreview = document.getElementById("storeLogoPreview");
+const storeLogoFile = document.getElementById("storeLogoFile");
+const storeLogoUploadBtn = document.getElementById("storeLogoUploadBtn");
+const storeLogoMessage = document.getElementById("storeLogoMessage");
+
 function setStatus(message, type = "info") {
   if (!painelStatus) return;
   painelStatus.classList.remove("is-warning", "is-success");
   if (type === "warning") painelStatus.classList.add("is-warning");
   if (type === "success") painelStatus.classList.add("is-success");
+
   painelStatus.innerHTML = `
     <div class="status-card__title">
       <i class="fa-solid ${
-        type === "success" ? "fa-circle-check" : type === "warning" ? "fa-triangle-exclamation" : "fa-bolt"
+        type === "success"
+          ? "fa-circle-check"
+          : type === "warning"
+          ? "fa-triangle-exclamation"
+          : "fa-bolt"
       }"></i>
       ${message}
     </div>
@@ -87,7 +99,7 @@ function moneyBR(value) {
 }
 
 function ensureStoreShape(data) {
-  const base = data || {};
+  const base = data && typeof data === "object" ? data : {};
   base.categories = Array.isArray(base.categories) ? base.categories : [];
   base.products = Array.isArray(base.products) ? base.products : [];
   return base;
@@ -95,16 +107,24 @@ function ensureStoreShape(data) {
 
 function fillStoreForm(store) {
   if (!storeSettingsForm || !store) return;
+
   storeSettingsForm.elements.storeName.value = store.name || "";
   storeSettingsForm.elements.storeCategory.value = store.category || "";
   storeSettingsForm.elements.storeWhatsApp.value = store.whatsapp || "";
   storeSettingsForm.elements.storeFulfillment.value = store.fulfillment || "";
   storeSettingsForm.elements.storeDescription.value = store.description || "";
+
+  // preview do logo salvo
+  if (storeLogoPreview) {
+    storeLogoPreview.src =
+      store.logoUrl || "https://via.placeholder.com/280x120?text=LOGO";
+  }
 }
 
 function fillProductCategoryOptions(categories) {
   if (!productCategory) return;
   const currentValue = productCategory.value;
+
   productCategory.innerHTML = '<option value="">Selecione</option>';
   categories.forEach((cat) => {
     const opt = document.createElement("option");
@@ -112,6 +132,7 @@ function fillProductCategoryOptions(categories) {
     opt.textContent = cat;
     productCategory.appendChild(opt);
   });
+
   if (currentValue && categories.includes(currentValue)) {
     productCategory.value = currentValue;
   }
@@ -189,11 +210,14 @@ function renderProducts(products) {
 
 function renderAll(store) {
   const safeStore = ensureStoreShape(store);
+
   fillStoreForm(safeStore);
   fillProductCategoryOptions(safeStore.categories);
+
   renderCategories(safeStore.categories);
   renderProducts(safeStore.products);
-  painelStoreTitle.textContent = safeStore.name || "Minha Loja";
+
+  if (painelStoreTitle) painelStoreTitle.textContent = safeStore.name || "Minha Loja";
 }
 
 function getStorePayloadFromForm() {
@@ -225,7 +249,7 @@ function getProductPayload() {
     name: productName.value.trim(),
     category: productCategory.value.trim(),
     price: priceValue,
-    image: productImage.value.trim(),
+    image: productImage.value.trim(), // ainda URL
     description: productDescription.value.trim(),
     updatedAt: Date.now(),
   };
@@ -243,6 +267,7 @@ function validateProduct(payload) {
 
 async function saveStore(storePatch, messageTarget, successMessage) {
   if (!currentUid) return;
+
   try {
     await db.collection("users").doc(currentUid).set(
       {
@@ -255,6 +280,7 @@ async function saveStore(storePatch, messageTarget, successMessage) {
       },
       { merge: true }
     );
+
     setFormMessage(messageTarget, successMessage, "success");
     setStatus("Loja atualizada com sucesso.", "success");
     await loadStore();
@@ -291,8 +317,10 @@ async function loadStore() {
 
 async function handleStoreSubmit(e) {
   e.preventDefault();
+
   const payload = getStorePayloadFromForm();
   const error = validateStorePayload(payload);
+
   if (error) {
     setFormMessage(storeSettingsMessage, error, "error");
     return;
@@ -336,9 +364,7 @@ async function handleCategoryActions(e) {
 
   if (action === "delete-category") {
     const categories = storeData.categories.filter((c) => c !== name);
-    const products = storeData.products.map((p) =>
-      p.category === name ? { ...p, category: "" } : p
-    );
+    const products = storeData.products.map((p) => (p.category === name ? { ...p, category: "" } : p));
     await saveStore({ categories, products }, categoryMessage, "Categoria removida.");
     return;
   }
@@ -346,13 +372,12 @@ async function handleCategoryActions(e) {
   if (action === "edit-category") {
     const next = prompt("Novo nome da categoria:", name);
     if (!next) return;
+
     const trimmed = next.trim();
     if (!trimmed) return;
 
     const categories = storeData.categories.map((c) => (c === name ? trimmed : c));
-    const products = storeData.products.map((p) =>
-      p.category === name ? { ...p, category: trimmed } : p
-    );
+    const products = storeData.products.map((p) => (p.category === name ? { ...p, category: trimmed } : p));
     await saveStore({ categories, products }, categoryMessage, "Categoria atualizada.");
   }
 }
@@ -369,6 +394,7 @@ async function handleProductSubmit(e) {
 
   const payload = getProductPayload();
   const error = validateProduct(payload);
+
   if (error) {
     setFormMessage(productMessage, error, "error");
     return;
@@ -376,11 +402,9 @@ async function handleProductSubmit(e) {
 
   const existsIndex = storeData.products.findIndex((p) => p.id === payload.id);
   const products = [...storeData.products];
-  if (existsIndex >= 0) {
-    products[existsIndex] = payload;
-  } else {
-    products.unshift(payload);
-  }
+
+  if (existsIndex >= 0) products[existsIndex] = payload;
+  else products.unshift(payload);
 
   setFormMessage(productMessage, "Salvando produto...");
   await saveStore({ products }, productMessage, "Produto salvo com sucesso.");
@@ -390,6 +414,7 @@ async function handleProductSubmit(e) {
 async function handleProductActions(e) {
   const btn = e.target.closest("button[data-action]");
   if (!btn || !storeData) return;
+
   const action = btn.getAttribute("data-action");
   const id = btn.getAttribute("data-id");
   if (!action || !id) return;
@@ -403,25 +428,99 @@ async function handleProductActions(e) {
   if (action === "edit-product") {
     const product = storeData.products.find((p) => p.id === id);
     if (!product) return;
+
     productEditingId.value = product.id;
     productName.value = product.name || "";
     productCategory.value = product.category || "";
     productPrice.value = String(product.price ?? "").replace(".", ",");
     productImage.value = product.image || "";
     productDescription.value = product.description || "";
+
     productSubmit.innerHTML = '<i class="fa-solid fa-pen"></i> Atualizar produto';
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 }
 
+// ===== NOVO: preview do arquivo selecionado =====
+function bindLogoPreview() {
+  if (!storeLogoFile || !storeLogoPreview) return;
+
+  storeLogoFile.addEventListener("change", () => {
+    const file = storeLogoFile.files?.[0];
+    if (!file) return;
+
+    // preview local
+    const url = URL.createObjectURL(file);
+    storeLogoPreview.src = url;
+    setFormMessage(storeLogoMessage, "Arquivo selecionado. Clique em “Enviar logo”.");
+  });
+}
+
+// ===== NOVO: upload do logo para Firebase Storage =====
+async function handleLogoUpload() {
+  if (!currentUid) return;
+
+  const file = storeLogoFile?.files?.[0];
+  if (!file) {
+    setFormMessage(storeLogoMessage, "Selecione uma imagem primeiro.", "error");
+    return;
+  }
+
+  // validação simples
+  if (!file.type.startsWith("image/")) {
+    setFormMessage(storeLogoMessage, "O arquivo precisa ser uma imagem (PNG/JPG).", "error");
+    return;
+  }
+  const maxMB = 2;
+  if (file.size > maxMB * 1024 * 1024) {
+    setFormMessage(storeLogoMessage, `Imagem muito grande. Máximo: ${maxMB}MB.`, "error");
+    return;
+  }
+
+  try {
+    storeLogoUploadBtn.disabled = true;
+    setFormMessage(storeLogoMessage, "Enviando logo...");
+
+    const ext = (file.name.split(".").pop() || "png").toLowerCase();
+    const path = `stores/${currentUid}/logo_${Date.now()}.${ext}`;
+
+    const ref = storage.ref().child(path);
+
+    // upload
+    await ref.put(file, { contentType: file.type });
+
+    // url final
+    const downloadURL = await ref.getDownloadURL();
+
+    // salva no store
+    await saveStore({ logoUrl: downloadURL }, storeLogoMessage, "Logo atualizado com sucesso.");
+
+    // limpa input (opcional)
+    if (storeLogoFile) storeLogoFile.value = "";
+  } catch (err) {
+    console.error(err);
+    setFormMessage(storeLogoMessage, "Falha ao enviar logo. Tente novamente.", "error");
+    setStatus("Falha ao enviar logo.", "warning");
+  } finally {
+    if (storeLogoUploadBtn) storeLogoUploadBtn.disabled = false;
+  }
+}
+
 function bindEvents() {
   storeSettingsForm?.addEventListener("submit", handleStoreSubmit);
+
   categoryForm?.addEventListener("submit", handleCategorySubmit);
   categoryList?.addEventListener("click", handleCategoryActions);
+
   productForm?.addEventListener("submit", handleProductSubmit);
   productList?.addEventListener("click", handleProductActions);
   productCancelEdit?.addEventListener("click", resetProductForm);
+
   document.getElementById("refreshStoreBtn")?.addEventListener("click", loadStore);
+
+  // logo
+  bindLogoPreview();
+  storeLogoUploadBtn?.addEventListener("click", handleLogoUpload);
 
   document.getElementById("btnLogoutPainel")?.addEventListener("click", async () => {
     try {

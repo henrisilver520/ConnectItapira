@@ -108,7 +108,7 @@ body{
   margin:0 0 6px;
   color: var(--brand2);
   font-weight: 1000;
-  font-size: 12px;
+  font-size: 17px;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -117,14 +117,14 @@ body{
   margin:0;
   font-weight: 1000;
   letter-spacing: -0.4px;
-  font-size: 22px;
+  font-size: 30px;
 }
 
 .painel-hero__lead{
   margin: 8px 0 0;
   color: var(--muted);
   line-height: 1.4;
-  font-size: 14px;
+  font-size: 25px;
 }
 
 /* STATUS CARD */
@@ -173,7 +173,7 @@ body{
 .panel-card__header h2{
   margin:0;
   font-weight: 1000;
-  font-size: 16px;
+  font-size: 22px;
 }
 .panel-card__sub{
   margin: 4px 0 0;

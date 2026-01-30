@@ -66,7 +66,6 @@ function setStatus(message, type = "info") {
       }"></i>
       ${message}
     </div>
-    <div class="muted">Tudo salvo em users/{uid}.store</div>
   `;
 }
 

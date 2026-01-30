@@ -209,377 +209,203 @@
 
     <!-- SEÇÕES VAZIAS -->
     <section id="comerciosSection" class="section">
-        <div class="comercios">
-        <header class="comercios-hero">
-          <div class="comercios-hero__content">
-            <p class="comercios-kicker">Marketplace local</p>
-            <h2>Comércios Locais</h2>
-            <p class="comercios-lead">
-              Uma vitrine profissional para lojistas criarem sua loginha online, organizarem
-              categorias e venderem com pedidos enviados direto para o WhatsApp do vendedor.
-            </p>
-            <div class="comercios-hero__actions">
-              <button id="createStoreBtn" class="btn btn-primary comercios-cta" type="button">
-                Quero criar minha loja
-              </button>
-              <a class="btn btn-outline-light comercios-secondary" href="PainelLojista.html">
-                Minha Loja
-              </a>
-              
-            </div>
-            
+  <div class="comercios">
+
+    <!-- HERO + BUSCA PRINCIPAL -->
+    <header class="mp-hero" aria-label="Marketplace local">
+      <div class="mp-hero__bg"></div>
+
+      <div class="mp-hero__inner">
+        <div class="mp-hero__content">
+          <p class="mp-kicker">
+            <i class="fa-solid fa-location-dot"></i>
+            Marketplace local • Itapira
+          </p>
+
+          <h2 class="mp-title">Compre do comércio itapirense com praticidade</h2>
+
+          <p class="mp-lead">
+            Descubra lojas, produtos e serviços perto de você. Pedido rápido e direto pelo WhatsApp.
+          </p>
+
+          <!-- BUSCA DESTAQUE -->
+          <div class="mp-search" role="search" aria-label="Buscar no marketplace">
+            <i class="fa-solid fa-magnifying-glass mp-search__ico"></i>
+            <input id="comerciosSearch" type="text" placeholder="Buscar lojas ou produtos (ex: pizza, anel, eletrônica...)" autocomplete="off" />
+            <button id="comerciosSearchClear" class="mp-search__clear" type="button" aria-label="Limpar busca">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-          
-        </header>
 
-     <section class="comercios-toolbar" aria-label="Filtros de categorias">
-  <div class="comercios-toolbar__title">
-    <h3>Categorias em alta</h3>
-    <p>Explore por tipo de produto e encontre o que precisa rapidinho.</p>
-    <div class="comercios-search">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input id="comerciosSearch" type="text" placeholder="Digite o que procura" autocomplete="off" />
-  <button id="comerciosSearchClear" class="comercios-search__clear" type="button" aria-label="Limpar busca">
-    <i class="fa-solid fa-xmark"></i>
-  </button>
-</div>
+          <div class="mp-hero__stats" aria-label="Indicadores">
+            <div class="stat">
+              <span class="stat__value" id="storesCountHero">—</span>
+              <span class="stat__label">lojas ativas</span>
+            </div>
+            <div class="stat">
+              <span class="stat__value" id="productsCountHero">—</span>
+              <span class="stat__label">produtos cadastrados</span>
+            </div>
+            <div class="stat">
+              <span class="stat__value">WhatsApp</span>
+              <span class="stat__label">pedido simples</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Área do lojista (separada do hero principal) -->
+        <aside class="mp-seller" aria-label="Área do lojista">
+          <div class="mp-seller__top">
+            <div class="mp-seller__badge">
+              <i class="fa-solid fa-store"></i>
+            </div>
+            <div>
+              <h3 class="mp-seller__title">Área do lojista</h3>
+              <p class="mp-seller__sub">Crie sua vitrine e publique produtos.</p>
+            </div>
+          </div>
+
+          <div class="mp-seller__actions">
+            <button id="createStoreBtn" class="btn btn-primary mp-btn-wide" type="button">
+              <i class="fa-solid fa-plus"></i> Criar minha loja
+            </button>
+            <a class="btn btn-ghost mp-btn-wide" href="PainelLojista.html">
+              <i class="fa-solid fa-gear"></i> Acessar painel
+            </a>
+          </div>
+
+          <p class="mp-seller__hint muted">
+            Dica: um bom logo + 10 produtos já melhora muito as conversões.
+          </p>
+        </aside>
+      </div>
+    </header>
+
+    <!-- CATEGORIAS (scroll) -->
+    <section class="mp-toolbar" aria-label="Categorias em alta">
+      <div class="mp-toolbar__head">
+        <h3>Categorias em alta</h3>
+        <p>Toque em uma categoria para filtrar. Use a busca para achar produtos específicos.</p>
+      </div>
+
+      <div class="comercios-categories mp-cats" id="comerciosCategories">
+        <!-- mantém seus botões -->
+        <button class="comercio-cat is-active" data-category="todos" type="button">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400&auto=format&fit=crop" alt="">
+          <span>Todos</span>
+        </button>
+
+        <button class="comercio-cat" data-category="alimentacao" type="button">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=400&auto=format&fit=crop" alt="">
+          <span>Alimentação</span>
+        </button>
+
+        <button class="comercio-cat" data-category="moda" type="button">
+          <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=400&auto=format&fit=crop" alt="">
+          <span>Moda</span>
+        </button>
+
+        <button class="comercio-cat" data-category="casa" type="button">
+          <img src="https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=400&auto=format&fit=crop" alt="">
+          <span>Casa</span>
+        </button>
+
+        <button class="comercio-cat" data-category="tecnologia" type="button">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=400&auto=format&fit=crop" alt="">
+          <span>Tecnologia</span>
+        </button>
+
+        <button class="comercio-cat" data-category="servicos" type="button">
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=400&auto=format&fit=crop" alt="">
+          <span>Serviços</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESULTADOS DE BUSCA (lojas + produtos) -->
+    <section id="comerciosSearchResults" class="mp-results is-hidden" aria-live="polite">
+      <div class="mp-results__head">
+        <div>
+          <h4>Resultados da busca</h4>
+          <span id="comerciosSearchCount" class="muted"></span>
+        </div>
+      </div>
+
+      <div id="comerciosSearchStores" class="stores-grid"></div>
+
+      <div class="mp-results__head" style="margin-top:14px;">
+        <div>
+          <h4>Produtos encontrados</h4>
+          <span id="comerciosProductsCount" class="muted"></span>
+        </div>
+      </div>
+
+      <div id="comerciosSearchProducts" class="comercios-products-grid"></div>
+    </section>
+
+    <!-- LOJAS -->
+    <section class="stores-section" aria-label="Lojas disponíveis">
+      <header class="stores-section__header">
+        <div>
+          <h3 class="stores-section__title">Lojas próximas e em destaque</h3>
+          <p id="storesCount" class="stores-section__count">Carregando lojas...</p>
+        </div>
+      </header>
+
+      <div id="storesGrid" class="stores-grid"></div>
+    </section>
+
+    <!-- AVISO (mais discreto e profissional) -->
+    <aside class="mp-disclaimer" role="note">
+      <i class="fa-solid fa-shield-halved"></i>
+      <p>
+        A plataforma conecta consumidores e lojistas. Cada venda e atendimento é de responsabilidade do vendedor.
+      </p>
+    </aside>
+
+    <!-- COMO FUNCIONA -->
+    <section id="comerciosComoFunciona" class="mp-flow" aria-label="Como funciona">
+      <header class="mp-flow__header">
+        <h3>Do clique ao pedido confirmado</h3>
+        <p>Simples para o cliente e eficiente para o lojista.</p>
+      </header>
+
+      <div class="mp-flow__steps">
+        <article class="mp-step">
+          <span class="mp-step__index">01</span>
+          <h4>Encontre e compare</h4>
+          <p>Use busca e categorias. Veja fotos e descrições antes de pedir.</p>
+        </article>
+
+        <article class="mp-step">
+          <span class="mp-step__index">02</span>
+          <h4>Pedido via WhatsApp</h4>
+          <p>A mensagem já vai pronta com o produto e o valor — sem fricção.</p>
+        </article>
+
+        <article class="mp-step">
+          <span class="mp-step__index">03</span>
+          <h4>Venda finalizada</h4>
+          <p>Entrega/retirada e pagamento combinados direto com o vendedor.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA FINAL (lojista) -->
+    <section class="mp-cta" aria-label="Convite para lojistas">
+      <div>
+        <h3>Seu comércio com cara de app profissional</h3>
+        <p>Crie sua vitrine, publique produtos e transforme visitas em pedidos.</p>
+      </div>
+      <a class="btn btn-primary mp-btn-wide" href="login.html">
+        Começar agora
+      </a>
+    </section>
 
 
-  </div>
-
-  <div class="comercios-categories" id="comerciosCategories">
-    <button class="comercio-cat is-active" data-category="todos">
-      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400&auto=format&fit=crop" />
-      <span>Todos</span>
-    </button>
-
-    <button class="comercio-cat" data-category="alimentacao">
-      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=400&auto=format&fit=crop" />
-      <span>Alimentação</span>
-    </button>
-
-    <button class="comercio-cat" data-category="moda">
-      <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=400&auto=format&fit=crop" />
-      <span>Moda</span>
-    </button>
-
-    <button class="comercio-cat" data-category="casa">
-      <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=400&auto=format&fit=crop" />
-      <span>Casa</span>
-    </button>
-
-    <button class="comercio-cat" data-category="tecnologia">
-      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=400&auto=format&fit=crop" />
-      <span>Tecnologia</span>
-    </button>
-
-    <button class="comercio-cat" data-category="servicos">
-      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=400&auto=format&fit=crop" />
-      <span>Serviços</span>
-    </button>
   </div>
 </section>
 
-
-
-        <section class="stores-section" aria-label="Lojas disponíveis">
-          <header class="stores-section__header">
-             <div id="comerciosSearchResults" class="comercios-search-results is-hidden">
-  <div class="comercios-search-results__header">
-    <h4>Resultados</h4>
-    <span id="comerciosSearchCount" class="muted"></span>
-  </div>
-
-  <div id="comerciosSearchStores" class="stores-grid"></div>
-
-  <div class="comercios-search-results__header" style="margin-top:14px;">
-    <h4>Produtos</h4>
-    <span id="comerciosProductsCount" class="muted"></span>
-  </div>
-
-  <div id="comerciosSearchProducts" class="comercios-products-grid"></div>
-</div>
-
-            <p id="storesCount" class="stores-section__count">Carregando lojas...</p>
-          </header>
-          <div id="storesGrid" class="stores-grid">
-           
-          </div>
-        </section>
-
-        <div class="section-note">
-        AVISO! A plataforma nao se responsabiliza por Serviços mal prestado e nao tem vinculo com nenhum usuario cadastrado no sistema!
-      </div>
-
-        <section class="comercios-grid" aria-label="Lista de produtos">
-          <article class="commerce-card commerce-card--featured">
-            <div class="commerce-card__media">
-              <span class="commerce-card__badge">Mais pedido</span>
-              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1974&auto=format&fit=crop" alt="Pizza artesanal saindo do forno">
-            </div>
-            <div class="commerce-card__body">
-              <p class="commerce-card__store">Pizzaria do Centro</p>
-              <h4 class="commerce-card__title">Pizza artesanal grande</h4>
-              <p class="commerce-card__desc">Molho da casa, mussarela especial e borda recheada cremosa.</p>
-              <div class="commerce-card__meta">
-                <span class="commerce-card__price">R$ 69,90</span>
-                <span class="commerce-card__category">Alimentação</span>
-              </div>
-              <button
-                class="btn btn-success commerce-card__action js-order-btn"
-                type="button"
-                data-store="Pizzaria do Centro"
-                data-product="Pizza artesanal grande"
-                data-price="69,90"
-                data-whatsapp="5511999990001"
-              >
-                Pedir pelo WhatsApp
-              </button>
-            </div>
-          </article>
-
-          <article class="commerce-card">
-            <div class="commerce-card__media">
-              <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1974&auto=format&fit=crop" alt="Camisetas dobradas em uma mesa">
-            </div>
-            <div class="commerce-card__body">
-              <p class="commerce-card__store">Veste Bem Store</p>
-              <h4 class="commerce-card__title">Kit camisetas premium</h4>
-              <p class="commerce-card__desc">Algodão penteado, caimento perfeito e cores essenciais.</p>
-              <div class="commerce-card__meta">
-                <span class="commerce-card__price">R$ 129,90</span>
-                <span class="commerce-card__category">Moda</span>
-              </div>
-              <button
-                class="btn btn-success commerce-card__action js-order-btn"
-                type="button"
-                data-store="Veste Bem Store"
-                data-product="Kit camisetas premium"
-                data-price="129,90"
-                data-whatsapp="5511999990002"
-              >
-                Comprar agora
-              </button>
-            </div>
-          </article>
-
-          <article class="commerce-card">
-            <div class="commerce-card__media">
-              <img src="https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=1974&auto=format&fit=crop" alt="Mesa posta com itens de decoração">
-            </div>
-            <div class="commerce-card__body">
-              <p class="commerce-card__store">Casa Aurora</p>
-              <h4 class="commerce-card__title">Combo mesa posta</h4>
-              <p class="commerce-card__desc">Sousplats, guardanapos e detalhes que transformam a refeição.</p>
-              <div class="commerce-card__meta">
-                <span class="commerce-card__price">R$ 189,00</span>
-                <span class="commerce-card__category">Casa</span>
-              </div>
-              <button
-                class="btn btn-success commerce-card__action js-order-btn"
-                type="button"
-                data-store="Casa Aurora"
-                data-product="Combo mesa posta"
-                data-price="189,00"
-                data-whatsapp="5511999990003"
-              >
-                Quero este
-              </button>
-            </div>
-          </article>
-
-          <article class="commerce-card">
-            <div class="commerce-card__media">
-              <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1974&auto=format&fit=crop" alt="Pessoa segurando um smartphone">
-            </div>
-            <div class="commerce-card__body">
-              <p class="commerce-card__store">Tech Itapira</p>
-              <h4 class="commerce-card__title">Smartphone 256GB</h4>
-              <p class="commerce-card__desc">Performance rápida, câmera incrível e bateria para o dia todo.</p>
-              <div class="commerce-card__meta">
-                <span class="commerce-card__price">R$ 2.399,00</span>
-                <span class="commerce-card__category">Tecnologia</span>
-              </div>
-              <button
-                class="btn btn-success commerce-card__action js-order-btn"
-                type="button"
-                data-store="Tech Itapira"
-                data-product="Smartphone 256GB"
-                data-price="2399,00"
-                data-whatsapp="5511999990004"
-              >
-                Falar com vendedor
-              </button>
-            </div>
-          </article>
-        </section>
-
-        <section id="comerciosComoFunciona" class="comercios-flow" aria-label="Fluxo de compra">
-          <header class="comercios-flow__header">
-            <h3>Do clique ao pedido confirmado</h3>
-            <p>Um fluxo simples para o cliente e poderoso para o lojista.</p>
-          </header>
-          <div class="comercios-flow__steps">
-            <article class="flow-step">
-              <span class="flow-step__index">01</span>
-              <h4>Cliente escolhe o produto</h4>
-              <p>Navega por categorias, vê fotos reais e decide com segurança.</p>
-            </article>
-            <article class="flow-step">
-              <span class="flow-step__index">02</span>
-              <h4>Pedido vai para o WhatsApp</h4>
-              <p>A mensagem já chega com produto, loja e valor para agilizar o atendimento.</p>
-            </article>
-            <article class="flow-step">
-              <span class="flow-step__index">03</span>
-              <h4>Vendedor finaliza a venda</h4>
-              <p>Combina entrega, retirada, pagamento e conclui o pedido direto no chat.</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="comercios-seller-cta" aria-label="Convite para lojistas">
-          <div>
-            <h3>Seu comércio com cara de app profissional</h3>
-            <p>
-              Monte sua vitrine, publique seus produtos e transforme visitas em pedidos.
-              Tudo com a simplicidade do WhatsApp e a organização de um catálogo moderno.
-            </p>
-          </div>
-          <a class="btn btn-primary comercios-cta comercios-cta--wide" href="login.html">
-            Começar agora
-          </a>
-        </section>
-
-        <section id="storeDashboard" class="store-dashboard" aria-live="polite">
-          <header class="store-dashboard__header">
-            <div>
-              <p class="store-dashboard__kicker">Painel do lojista</p>
-              <h3>Sua loja profissional</h3>
-              <p class="store-dashboard__lead">
-                Edite, configure e personalize sua loja. Tudo salvo em <strong>users/{uid}.store</strong>.
-              </p>
-            </div>
-            <div class="store-dashboard__actions">
-              <button id="storeDashboardRefresh" class="btn btn-outline-light comercios-secondary" type="button">
-                Atualizar dados
-              </button>
-            </div>
-          </header>
-
-          <div id="storeDashboardState" class="store-dashboard__state"></div>
-
-          <form id="storeDashboardForm" class="store-dashboard__form">
-            <div class="store-form__grid">
-              <label class="store-field">
-                <span>Nome da loja</span>
-                <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
-              </label>
-              <label class="store-field">
-                <span>Categoria principal</span>
-                <input type="text" name="storeCategory" placeholder="Ex: Alimentação" required />
-              </label>
-              <label class="store-field">
-                <span>WhatsApp do vendedor</span>
-                <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />
-              </label>
-              <label class="store-field">
-                <span>Tipo de atendimento</span>
-                <select name="storeFulfillment" required>
-                  <option value="">Selecione</option>
-                  <option value="Entrega">Entrega</option>
-                  <option value="Retirada">Retirada</option>
-                  <option value="Entrega e retirada">Entrega e retirada</option>
-                </select>
-              </label>
-              <label class="store-field store-field--full">
-                <span>Descrição curta</span>
-                <textarea name="storeDescription" rows="3" placeholder="Conte em uma frase o que torna sua loja especial." required></textarea>
-              </label>
-            </div>
-
-            <div class="store-form__actions store-dashboard__footer">
-              <p id="storeDashboardMessage" class="store-form__message" role="status" aria-live="polite"></p>
-              <div class="store-dashboard__buttons">
-                <button id="storeDashboardSubmit" class="btn btn-primary comercios-cta" type="submit">
-                  Salvar alterações
-                </button>
-                <button id="storeDashboardOpenModal" class="btn btn-outline-light comercios-secondary" type="button">
-                  Abrir cadastro rápido
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-
-        <div id="storeModal" class="store-modal" role="dialog" aria-modal="true" aria-labelledby="storeModalTitle" aria-hidden="true">
-          <div class="store-modal__backdrop" data-close-store-modal></div>
-          <div class="store-modal__panel">
-            <header class="store-modal__header">
-              <div>
-                <p class="store-modal__kicker">Cadastro da loja</p>
-                <h3 id="storeModalTitle">Quero criar minha loja</h3>
-                <p class="store-modal__lead">Essas informações serão salvas no seu documento em <strong>users/{uid}</strong> no Firestore.</p>
-              </div>
-              <button class="store-modal__close" type="button" aria-label="Fechar" data-close-store-modal>
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </header>
-
-            <form id="storeForm" class="store-form">
-              <div class="store-form__grid">
-                <label class="store-field">
-                  <span>Nome da loja</span>
-                  <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
-                </label>
-                <label class="store-field">
-  <span>Categoria principal</span>
-  <select name="storeCategory" id="storeCategory" required>
-    <option value="">Selecione uma categoria</option>
-  </select>
-</label>
-
-                <label class="store-field">
-                  <span>WhatsApp do vendedor</span>
-                  <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />
-                </label>
-                <label class="store-field">
-                  <span>Tipo de atendimento</span>
-                  <select name="storeFulfillment" required>
-                    <option value="">Selecione</option>
-                    <option value="Entrega">Entrega</option>
-                    <option value="Retirada">Retirada</option>
-                    <option value="Entrega e retirada">Entrega e retirada</option>
-                  </select>
-                </label>
-                <label class="store-field store-field--full">
-                  <span>Descrição curta</span>
-                  <textarea name="storeDescription" rows="3" placeholder="Conte em uma frase o que torna sua loja especial." required></textarea>
-                </label>
-              </div>
-
-              <div class="form-group">
-  <label for="storeLogo">Logo da loja</label>
-  <input
-    type="file"
-    id="storeLogo"
-    name="storeLogo"
-    accept="image/*"
-  />
-  <small>PNG ou JPG · Máx. 1MB</small>
-</div>
-
-              <div class="store-form__actions">
-                <p id="storeFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
-                <button id="storeFormSubmit" class="btn btn-primary comercios-cta" type="submit">
-                  Salvar loja no Firestore
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <section id="imoveisSection" class="section imoveis-section">
   <div class="imoveis-shell">
@@ -1560,6 +1386,73 @@
 </div>
 
   
+<div id="storeModal" class="store-modal" role="dialog" aria-modal="true" aria-labelledby="storeModalTitle" aria-hidden="true">
+          <div class="store-modal__backdrop" data-close-store-modal></div>
+          <div class="store-modal__panel">
+            <header class="store-modal__header">
+              <div>
+                <p class="store-modal__kicker">Cadastro da loja</p>
+                <h3 id="storeModalTitle">Quero criar minha loja</h3>
+                <p class="store-modal__lead">Essas informações serão salvas no seu documento em <strong>users/{uid}</strong> no Firestore.</p>
+              </div>
+              <button class="store-modal__close" type="button" aria-label="Fechar" data-close-store-modal>
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </header>
+
+            <form id="storeForm" class="store-form">
+              <div class="store-form__grid">
+                <label class="store-field">
+                  <span>Nome da loja</span>
+                  <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
+                </label>
+                <label class="store-field">
+  <span>Categoria principal</span>
+  <select name="storeCategory" id="storeCategory" required>
+    <option value="">Selecione uma categoria</option>
+  </select>
+</label>
+
+                <label class="store-field">
+                  <span>WhatsApp do vendedor</span>
+                  <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />
+                </label>
+                <label class="store-field">
+                  <span>Tipo de atendimento</span>
+                  <select name="storeFulfillment" required>
+                    <option value="">Selecione</option>
+                    <option value="Entrega">Entrega</option>
+                    <option value="Retirada">Retirada</option>
+                    <option value="Entrega e retirada">Entrega e retirada</option>
+                  </select>
+                </label>
+                <label class="store-field store-field--full">
+                  <span>Descrição curta</span>
+                  <textarea name="storeDescription" rows="3" placeholder="Conte em uma frase o que torna sua loja especial." required></textarea>
+                </label>
+              </div>
+
+              <div class="form-group">
+  <label for="storeLogo">Logo da loja</label>
+  <input
+    type="file"
+    id="storeLogo"
+    name="storeLogo"
+    accept="image/*"
+  />
+  <small>PNG ou JPG · Máx. 1MB</small>
+</div>
+
+              <div class="store-form__actions">
+                <p id="storeFormMessage" class="store-form__message" role="status" aria-live="polite"></p>
+                <button id="storeFormSubmit" class="btn btn-primary comercios-cta" type="submit">
+                  Salvar loja no Firestore
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
 
     <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>

@@ -101,23 +101,36 @@ body{
   margin: 0 auto;
   padding: 12px 14px 30px;
 }
-
-/* ===== LOGO ===== */
+/* ===== LOGO (maior, estilo vitrine) ===== */
 .shop-top__inner{
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 12px;
+
+  /* aumenta a “faixa” do logo */
+  padding: 18px 16px;
+  min-height: 140px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
+  overflow: hidden;
 }
 
 .shop-logo{
-  height: 48px;
+  /* controla o tamanho grande */
+  height: 110px;           /* ajuste principal */
+  max-height: 130px;       /* segurança */
   width: auto;
+  max-width: 100%;         /* não estoura no mobile */
   object-fit: contain;
+  display: block;
+}
+@media (min-width: 768px){
+  .shop-top__inner{ min-height: 170px; }
+  .shop-logo{ height: 140px; max-height: 160px; }
 }
 
 /* ===== SLIDER ===== */

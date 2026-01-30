@@ -464,67 +464,6 @@
     </section>
 
 
-     <section id="storeDashboard" class="store-dashboard" aria-live="polite">
-          <header class="store-dashboard__header">
-            <div>
-              <p class="store-dashboard__kicker">Painel do lojista</p>
-              <h3>Sua loja profissional</h3>
-              <p class="store-dashboard__lead">
-                Edite, configure e personalize sua loja. Tudo salvo em <strong>users/{uid}.store</strong>.
-              </p>
-            </div>
-            <div class="store-dashboard__actions">
-              <button id="storeDashboardRefresh" class="btn btn-outline-light comercios-secondary" type="button">
-                Atualizar dados
-              </button>
-            </div>
-          </header>
-
-          <div id="storeDashboardState" class="store-dashboard__state"></div>
-
-          <form id="storeDashboardForm" class="store-dashboard__form">
-            <div class="store-form__grid">
-              <label class="store-field">
-                <span>Nome da loja</span>
-                <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
-              </label>
-              <label class="store-field">
-                <span>Categoria principal</span>
-                <input type="text" name="storeCategory" placeholder="Ex: Alimentação" required />
-              </label>
-              <label class="store-field">
-                <span>WhatsApp do vendedor</span>
-                <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />
-              </label>
-              <label class="store-field">
-                <span>Tipo de atendimento</span>
-                <select name="storeFulfillment" required>
-                  <option value="">Selecione</option>
-                  <option value="Entrega">Entrega</option>
-                  <option value="Retirada">Retirada</option>
-                  <option value="Entrega e retirada">Entrega e retirada</option>
-                </select>
-              </label>
-              <label class="store-field store-field--full">
-                <span>Descrição curta</span>
-                <textarea name="storeDescription" rows="3" placeholder="Conte em uma frase o que torna sua loja especial." required></textarea>
-              </label>
-            </div>
-
-            <div class="store-form__actions store-dashboard__footer">
-              <p id="storeDashboardMessage" class="store-form__message" role="status" aria-live="polite"></p>
-              <div class="store-dashboard__buttons">
-                <button id="storeDashboardSubmit" class="btn btn-primary comercios-cta" type="submit">
-                  Salvar alterações
-                </button>
-                <button id="storeDashboardOpenModal" class="btn btn-outline-light comercios-secondary" type="button">
-                  Abrir cadastro rápido
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-        
     <section id="imoveisSection" class="section imoveis-section">
   <div class="imoveis-shell">
 
@@ -1571,6 +1510,69 @@
           </div>
         </div>
 
+        
+
+        
+     <section id="storeDashboard" class="store-dashboard" aria-live="polite">
+          <header class="store-dashboard__header">
+            <div>
+              <p class="store-dashboard__kicker">Painel do lojista</p>
+              <h3>Sua loja profissional</h3>
+              <p class="store-dashboard__lead">
+                Edite, configure e personalize sua loja. Tudo salvo em <strong>users/{uid}.store</strong>.
+              </p>
+            </div>
+            <div class="store-dashboard__actions">
+              <button id="storeDashboardRefresh" class="btn btn-outline-light comercios-secondary" type="button">
+                Atualizar dados
+              </button>
+            </div>
+          </header>
+
+          <div id="storeDashboardState" class="store-dashboard__state"></div>
+
+          <form id="storeDashboardForm" class="store-dashboard__form">
+            <div class="store-form__grid">
+              <label class="store-field">
+                <span>Nome da loja</span>
+                <input type="text" name="storeName" placeholder="Ex: Mercado Central" required />
+              </label>
+              <label class="store-field">
+                <span>Categoria principal</span>
+                <input type="text" name="storeCategory" placeholder="Ex: Alimentação" required />
+              </label>
+              <label class="store-field">
+                <span>WhatsApp do vendedor</span>
+                <input type="tel" name="storeWhatsApp" placeholder="5511999990000" required />
+              </label>
+              <label class="store-field">
+                <span>Tipo de atendimento</span>
+                <select name="storeFulfillment" required>
+                  <option value="">Selecione</option>
+                  <option value="Entrega">Entrega</option>
+                  <option value="Retirada">Retirada</option>
+                  <option value="Entrega e retirada">Entrega e retirada</option>
+                </select>
+              </label>
+              <label class="store-field store-field--full">
+                <span>Descrição curta</span>
+                <textarea name="storeDescription" rows="3" placeholder="Conte em uma frase o que torna sua loja especial." required></textarea>
+              </label>
+            </div>
+
+            <div class="store-form__actions store-dashboard__footer">
+              <p id="storeDashboardMessage" class="store-form__message" role="status" aria-live="polite"></p>
+              <div class="store-dashboard__buttons">
+                <button id="storeDashboardSubmit" class="btn btn-primary comercios-cta" type="submit">
+                  Salvar alterações
+                </button>
+                <button id="storeDashboardOpenModal" class="btn btn-outline-light comercios-secondary" type="button">
+                  Abrir cadastro rápido
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
         
     <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>

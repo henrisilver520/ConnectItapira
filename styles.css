@@ -814,6 +814,10 @@ input, select, textarea, button { font-size: 16px; }
   padding:11px 18px;
   font-weight:700;
   border-width:1px;
+  background-color: darkcyan;
+      font-size: 24px;
+    height: 70px;
+
 }
 
 .comercios-highlights{

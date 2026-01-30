@@ -26,27 +26,63 @@
       </div>
     </header>
 
-    <main class="vitrine-main">
-      <section class="vitrine-hero">
-        <p class="vitrine-hero__kicker">Comércio Local</p>
-        <h1 id="storeName">Carregando loja...</h1>
-        <p id="storeDescription" class="vitrine-hero__lead"></p>
-        <div id="storeMeta" class="vitrine-hero__meta"></div>
-        <div id="storeActions" class="vitrine-hero__actions"></div>
-      </section>
+   <main class="vitrine-main">
+  <div class="shop-top__inner">
+    <img
+      id="storeLogo"
+      class="shop-logo"
+      src="https://via.placeholder.com/160x60?text=LOGO"
+      alt="Logo da loja"
+    />
+  </div>
+  <!-- SLIDER / BANNER -->
+  <section class="ad-slider" aria-label="Anúncios da loja">
+    <div class="ad-slider__track" id="adSliderTrack">
+      <!-- Você pode trocar as imagens depois ou preencher via JS -->
+      <article class="ad-slide">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Anúncio 1">
+      </article>
+      <article class="ad-slide">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Anúncio 2">
+      </article>
+      <article class="ad-slide">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Anúncio 3">
+      </article>
+    </div>
 
-      <section class="vitrine-toolbar">
-        <div>
-          <h2>Produtos</h2>
-          <p class="muted">Escolha um item e finalize o pedido pelo WhatsApp.</p>
-        </div>
-        <div id="categoryChips" class="category-chips"></div>
-      </section>
+    <!-- pontinhos (opcional) -->
+    <div class="ad-dots" id="adDots" aria-hidden="true">
+      <span class="dot is-active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </section>
 
-      <section>
-        <div id="productsGrid" class="products-grid"></div>
-      </section>
-    </main>
+  <!-- NOME + CTA (compacto, em vez do hero antigo) -->
+  <section class="shop-head">
+    <div class="shop-head__title">
+      <h1 id="storeNameTop" class="shop-name">Carregando loja...</h1>
+      <p id="storeDescription" class="shop-desc"></p>
+    </div>
+    <div id="storeActions" class="shop-actions"></div>
+  </section>
+
+  <!-- CATEGORIAS (scroll horizontal) -->
+  <nav class="cats" aria-label="Categorias">
+    <div id="categoryChips" class="cats-scroll"></div>
+  </nav>
+
+  <!-- PRODUTOS -->
+  <section class="products">
+    <div class="products__head">
+      <h2 class="products__title">Nossos Produtos</h2>
+      <p class="products__sub">Escolha um item e finalize o pedido pelo WhatsApp.</p>
+    </div>
+
+    <div id="productsGrid" class="products-grid"></div>
+  </section>
+
+</main>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>

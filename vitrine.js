@@ -21,6 +21,7 @@ const storeMetaEl = document.getElementById("storeMeta");
 const storeActionsEl = document.getElementById("storeActions");
 const categoryChipsEl = document.getElementById("categoryChips");
 const productsGridEl = document.getElementById("productsGrid");
+const storeLogoEl = document.getElementById("storeLogo");
 
 let storeUid = "";
 let storeData = null;
@@ -83,6 +84,11 @@ function renderStoreHeader(store) {
   if (storeNameTopEl) storeNameTopEl.textContent = store.name || "Vitrine";
   if (storeDescriptionEl) {
     storeDescriptionEl.textContent = store.description || "Confira os produtos disponíveis nesta loja.";
+  }
+  if (storeLogoEl) {
+    const fallback = "https://via.placeholder.com/160x60?text=LOGO";
+    storeLogoEl.src = store.logoUrl || store.logo || fallback;
+    storeLogoEl.alt = `Logo da ${store.name || "loja"}`;
   }
 
   if (storeMetaEl) {
@@ -222,4 +228,30 @@ async function loadStore() {
 
 categoryChipsEl?.addEventListener("click", handleChipClick);
 
-document.addEventListener("DOMContentLoaded", loadStore);
+
+
+function initSliderAutoPlay() {
+  const track = document.getElementById("adSliderTrack");
+  const dotsWrap = document.getElementById("adDots");
+  if (!track) return;
+
+  const slides = Array.from(track.children);
+  if (slides.length <= 1) return;
+
+  const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll(".dot")) : [];
+  let i = 0;
+
+  setInterval(() => {
+    i = (i + 1) % slides.length;
+    track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+    if (dots.length) {
+      dots.forEach((d) => d.classList.remove("is-active"));
+      dots[i]?.classList.add("is-active");
+    }
+  }, 3500);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadStore();
+  initSliderAutoPlay();
+});

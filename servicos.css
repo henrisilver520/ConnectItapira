@@ -113,7 +113,7 @@ a{color:inherit;}
 }
 
 .btn-success{
-  background:linear-gradient(135deg,#22c55e,#4ade80);
+  background: #30c6f5;
   color:#052e16;
   box-shadow:0 16px 26px rgba(34,197,94,.22);
 }
@@ -160,6 +160,7 @@ a{color:inherit;}
   margin:0 0 14px 0;
   color:#0f172a;
   max-width:70ch;
+  font-size: 27px;
 }
 
 .hero__actions{
@@ -362,8 +363,8 @@ a{color:inherit;}
 }
 
 .service-card__avatar{
-  width:38px;
-  height:38px;
+  width:40px;
+  height:40px;
   border-radius:50%;
   border:2px solid rgba(14,165,233,.3);
   object-fit:cover;

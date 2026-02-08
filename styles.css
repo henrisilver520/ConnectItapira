@@ -76,6 +76,21 @@ body{
   font-weight:700;
 }
 
+.topbar-actions .topbar-link{
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  padding:8px 10px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.topbar-actions .topbar-link:hover{
+  filter:brightness(1.1);
+}
+
 .topbar-actions button:hover{ filter:brightness(1.1); }
 
 
@@ -3629,5 +3644,4 @@ body.modal-open{
     grid-template-columns: 1fr;
   }
 }
-
 

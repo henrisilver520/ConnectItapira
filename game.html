@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Metin 2 - Protótipo Inicial</title>
+    <link rel="stylesheet" href="./game.css" />
+  </head>
+  <body>
+    <header class="game-header">
+      <div class="game-header__brand">
+        <span class="game-header__badge">M2</span>
+        <div>
+          <h1>Metin 2 - Protótipo Inicial</h1>
+          <p>Mapa pequeno, personagem nível 1 e itens básicos para o início.</p>
+        </div>
+      </div>
+      <a class="game-header__back" href="index.html">Voltar ao ConnectItapira</a>
+    </header>
+
+    <main class="game-shell">
+      <section class="game-stage">
+        <div class="game-stage__top">
+          <h2>Campo de treino</h2>
+          <div class="game-stage__legend">
+            <span><span class="legend legend--player"></span> Herói</span>
+            <span><span class="legend legend--mob"></span> Mob</span>
+            <span><span class="legend legend--loot"></span> Item</span>
+          </div>
+        </div>
+        <div id="map" class="game-map" role="grid" aria-label="Mapa do jogo"></div>
+        <div class="game-controls">
+          <div>
+            <strong>Controles:</strong>
+            <ul>
+              <li>Movimento: WASD ou setas</li>
+              <li>Ataque: tecla <kbd>E</kbd></li>
+              <li>Pegar item: tecla <kbd>F</kbd></li>
+            </ul>
+          </div>
+          <button id="respawnMobs" type="button">Recriar mobs</button>
+        </div>
+      </section>
+
+      <aside class="game-panel">
+        <section class="game-card">
+          <h3>Status do personagem</h3>
+          <div id="playerStatus" class="status-grid"></div>
+        </section>
+
+        <section class="game-card">
+          <h3>Inventário</h3>
+          <ul id="inventoryList" class="inventory-list"></ul>
+        </section>
+
+        <section class="game-card">
+          <h3>Registro de eventos</h3>
+          <div id="eventLog" class="event-log" role="log" aria-live="polite"></div>
+        </section>
+      </aside>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
